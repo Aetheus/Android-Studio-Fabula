@@ -15,10 +15,10 @@ public class CustomDownloader {
     int ViewID;
 
     //first listener should be downloadListener
-    public CustomDownloader(String url, List<CustomListener> clist, Activity parentActivity){
+    public CustomDownloader(String url, List<CustomListener> clist){
         this.listenerList = clist;
-        this.ViewID = ViewID;
-        this.parentActivity = parentActivity;
+        //this.ViewID = ViewID;
+        //this.parentActivity = parentActivity;
     }
 
 

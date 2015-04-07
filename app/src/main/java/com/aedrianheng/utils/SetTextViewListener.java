@@ -28,17 +28,17 @@ public class SetTextViewListener implements CustomListener {
     }
 
     //set the text
-    public void setText(String text){
+    /*public void setText(String text){
         this.text = text;
-    }
+    }*/
 
-    public void setView(int ID){
+    /*public void setView(int ID){
         this.view = (EditText) parentActivity.findViewById(ID);
     }
 
     public void setParentActivity(Activity parentActivity){
         this.parentActivity = parentActivity;
-    }
+    }*/
 
 
     //overrides interface
