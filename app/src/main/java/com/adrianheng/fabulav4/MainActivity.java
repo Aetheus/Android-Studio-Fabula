@@ -5,6 +5,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aedrianheng.utils.CustomDownloader;
+import com.aedrianheng.utils.CustomListener;
+import com.aedrianheng.utils.SetTextViewListener;
+
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -12,6 +19,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        SetTextViewListener tvListener = new SetTextViewListener(this,"howdy",R.id.mainTextView);
+
+
+        CustomDownloader dler = new CustomDownloader("http://hmkcode.appspot.com/rest/controller/get.json",tvListener);
+        dler.downloadFile();
     }
 
 

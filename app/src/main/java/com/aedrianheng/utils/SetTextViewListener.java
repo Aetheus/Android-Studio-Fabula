@@ -5,11 +5,14 @@ package com.aedrianheng.utils;
  */
 import android.app.Activity;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import java.lang.reflect.Type;
 
 
 public class SetTextViewListener implements CustomListener {
     private String text;
-    private EditText view;
+    private TextView view;
     private Activity parentActivity;
 
     //overrides interface
@@ -24,13 +27,13 @@ public class SetTextViewListener implements CustomListener {
     public SetTextViewListener(Activity parentActivity, String text, int ViewID){
         this.text = text;
         this.parentActivity = parentActivity;
-        this.view = (EditText) parentActivity.findViewById(ViewID);
+        this.view = (TextView) parentActivity.findViewById(ViewID);
     }
 
     //set the text
-    /*public void setText(String text){
+    public void setText(String text){
         this.text = text;
-    }*/
+    }
 
     /*public void setView(int ID){
         this.view = (EditText) parentActivity.findViewById(ID);
