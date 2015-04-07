@@ -34,8 +34,12 @@ import android.util.Log;
 public class CustomWebRequest {
 
     public final String TAG = "CustomWebRequest";
+
+
     CustomListener clisten;
     String url;
+    JSONObject postParam;
+
 
 
     //first listener should be downloadListener
@@ -43,11 +47,16 @@ public class CustomWebRequest {
         this.clisten = clisten;
         this.url = url;
         Log.i(TAG,"Created object");
-        //this.ViewID = ViewID;
-        //this.parentActivity = parentActivity;
     }
 
-    public String POST(String url){
+    public CustomWebRequest(String url, CustomListener clisten, JSONObject postParam){
+        this.clisten = clisten;
+        this.url = url;
+        this.postParam = postParam;
+        Log.i(TAG,"Created object");
+    }
+
+    public String POST(String url, JSONObject jsobj){
         InputStream inputStream = null;
         String result = "";
 
@@ -55,36 +64,22 @@ public class CustomWebRequest {
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
 
-            JSONObject jsonobj = new JSONObject();
-            StringEntity entity = null;
-            try {
-                jsonobj.put("username", "superuser");
-                jsonobj.put("password", "superuser");
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            StringEntity entity = new StringEntity(jsobj.toString());
+            Log.i(TAG,"The JSONObject in toString looks like this: " + jsobj.toString());
+            Log.i(TAG,"The entity in toString looks like this: " );
+            post.setHeader("Content-type", "application/json");
+            post.setEntity(entity);
+
+
+            HttpResponse response = httpClient.execute(post);
+
+            inputStream = response.getEntity().getContent();
+
+            if (inputStream != null) {
+                result = convertInStreamToString(inputStream);
             }
 
-            try {
-                entity = new StringEntity(jsonobj.toString());
-                Log.i(TAG,"The JSONObject in toString looks like this: " + jsonobj.toString());
-                entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-                post.setEntity(entity);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-
-            try {
-                HttpResponse response = httpClient.execute(post);
-
-                inputStream = response.getEntity().getContent();
-
-                if (inputStream != null) {
-                    result = convertInStreamToString(inputStream);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         }catch (Exception e){
             //catch anything else we may have missed
@@ -189,14 +184,17 @@ public class CustomWebRequest {
     }
 
     private class CustomHttpPostAsyncTask extends AsyncTask<String, Void, String> {
+
+
         @Override
         protected String doInBackground(String... urls) {
             Log.i(TAG,"Starting background POST task");
-            return POST(urls[0]);
+            return POST(urls[0],postParam);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+
             Log.i(TAG,"Background POST task complete");
             Log.i(TAG, "Result was: " + result);
 
@@ -210,6 +208,7 @@ public class CustomWebRequest {
                 e.printStackTrace();
             }
 
+            Log.i(TAG,"Going to call callback");
             clisten.callbackMethod(result);
         }
     }

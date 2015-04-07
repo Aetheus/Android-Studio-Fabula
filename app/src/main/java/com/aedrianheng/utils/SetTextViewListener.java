@@ -4,6 +4,7 @@ package com.aedrianheng.utils;
  * Created by aedrian on 07-Apr-15.
  */
 import android.app.Activity;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -11,6 +12,8 @@ import java.lang.reflect.Type;
 
 
 public class SetTextViewListener implements CustomListener {
+    public final String TAG = "SetTextViewListener";
+
     private String text;
     private TextView view;
     private Activity parentActivity;
@@ -49,6 +52,7 @@ public class SetTextViewListener implements CustomListener {
         //we're only expecting one, so only take the "first"
         text = (String) o[0];
         view.setText(text);
+        Log.i(TAG,"callback was invoked");
     }
 
 
