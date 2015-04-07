@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.aedrianheng.utils.CustomDownloader;
-import com.aedrianheng.utils.CustomListener;
+import com.aedrianheng.utils.CustomWebRequest;
 import com.aedrianheng.utils.SetTextViewListener;
-
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -24,8 +20,11 @@ public class MainActivity extends ActionBarActivity {
         SetTextViewListener tvListener = new SetTextViewListener(this,"howdy",R.id.mainTextView);
 
 
-        CustomDownloader dler = new CustomDownloader("http://hmkcode.appspot.com/rest/controller/get.json",tvListener);
-        dler.downloadFile();
+        //CustomWebRequest dler = new CustomWebRequest("http://hmkcode.appspot.com/rest/controller/get.json",tvListener);
+        //dler.downloadFile();
+
+        CustomWebRequest dler = new CustomWebRequest("https://fabula-node.herokuapp.com/greet",tvListener);
+        dler.PostRequest();
     }
 
 

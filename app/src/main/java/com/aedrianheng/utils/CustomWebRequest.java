@@ -9,8 +9,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,15 +31,15 @@ import android.util.Log;
 /**
  * Created by aedrian on 07-Apr-15.
  */
-public class CustomDownloader {
+public class CustomWebRequest {
 
-    public final String TAG = "CustomDownloader";
+    public final String TAG = "CustomWebRequest";
     CustomListener clisten;
     String url;
 
 
     //first listener should be downloadListener
-    public CustomDownloader(String url, CustomListener clisten){
+    public CustomWebRequest(String url, CustomListener clisten){
         this.clisten = clisten;
         this.url = url;
         Log.i(TAG,"Created object");
@@ -43,6 +47,53 @@ public class CustomDownloader {
         //this.parentActivity = parentActivity;
     }
 
+    public String POST(String url){
+        InputStream inputStream = null;
+        String result = "";
+
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost post = new HttpPost(url);
+
+            JSONObject jsonobj = new JSONObject();
+            StringEntity entity = null;
+            try {
+                jsonobj.put("username", "superuser");
+                jsonobj.put("password", "superuser");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                entity = new StringEntity(jsonobj.toString());
+                Log.i(TAG,"The JSONObject in toString looks like this: " + jsonobj.toString());
+                entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                post.setEntity(entity);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                HttpResponse response = httpClient.execute(post);
+
+                inputStream = response.getEntity().getContent();
+
+                if (inputStream != null) {
+                    result = convertInStreamToString(inputStream);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }catch (Exception e){
+            //catch anything else we may have missed
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
 
     public String GET(String url){
         InputStream inputStream = null;
@@ -77,8 +128,6 @@ public class CustomDownloader {
             //    e.printStackTrace();
             //}
 
-
-
             /*make request*/
             HttpResponse httpResponse = httpClient.execute(GetRequest);
 
@@ -89,6 +138,7 @@ public class CustomDownloader {
             if(inputStream != null){
                 result = convertInStreamToString(inputStream);
             }
+
 
         }catch(ClientProtocolException e){
             e.printStackTrace();
@@ -112,26 +162,64 @@ public class CustomDownloader {
 
     }
 
-    private class CustomHttpAsyncTask extends AsyncTask<String, Void, String> {
+    private class CustomHttpGetAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            Log.i(TAG,"Starting background tasks");
+            Log.i(TAG,"Starting background GET task");
             return GET(urls[0]);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.i(TAG,"Background tasks complete");
+            Log.i(TAG,"Background GET task complete");
             Log.i(TAG, "Result was: " + result);
-            SetTextViewListener tvListener = (SetTextViewListener) clisten;
-            tvListener.setText(result);
-            tvListener.callbackMethod();
+
+            JSONObject json = null;
+            String betterText = "";
+
+            try{
+                json =  new JSONObject(result);
+                betterText = json.toString(1);
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+
+            clisten.callbackMethod(result);
         }
     }
 
-    //dummy function
-    public void downloadFile(){
-        new CustomHttpAsyncTask().execute(url);
+    private class CustomHttpPostAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            Log.i(TAG,"Starting background POST task");
+            return POST(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i(TAG,"Background POST task complete");
+            Log.i(TAG, "Result was: " + result);
+
+            JSONObject json = null;
+            String betterText = "";
+
+            try{
+                json =  new JSONObject(result);
+                betterText = json.toString(1);
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+
+            clisten.callbackMethod(result);
+        }
+    }
+
+    public void GetRequest(){
+        new CustomHttpGetAsyncTask().execute(url);
+    }
+
+    public void PostRequest(){
+        new CustomHttpPostAsyncTask().execute(url);
     }
 
 }

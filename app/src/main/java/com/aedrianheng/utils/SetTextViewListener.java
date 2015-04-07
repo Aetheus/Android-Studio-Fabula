@@ -45,7 +45,9 @@ public class SetTextViewListener implements CustomListener {
 
 
     //overrides interface
-    public void callbackMethod(){
+    public void callbackMethod(Object... o){
+        //we're only expecting one, so only take the "first"
+        text = (String) o[0];
         view.setText(text);
     }
 

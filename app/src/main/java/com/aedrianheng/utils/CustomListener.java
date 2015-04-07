@@ -5,5 +5,5 @@ package com.aedrianheng.utils;
  */
 public interface CustomListener{
     String listenerType();
-    void callbackMethod();
+    void callbackMethod(Object... o);
 }
