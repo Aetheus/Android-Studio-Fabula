@@ -33,9 +33,6 @@ public class ScraperActivity extends ActionBarActivity {
             InputStream is = getAssets().open("bookmarklet/bmk.js");
             bookmarklet = MyIOUtil.convertStreamToString(is,"UTF-8");
 
-            InputStream is2 = getAssets().open("bookmarklet/jquery.min.js");
-            jquery = MyIOUtil.convertStreamToString(is2,"UTF-8");
-
             Log.i(TAG,"Imported bookmarklet from assets folder");
         }catch (IOException e){
             e.printStackTrace();
@@ -46,7 +43,7 @@ public class ScraperActivity extends ActionBarActivity {
         webview.getSettings().setJavaScriptEnabled(true);
 
         webview.setWebChromeClient(new ScraperWebChromeClient(this));
-        webview.setWebViewClient(new ScraperWebViewClient(jquery,bookmarklet));
+        webview.setWebViewClient(new ScraperWebViewClient(bookmarklet));
 
         webview.loadUrl("http://webspace.apiit.edu.my/");
         //setWebviewWide();

@@ -9,9 +9,8 @@ import android.webkit.WebViewClient;
 public class ScraperWebViewClient extends WebViewClient{
 
     private String bookmarklet;
-    private String jquery;
 
-    public ScraperWebViewClient(String jquery, String bookmarklet){
+    public ScraperWebViewClient(String bookmarklet){
         super();
         this.bookmarklet=bookmarklet;
     }
