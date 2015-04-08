@@ -2,16 +2,61 @@ package com.adrianheng.fabulav4;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+
+import com.aedrianheng.utils.MyIOUtil;
+import com.aedrianheng.utils.web.ScraperWebChromeClient;
+import com.aedrianheng.utils.web.ScraperWebViewClient;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ScraperActivity extends ActionBarActivity {
+
+    private static final String TAG ="ScraperActivity";
+
+    private WebView webview;
+    private String bookmarklet;
+    private String jquery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scraper);
+
+        try{
+            InputStream is = getAssets().open("bookmarklet/bmk.js");
+            bookmarklet = MyIOUtil.convertStreamToString(is,"UTF-8");
+
+            InputStream is2 = getAssets().open("bookmarklet/jquery.min.js");
+            jquery = MyIOUtil.convertStreamToString(is2,"UTF-8");
+
+            Log.i(TAG,"Imported bookmarklet from assets folder");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        webview = (WebView) findViewById(R.id.webView);
+        webview.getSettings().setJavaScriptEnabled(true);
+
+        webview.setWebChromeClient(new ScraperWebChromeClient(this));
+        webview.setWebViewClient(new ScraperWebViewClient(jquery,bookmarklet));
+
+        webview.loadUrl("http://webspace.apiit.edu.my/");
+        //setWebviewWide();
+    }
+
+    private void setWebviewWide(){
+        webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        //webview.getSettings().setLoadWithOverviewMode(true);
+        webview.getSettings().setUseWideViewPort(true);
+        //webview.getSettings().setJavaScriptEnabled(true);
     }
 
 
