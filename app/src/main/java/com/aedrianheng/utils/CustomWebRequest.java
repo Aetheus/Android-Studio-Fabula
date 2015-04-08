@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.util.Log;
@@ -36,24 +37,29 @@ public class CustomWebRequest {
     public final String TAG = "CustomWebRequest";
 
 
-    CustomListener clisten;
+    List<CustomListener> clistenlist = new LinkedList<CustomListener>();
     String url;
     JSONObject postParam;
 
 
 
+
     //first listener should be downloadListener
     public CustomWebRequest(String url, CustomListener clisten){
-        this.clisten = clisten;
+        this.clistenlist.add(clisten);
         this.url = url;
         Log.i(TAG,"Created object");
     }
 
     public CustomWebRequest(String url, CustomListener clisten, JSONObject postParam){
-        this.clisten = clisten;
+        this.clistenlist.add(clisten);
         this.url = url;
         this.postParam = postParam;
         Log.i(TAG,"Created object");
+    }
+
+    public void addListener(CustomListener cl){
+        clistenlist.add(cl);
     }
 
     public String POST(String url, JSONObject jsobj){
@@ -179,12 +185,13 @@ public class CustomWebRequest {
                 e.printStackTrace();
             }
 
-            clisten.callbackMethod(result);
+            for(CustomListener clitem: clistenlist){
+                clitem.callbackMethod(result);
+            }
         }
     }
 
     private class CustomHttpPostAsyncTask extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... urls) {
@@ -198,18 +205,21 @@ public class CustomWebRequest {
             Log.i(TAG,"Background POST task complete");
             Log.i(TAG, "Result was: " + result);
 
-            JSONObject json = null;
-            String betterText = "";
 
+            /*JSONObject json = null;
             try{
                 json =  new JSONObject(result);
-                betterText = json.toString(1);
+                result = json.getString("isMember");
+                Log.i(TAG, "isMember value: " + result);
             }catch(JSONException e){
                 e.printStackTrace();
-            }
+            }*/
 
-            Log.i(TAG,"Going to call callback");
-            clisten.callbackMethod(result);
+            Log.i(TAG,"Attempting to invoke callbacks");
+            for(CustomListener clitem: clistenlist){
+                clitem.callbackMethod(result);
+            }
+            Log.i(TAG,"All callbacks completed");
         }
     }
 

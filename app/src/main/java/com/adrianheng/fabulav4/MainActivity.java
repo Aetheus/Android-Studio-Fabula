@@ -1,13 +1,18 @@
 package com.adrianheng.fabulav4;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.aedrianheng.utils.CustomWebRequest;
+import com.aedrianheng.utils.IntentStarterListener;
+import com.aedrianheng.utils.LoginIntentStarterListener;
 import com.aedrianheng.utils.SetTextViewListener;
 
 import org.apache.http.entity.StringEntity;
@@ -23,8 +28,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
 
-
     }
+
 
 
     public void onClickSubmitButton(View view){
@@ -35,8 +40,14 @@ public class MainActivity extends ActionBarActivity {
         String username = usernameField.getText().toString();
         String password = passwordField.getText().toString();
 
-        //our callback listener
+        //our setText callback listener
         SetTextViewListener tvListener = new SetTextViewListener(this,"howdy",R.id.mainTextView);
+
+        //our intentStarter callback listener
+        Intent landingPageIntent = new Intent(this,LandingActivity.class);
+        landingPageIntent.putExtra("USERNAME", username);
+        landingPageIntent.putExtra("PASSWORD", password);
+        LoginIntentStarterListener isListener = new LoginIntentStarterListener(this, landingPageIntent);
 
         //the parameters we want to send to our POST request, encapsulated as JSON
         JSONObject jsonobj = new JSONObject();
@@ -48,6 +59,8 @@ public class MainActivity extends ActionBarActivity {
         }
 
         CustomWebRequest dler = new CustomWebRequest("https://fabula-node.herokuapp.com/greet",tvListener,jsonobj);
+        dler.addListener(isListener);
+
         dler.PostRequest();
     }
 
