@@ -6,6 +6,8 @@
     </style>
 
     <!-- to use in an acitivity, add this: android:theme = "@style/NoActionBar" -->
+    <!-- DO NOT USE IN AN ACTIVITY. IT SCREWS THINGS UP. INSTEAD, PUT IT IN THE MANIFEST FILE!-->
+    <!-- http://stackoverflow.com/questions/28126771/java-lang-illegalstateexeception-could-not-find-method-in-activity-class -->
     <style name = "NoActionBar" parent = "@android:style/Theme.Holo.Light">
         <item name = "android:windowActionBar">false</item>
         <item name = "android:windowNoTitle">true</item>

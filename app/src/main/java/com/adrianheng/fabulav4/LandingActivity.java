@@ -1,5 +1,6 @@
 package com.adrianheng.fabulav4;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
-public class LandingActivity extends ActionBarActivity {
+public class LandingActivity extends Activity {
 
     protected String username;
     protected String password;

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme = "@style/NoActionBar"
     tools:context="com.adrianheng.fabulav4.ScraperActivity">
 
    <!-- <TextView
@@ -37,8 +36,10 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:text="Test Set Focus Title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:onClick="testJSFocusTitle"/>
     </LinearLayout>
 
 </LinearLayout>

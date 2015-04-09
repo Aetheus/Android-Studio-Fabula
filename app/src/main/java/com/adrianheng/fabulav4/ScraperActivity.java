@@ -1,10 +1,12 @@
 package com.adrianheng.fabulav4;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class ScraperActivity extends ActionBarActivity {
+public class ScraperActivity extends Activity {
 
     private static final String TAG ="ScraperActivity";
 
@@ -51,7 +53,10 @@ public class ScraperActivity extends ActionBarActivity {
         //setWebviewWide();
     }
 
-
+    public void testJSFocusTitle(View view){
+        webview = (WebView) findViewById(R.id.webView);
+        webview.loadUrl("javascript:$('#FabulaSysLinkButton').click();");
+    }
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.adrianheng.fabulav4;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -20,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
