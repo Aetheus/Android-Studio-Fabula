@@ -43,6 +43,7 @@ public class ScraperActivity extends ActionBarActivity {
         webview.getSettings().setJavaScriptEnabled(true);
         //webview.getSettings().setBuiltInZoomControls(true);
 
+        webview.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36");
         webview.setWebChromeClient(new ScraperWebChromeClient(this));
         webview.setWebViewClient(new ScraperWebViewClient(bookmarklet));
 
@@ -50,12 +51,7 @@ public class ScraperActivity extends ActionBarActivity {
         //setWebviewWide();
     }
 
-    private void setWebviewWide(){
-        webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-        //webview.getSettings().setLoadWithOverviewMode(true);
-        webview.getSettings().setUseWideViewPort(true);
-        //webview.getSettings().setJavaScriptEnabled(true);
-    }
+
 
 
     @Override
