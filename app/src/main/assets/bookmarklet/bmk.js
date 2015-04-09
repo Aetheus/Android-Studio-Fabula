@@ -18,13 +18,7 @@ var password = "you forgot to pass the password!";
 		/*	due to site policies, these won't on some sites. Thankfully, most sites have jQuery in-page anyway. For the rest,
 		  	try to find a best-fit solution
 		 */
-		if(typeof jQuery === 'undefined'){
-			alert("jQuery not found. Loading jQuery . . .");
-			var jqscript = document.createElement("script");
-			jqscript.src = "//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
-			document.head.appendChild(jqscript);
-			alert("jQuery loaded from external source.");
-		}
+		
 		if ( !($.mobile) ) {
    			alert("jQuery mobile not found. Loading jQuery mobile . . .");
 			var jqscript = document.createElement("script");
@@ -36,7 +30,7 @@ var password = "you forgot to pass the password!";
 		alert(username + password);
 
 		/* Styles*/
-		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ position:fixed; top:10px; right:10px; width:500px; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
+		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
 
 
 		/* Stores values of jQuery objects for the Title, Link, Description*/
