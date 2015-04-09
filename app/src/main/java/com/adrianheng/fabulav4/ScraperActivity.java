@@ -41,7 +41,7 @@ public class ScraperActivity extends ActionBarActivity {
 
         webview = (WebView) findViewById(R.id.webView);
         webview.getSettings().setJavaScriptEnabled(true);
-        webview.getSettings().setBuiltInZoomControls(true);
+        //webview.getSettings().setBuiltInZoomControls(true);
 
         webview.setWebChromeClient(new ScraperWebChromeClient(this));
         webview.setWebViewClient(new ScraperWebViewClient(bookmarklet));
