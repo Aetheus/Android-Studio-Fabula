@@ -19,14 +19,6 @@ var password = "you forgot to pass the password!";
 		  	try to find a best-fit solution
 		 */
 		
-		if ( !($.mobile) ) {
-   			alert("jQuery mobile not found. Loading jQuery mobile . . .");
-			var jqscript = document.createElement("script");
-			jqscript.src = "https://raw.githubusercontent.com/Aetheus/bookmarklet-fab/master/jquery.mobile.custom.min.js";
-			document.head.appendChild(jqscript);
-   			alert("jQuery mobile loaded from external source.");
-		}
-
 		alert(username + password);
 
 		/* Styles*/
@@ -39,7 +31,9 @@ var password = "you forgot to pass the password!";
 		var FabulaSysLink= $();
 		var FabulaSysDescription= $();
 		var FabulaSysAncestor = $();
-		var	FabulaSysImageLink = null;
+
+		var	FabulaSysImageLink = $();
+		FabulaSysImageLink = $();
 		var currentFabulaSysFocus = "title";
 
 		var FabulaSysTitleSelector = null;
@@ -56,7 +50,7 @@ var password = "you forgot to pass the password!";
 
 
 		/*create a floating "menu"*/
-		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' /> <br /><input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p> <input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
+		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' /> <br /><input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p>                 <br /><input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
 
 
 		function getCommonAncestor(argsArray){
@@ -76,7 +70,11 @@ var password = "you forgot to pass the password!";
 			}else{
 				common =  qualifiedArray[0].parents().has(qualifiedArray[1]);
 				if (qualifiedArray.length >2 ){
-					common = common.has(qualifiedArray[2]).first(); }
+					common = common.has(qualifiedArray[2]).first();
+				    if(qualifiedArray.length > 3){
+				        common = qualifiedArray[0].parents().has(qualifiedArray[1]).has(qualifiedArray[2]).has(qualifiedArray[3]).first();
+				    }
+			    }
 			}
 
 			return common;
@@ -140,13 +138,33 @@ var password = "you forgot to pass the password!";
 			}
 
 
-			FabulaSysAncestor = getCommonAncestor([FabulaSysTitle,FabulaSysLink,FabulaSysDescription]);
+			FabulaSysAncestor = getCommonAncestor([FabulaSysTitle,FabulaSysLink,FabulaSysDescription,FabulaSysImageLink]);
 			if(FabulaSysAncestor != null){
 				FabulaSysAncestorSelector = getSelectorText(FabulaSysAncestor);
 				$("#FabulaSysAncestorDisplay").text("Common Ancestors: " + FabulaSysAncestorSelector);
 			}
 		}
 
+        function removeFabulaSysItem(descOfObj){
+            if(descOfObj === "title"){
+            	FabulaSysTitle = $();
+            	FabulaSysTitleSelector = null;
+            	$("#FabulaSysTitleDisplay").html(" ");
+            }else if(descOfObj === "link"){
+            	FabulaSysLink = $();
+            	FabulaSysLinkSelector = null;
+            	$("#FabulaSysLinkDisplay").text(" ");
+            }else if (descOfObj === "desc"){
+            	FabulaSysDescription = $();
+            	FabulaSysDescriptionSelector = null;
+            	$("#FabulaSysDescriptionDisplay").text(" ");
+            }else if (descOfObj === "imagelink"){
+            	FabulaSysImageLink = $();
+            	FabulaSysImageLinkSelector= null;
+            	$("#FabulaSysImageLinkDisplay").text(" ");
+            }
+            alert("Removed current " + descOfObj + " from format list");
+        }
 
 
 

@@ -38,6 +38,9 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     private String Description = null;
     private String Image = null;
 
+    //should be either Title, Link, Description or Image
+    private String CurrentSelectFocus = null;
+
     private boolean isWebviewLoading = true;
 
     @Override
@@ -106,27 +109,54 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         isWebviewLoading = isLoading;
     }
 
+
+    //when back button called, axe this activity.
+    public void onBackButtonClick(View view){
+        this.finish();
+    }
+
+    public void onDeleteButtonClick(View view){
+        //the removeFabulaSysitem function of our bookmarklet expects a set of predefined descofObj strings. so lets set it
+        String descOfObj = "fillerText";
+
+        if(CurrentSelectFocus.equals("Title")){
+            descOfObj = "title";
+        }else if(CurrentSelectFocus.equals("Description")){
+            descOfObj = "desc";
+        }else if(CurrentSelectFocus.equals("Link")){
+            descOfObj = "link";
+        }else if(CurrentSelectFocus.equals("Image")){
+            descOfObj = "imagelink";
+        }
+
+        webview.loadUrl("javascript:removeFabulaSysItem('" + descOfObj + "');");
+    }
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         String selectedOption = (String) parent.getItemAtPosition(pos);
         TextView tv = (TextView) findViewById(R.id.ScraperSelectedDisplay);
 
         String displayText = "[EMPTY]";
+        CurrentSelectFocus = selectedOption;
 
+        //return from function if the webview is still loading
         if(isWebviewLoading){
             tv.setText(displayText);
             return;
-        }else{
-            webview.loadUrl("javascript:alert('hellooo from spinner');");
         }
 
         if (selectedOption.equals("Title")){
             displayText = this.Title != null ? this.Title : displayText + " for title";
+            webview.loadUrl("javascript:$('#FabulaSysTitleButton').click();");
         }else if (selectedOption.equals("Link")){
             displayText = this.Link != null ? this.Link : displayText + " for link";
+            webview.loadUrl("javascript:$('#FabulaSysLinkButton').click();");
         }else if (selectedOption.equals("Description")){
             displayText = this.Description != null ? this.Description : displayText + " for desc";
+            webview.loadUrl("javascript:$('#FabulaSysDescriptionButton').click();");
         }else if (selectedOption.equals("Image")){
             displayText = this.Image!= null ? this.Image : displayText + " for image";
+            webview.loadUrl("javascript:$('#FabulaSysImageLinkButton').click();");
         }else if (selectedOption.equals("Nothing")){
             displayText = "Use the dropdown to the left to select!";
         }
@@ -135,7 +165,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
+        // intercae function from onitemselectedlistener.
     }
 
 
