@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -48,6 +50,8 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scraper);
 
+        /***********************************************************/
+        //load bookmarklet
         try{
             InputStream is = getAssets().open("bookmarklet/bmk.js");
             bookmarklet = MyIOUtil.convertStreamToString(is,"UTF-8");
@@ -56,6 +60,15 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         }catch (IOException e){
             e.printStackTrace();
         }
+        /***********************************************************/
+
+
+        /***********************************************************/
+        //make our display textview scrollable
+        TextView tv = (TextView) findViewById(R.id.ScraperSelectedDisplay);
+        tv.setMovementMethod(new ScrollingMovementMethod());
+        /***********************************************************/
+
 
         /***********************************************************/
         //deal with the webview
@@ -70,6 +83,8 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
             scraperWebViewClient.addListener(new ScraperWebviewFinishLoadingListener(this));
         webview.setWebViewClient(scraperWebViewClient);
 
+        //enable our JS interface
+        webview.addJavascriptInterface(this,"FabulaSysApp");
 
         toggleIsWebviewLoading(true);
         webview.loadUrl("http://webspace.apiit.edu.my/");
@@ -115,21 +130,25 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         this.finish();
     }
 
+    public void onSubmitButtonClick(View view){
+        webview.loadUrl("javascript:$('#FabulaSubmitButton').click();");
+    }
+
     public void onDeleteButtonClick(View view){
-        //the removeFabulaSysitem function of our bookmarklet expects a set of predefined descofObj strings. so lets set it
-        String descOfObj = "fillerText";
+
+        String virtualButtonPressFunc = "";
 
         if(CurrentSelectFocus.equals("Title")){
-            descOfObj = "title";
+            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonTitle').click();";
         }else if(CurrentSelectFocus.equals("Description")){
-            descOfObj = "desc";
+            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonDescription').click();";
         }else if(CurrentSelectFocus.equals("Link")){
-            descOfObj = "link";
+            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonLink').click();";
         }else if(CurrentSelectFocus.equals("Image")){
-            descOfObj = "imagelink";
+            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonImageLink').click();";
         }
 
-        webview.loadUrl("javascript:removeFabulaSysItem('" + descOfObj + "');");
+        webview.loadUrl("javascript:" + virtualButtonPressFunc);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -168,6 +187,41 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         // intercae function from onitemselectedlistener.
     }
 
+    @JavascriptInterface
+    public void setSelectedDisplayText(String descOfObj, String value){
+        TextView tv = (TextView) findViewById(R.id.ScraperSelectedDisplay);
+        tv.post(new UpdateSelectedDisplayTask(descOfObj,value,tv));
+    }
+
+    private class UpdateSelectedDisplayTask implements Runnable {
+        String descOfObj;
+        String value;
+        TextView tv;
+
+        public UpdateSelectedDisplayTask(String descOfObj,String value, TextView tv){
+            super();
+            this.descOfObj = descOfObj;
+            this.value = value;
+            this.tv = tv;
+        }
+
+        @Override
+        public void run() {
+            if(descOfObj.equals("title")){
+                Title = value!=null ? value : "[EMPTY]";
+                tv.setText(Title);
+            }else if(descOfObj.equals("desc")){
+                Description = value!=null ? value : "[EMPTY]";;
+                tv.setText(Description);
+            }else if(descOfObj.equals("link")){
+                Link = value!=null ? value : "[EMPTY]";;
+                tv.setText(Link);
+            }else if(descOfObj.equals("imagelink")){
+                Image = value!=null ? value : "[EMPTY]";;
+                tv.setText(Image);
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

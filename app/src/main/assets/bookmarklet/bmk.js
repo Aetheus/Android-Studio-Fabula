@@ -9,6 +9,8 @@ if(k&&j[k]&&(e||j[k].data)||void 0!==d||"string"!=typeof b)return k||(k=i?a[h]=c
     alert("jQuery loaded.");
 }
 
+/*FabulaSysApp is the name of our JS-to-Android interface*/
+
 var username = "you forgot to pass the username!";
 var password = "you forgot to pass the password!";
 (
@@ -50,7 +52,7 @@ var password = "you forgot to pass the password!";
 
 
 		/*create a floating "menu"*/
-		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' /> <br /><input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p>                 <br /><input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
+		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' /> <br /><input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p>       <input id='FabulaSysDeleteButtonTitle' type='button' value='Delete Title' /> <input id='FabulaSysDeleteButtonLink' type='button' value='Delete Link' /><input id='FabulaSysDeleteButtonImageLink' type='button' value='Delete ImageLink' /><input id='FabulaSysDeleteButtonDescription' type='button' value='Delete Description' />          <br /><input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
 
 
 		function getCommonAncestor(argsArray){
@@ -121,20 +123,24 @@ var password = "you forgot to pass the password!";
 				FabulaSysTitle = jqObj;
 				FabulaSysTitleSelector = getSelectorText(jqObj);
 				$("#FabulaSysTitleDisplay").html(FabulaSysTitle.text() + " " + FabulaSysTitleSelector);
+				FabulaSysApp.setSelectedDisplayText(descOfObj, FabulaSysTitle.text());
 			}else if(descOfObj === "link"){
 				FabulaSysLink = jqObj;
 				FabulaSysLinkSelector = getSelectorText(jqObj);
 				var fullURL = makeQualified(FabulaSysLink.attr("href"));
 				$("#FabulaSysLinkDisplay").text(fullURL + " " + FabulaSysLinkSelector);
+				FabulaSysApp.setSelectedDisplayText(descOfObj, fullURL);
 			}else if (descOfObj === "desc"){
 				FabulaSysDescription = jqObj;
 				FabulaSysDescriptionSelector = getSelectorText(jqObj);
 				$("#FabulaSysDescriptionDisplay").text(FabulaSysDescription.text() + " " + FabulaSysDescriptionSelector);
+				FabulaSysApp.setSelectedDisplayText(descOfObj, FabulaSysDescription.text());
 			}else if (descOfObj === "imagelink"){
 				FabulaSysImageLink = jqObj;
 				FabulaSysImageLinkSelector= getSelectorText(jqObj);
 				var fullURL = makeQualified(FabulaSysImageLink.attr("src"));
 				$("#FabulaSysImageLinkDisplay").text(fullURL+ " " + FabulaSysImageLinkSelector);
+				FabulaSysApp.setSelectedDisplayText(descOfObj, fullURL);
 			}
 
 
@@ -164,6 +170,13 @@ var password = "you forgot to pass the password!";
             	$("#FabulaSysImageLinkDisplay").text(" ");
             }
             alert("Removed current " + descOfObj + " from format list");
+            FabulaSysApp.setSelectedDisplayText(descOfObj, null);
+
+            FabulaSysAncestor = getCommonAncestor([FabulaSysTitle,FabulaSysLink,FabulaSysDescription,FabulaSysImageLink]);
+            if(FabulaSysAncestor != null){
+                FabulaSysAncestorSelector = getSelectorText(FabulaSysAncestor);
+                $("#FabulaSysAncestorDisplay").text("Common Ancestors: " + FabulaSysAncestorSelector);
+            }
         }
 
 
@@ -245,6 +258,24 @@ var password = "you forgot to pass the password!";
     		FabulaSysChannelName = $(this).val();
 		});
 
+
+        $("#FabulaSysDeleteButtonDescription").on("click vclick", function (ev){
+            removeFabulaSysItem('desc');
+        });
+
+        $("#FabulaSysDeleteButtonImageLink").on("click vclick", function (ev){
+            removeFabulaSysItem('imagelink');
+        });
+
+
+        $("#FabulaSysDeleteButtonLink").on("click vclick", function (ev){
+            removeFabulaSysItem('link');
+        });
+
+
+        $("#FabulaSysDeleteButtonTitle").on("click vclick", function (ev){
+            removeFabulaSysItem('title');
+        });
 
 
 		$("#FabulaSubmitButton").on("click", function(ev){
