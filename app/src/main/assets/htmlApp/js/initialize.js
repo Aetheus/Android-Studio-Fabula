@@ -1,5 +1,5 @@
-var FabulaSysUsername = "superuser";
-var FabulaSysPassword = "superuser";
+//var FabulaSysUsername = "superuser";
+//var FabulaSysPassword = "superuser";
 /*FabulaSysApp is the name of our JS-to-Android interface*/
 var DBNull = "%%%NULL%%%";
 
