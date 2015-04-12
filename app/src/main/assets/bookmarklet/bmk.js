@@ -11,8 +11,8 @@ if(k&&j[k]&&(e||j[k].data)||void 0!==d||"string"!=typeof b)return k||(k=i?a[h]=c
 
 /*FabulaSysApp is the name of our JS-to-Android interface*/
 
-var username = "you forgot to pass the username!";
-var password = "you forgot to pass the password!";
+/*var FabulaSysUsername = "you forgot to pass the username!";
+var FabulaSysPassword = "you forgot to pass the password!";*/
 (
 /*window.addEventListener("load", */
 	function(){
@@ -21,7 +21,7 @@ var password = "you forgot to pass the password!";
 		  	try to find a best-fit solution
 		 */
 		
-		alert(username + password);
+		alert(FabulaSysUsername + FabulaSysPassword);
 
 		/* Styles*/
 		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
@@ -287,8 +287,8 @@ var password = "you forgot to pass the password!";
 		    	method: "POST",
 		    	url: "https://fabula-node.herokuapp.com/subscribe",
   				data: {
-  					username:username?username:null,
-  					password:password?password:null,
+  					username:FabulaSysUsername?FabulaSysUsername:null,
+  					password:FabulaSysPassword?FabulaSysPassword:null,
 		        	title: FabulaSysTitleSelector?FabulaSysTitleSelector:null,
 		        	link: FabulaSysLinkSelector?FabulaSysLinkSelector:null,
 		        	description: FabulaSysDescriptionSelector?FabulaSysDescriptionSelector:null,

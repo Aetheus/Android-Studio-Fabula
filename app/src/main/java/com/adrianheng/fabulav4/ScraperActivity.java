@@ -35,6 +35,9 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     private WebView webview;
     private String bookmarklet;
 
+    private String username;
+    private String password;
+
     private String Title = null;
     private String Link = null;
     private String Description = null;
@@ -49,6 +52,10 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scraper);
+
+        username = getIntent().getStringExtra("USERNAME");
+        password = getIntent().getStringExtra("PASSWORD");
+        String initialURL = getIntent().getStringExtra("URL");
 
         /***********************************************************/
         //load bookmarklet
@@ -79,7 +86,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         webview.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36");
 
         webview.setWebChromeClient(new ScraperWebChromeClient(this));
-            ScraperWebViewClient scraperWebViewClient = new ScraperWebViewClient(bookmarklet, new ScraperBottomBarEnablerListener(this));
+            ScraperWebViewClient scraperWebViewClient = new ScraperWebViewClient(bookmarklet,username,password, new ScraperBottomBarEnablerListener(this));
             scraperWebViewClient.addListener(new ScraperWebviewFinishLoadingListener(this));
         webview.setWebViewClient(scraperWebViewClient);
 
@@ -87,7 +94,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         webview.addJavascriptInterface(this,"FabulaSysApp");
 
         toggleIsWebviewLoading(true);
-        webview.loadUrl("http://webspace.apiit.edu.my/");
+        webview.loadUrl(initialURL);
         /***********************************************************/
 
 

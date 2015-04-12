@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 
@@ -14,6 +15,7 @@ public class LandingActivity extends Activity {
 
     protected String username;
     protected String password;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +26,19 @@ public class LandingActivity extends Activity {
         this.username = ourStarter.getStringExtra("USERNAME");
         this.password = ourStarter.getStringExtra("PASSWORD");
 
-        TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
-        mainMessage.setText(username + " : " + password);
+        WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
+        landingWebview.getSettings().setJavaScriptEnabled(true);
+        landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
+
+        //TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
+        //mainMessage.setText(username + " : " + password);
     }
 
     public void goToScraper(View view){
         Intent intent = new Intent(this,ScraperActivity.class);
         intent.putExtra("USERNAME", username);
         intent.putExtra("PASSWORD", password);
+        intent.putExtra("URL", "http://webspace.apiit.edu.my/");
         this.startActivity(intent);
     }
 

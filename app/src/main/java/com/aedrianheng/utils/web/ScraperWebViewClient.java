@@ -16,8 +16,13 @@ public class ScraperWebViewClient extends WebViewClient{
     private String bookmarklet;
     private List<CustomListener> listenerList = new LinkedList<CustomListener>();
 
-    public ScraperWebViewClient(String bookmarklet, CustomListener clitem){
+    private String username;
+    private String password;
+
+    public ScraperWebViewClient(String bookmarklet, String username, String password, CustomListener clitem){
         super();
+        this.username = username;
+        this.password = password;
         this.bookmarklet=bookmarklet;
         this.listenerList.add(clitem);
     }
@@ -30,6 +35,9 @@ public class ScraperWebViewClient extends WebViewClient{
     public void onPageFinished(WebView view, String url) {
         //super.onPageFinished(view, url);
         //view.loadUrl("javascript:" + jquery);
+
+        view.loadUrl("javascript: var FabulaSysUsername = '" + username + "'");
+        view.loadUrl("javascript: var FabulaSysPassword = '" + password + "'");
         view.loadUrl("javascript:" + bookmarklet);
 
         for(CustomListener clitem : listenerList){
