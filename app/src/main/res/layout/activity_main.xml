@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:weightSum="1"
+    android:background="#4db6ac"
     tools:context=".MainActivity">
 
     <TextView
@@ -21,7 +22,8 @@
 
     <EditText
         android:id="@+id/loginUsername"
-
+        android:background="#80FFFFFF"
+        android:gravity="center"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -29,6 +31,8 @@
 
     <EditText
         android:id="@+id/loginPassword"
+        android:background="#80FFFFFF"
+        android:gravity="center"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
@@ -39,10 +43,10 @@
         android:layout_alignStart="@+id/loginUsername" />
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/loginButtonText"
-        android:id="@+id/button"
         android:layout_below="@+id/loginPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="38dp"

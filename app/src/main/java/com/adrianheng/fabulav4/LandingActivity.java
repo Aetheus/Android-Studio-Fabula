@@ -1,14 +1,19 @@
 package com.adrianheng.fabulav4;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import com.aedrianheng.utils.htmlApp.LandingWebViewClient;
+import com.aedrianheng.utils.web.ScraperWebChromeClient;
 
 
 public class LandingActivity extends Activity {
@@ -28,19 +33,44 @@ public class LandingActivity extends Activity {
 
         WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
         landingWebview.getSettings().setJavaScriptEnabled(true);
+        landingWebview.setWebViewClient(new LandingWebViewClient(username, password));
+        landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
+        landingWebview.addJavascriptInterface(this,"FabulaSysApp");
+
         landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
 
         //TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
         //mainMessage.setText(username + " : " + password);
     }
 
-    public void goToScraper(View view){
+    @JavascriptInterface
+    public void goToScraper(){
         Intent intent = new Intent(this,ScraperActivity.class);
         intent.putExtra("USERNAME", username);
         intent.putExtra("PASSWORD", password);
         intent.putExtra("URL", "http://webspace.apiit.edu.my/");
-        this.startActivity(intent);
+
+        runOnUiThread(new LaunchScraper(intent,this));
     }
+
+
+
+    private class LaunchScraper implements Runnable {
+        Intent intent;
+        Context context;
+
+        public LaunchScraper(Intent intent, Context context){
+            super();
+            this.intent = intent;
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            context.startActivity(intent);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

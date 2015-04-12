@@ -70,9 +70,9 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 			}else if(qualifiedArray.length == 0){
 				common = null;
 			}else{
-				common =  qualifiedArray[0].parents().has(qualifiedArray[1]);
+				common =  qualifiedArray[0].parents().has(qualifiedArray[1]).first();
 				if (qualifiedArray.length >2 ){
-					common = common.has(qualifiedArray[2]).first();
+					common =  qualifiedArray[0].parents().has(qualifiedArray[1]).has(qualifiedArray[2]).first();
 				    if(qualifiedArray.length > 3){
 				        common = qualifiedArray[0].parents().has(qualifiedArray[1]).has(qualifiedArray[2]).has(qualifiedArray[3]).first();
 				    }
