@@ -9,10 +9,17 @@ if(k&&j[k]&&(e||j[k].data)||void 0!==d||"string"!=typeof b)return k||(k=i?a[h]=c
     alert("jQuery loaded.");
 }
 
-/*FabulaSysApp is the name of our JS-to-Android interface*/
+/*FabulaSysApp is the name of our JS-to-Android interface. If its undefined, probably runing on desktop*/
+if(typeof FabulaSysApp == 'undefined'){
+    var FabulaSysApp = {
+        setSelectedDisplayText: function (descOfObj, text){ }
+    }
+}
 
-/*var FabulaSysUsername = "you forgot to pass the username!";
-var FabulaSysPassword = "you forgot to pass the password!";*/
+
+
+var FabulaSysUsername = "you forgot to pass the username!";
+var FabulaSysPassword = "you forgot to pass the password!";
 (
 /*window.addEventListener("load", */
 	function(){
@@ -106,6 +113,7 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 
 		/*utility function to generate a jQuery selector for an element*/
 		function getSelectorText(elem){
+			var elem = $(elem); /*incase its not already a jQuery object*/
 			var elemTagName = elem.prop("tagName");
 			if(elem.attr("class") !== undefined){
 				var elemClasses = domListToString(elem[0].classList,".");
@@ -115,6 +123,27 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 				return elemTagName;
 			}
 		}
+
+    function getSelectorTextInRelationToAncestor(ancestor,child){
+        if ( !($(child).parents().has(ancestor)) ){
+            /*console.log("Child is not descended from ancestor");*/
+            return null;
+        }
+
+        var $ancestorPath = $(child).parentsUntil(ancestor);
+        var returnString = getSelectorText($(child));
+
+        if ($ancestorPath.length != 0){
+            $ancestorPath.each(function (event){
+                returnString = getSelectorText($(this)) + " > " + returnString;
+                /*console.log("Operation Ongoing: selector text is " + returnString);*/
+            });
+        }
+
+        console.log("Operation End: selector text was: " + returnString);
+        return returnString;
+    }
+
 
 		/*jqObj will be the jquery object we're passing.
 		  desc of object will be either "title", "link" or "description" */
@@ -149,6 +178,29 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 				FabulaSysAncestorSelector = getSelectorText(FabulaSysAncestor);
 				$("#FabulaSysAncestorDisplay").text("Common Ancestors: " + FabulaSysAncestorSelector);
 			}
+
+			var newSelector = getSelectorTextInRelationToAncestor(FabulaSysAncestor, jqObj);
+
+            if(descOfObj === "title"){
+                FabulaSysTitleSelector = newSelector;
+                $("#FabulaSysTitleDisplay").html(FabulaSysTitle.text() + " " + FabulaSysTitleSelector);
+                FabulaSysApp.setSelectedDisplayText(descOfObj, FabulaSysTitle.text());
+            }else if(descOfObj === "link"){
+                FabulaSysLinkSelector = newSelector;
+                var fullURL = makeQualified(FabulaSysLink.attr("href"));
+                $("#FabulaSysLinkDisplay").text(fullURL + " " + FabulaSysLinkSelector);
+                FabulaSysApp.setSelectedDisplayText(descOfObj, fullURL);
+            }else if (descOfObj === "desc"){
+                FabulaSysDescriptionSelector = newSelector;
+                $("#FabulaSysDescriptionDisplay").text(FabulaSysDescription.text() + " " + FabulaSysDescriptionSelector);
+                FabulaSysApp.setSelectedDisplayText(descOfObj, FabulaSysDescription.text());
+            }else if (descOfObj === "imagelink"){
+                FabulaSysImageLinkSelector= newSelector;
+                var fullURL = makeQualified(FabulaSysImageLink.attr("src"));
+                $("#FabulaSysImageLinkDisplay").text(fullURL+ " " + FabulaSysImageLinkSelector);
+                FabulaSysApp.setSelectedDisplayText(descOfObj, fullURL);
+            }
+
 		}
 
         function removeFabulaSysItem(descOfObj){
