@@ -2,7 +2,9 @@ section {
     /* no need to set the height; we've set it to "100%" via initialize.js by setting it to the window height*/
 }
 
-
+.smallFont{
+    font-size:small;
+}
 
 .center {
     margin-left: auto;
