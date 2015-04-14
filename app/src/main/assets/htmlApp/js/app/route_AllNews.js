@@ -1,8 +1,8 @@
 var route = new Router().route;
 
 route("#AllNews", function (event, $thisContainer){
-    if (typeof FabulaSysUsername == "undefined"){
-        //return errHandler(new Error("Username was undefined!"));
+    if (typeof FabulaSysUsername == "undefined" || typeof FabulaSysPassword == "undefined"){
+        return errHandler(new Error("Username or password was not provided!"));
     }
 
 

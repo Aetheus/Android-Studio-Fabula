@@ -17,3 +17,11 @@ section {
 	top: 50%;
 	transform: translateY(-50%);
 }
+
+.myToastDialog{
+    line-height: 1;
+
+    margin-bottom:20px;
+    margin-left:10px;
+    border-radius: 5px;
+}
