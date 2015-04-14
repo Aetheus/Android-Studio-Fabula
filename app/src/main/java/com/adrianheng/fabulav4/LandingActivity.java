@@ -44,11 +44,12 @@ public class LandingActivity extends Activity {
     }
 
     @JavascriptInterface
-    public void goToScraper(){
+    public void goToScraper(String url){
         Intent intent = new Intent(this,ScraperActivity.class);
         intent.putExtra("USERNAME", username);
         intent.putExtra("PASSWORD", password);
-        intent.putExtra("URL", "http://webspace.apiit.edu.my/");
+        intent.putExtra("URL", url);
+        //intent.putExtra("URL", "http://webspace.apiit.edu.my/");
 
         runOnUiThread(new LaunchScraper(intent,this));
     }

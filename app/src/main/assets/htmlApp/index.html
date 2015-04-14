@@ -25,15 +25,36 @@
     </div>
 
     <section>
-        <p class="flow-text center vertcenter">Use the sidebar to navigate your contents.</p>
-
-
+        <!-- all other divs are dynamically inserted via route() function -->
+        <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                <div class="circle"></div>
+            </div><div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+            </div>
+        </div>
     </section>
 
 
 
-    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
-    <script type="text/javascript" src="js/initialize.js"></script>
+    <!--//require libraries-->
+    <script type="text/javascript" src="js/libs/jquery.js"></script>
+    <script type="text/javascript" src="js/libs/materialize.min.js"></script>
+
+    <!--//require modules-->
+    <script type="text/javascript" src="js/app/module_errHandler.js"></script>
+    <script type="text/javascript" src="js/app/module_router.js"></script>
+
+    <!--//require routes-->
+    <script type="text/javascript" src="js/app/route_AllNews.js"></script>
+    <script type="text/javascript" src="js/app/route_StartScraper.js"></script>
+
+    <!--//require main.js-->
+    <script type="text/javascript" src="js/app/main.js"></script>
+
 </body>
 </html>
