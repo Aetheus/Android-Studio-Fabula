@@ -3,4 +3,5 @@ var errHandler = function (err){
     /*alert(err.message);*/
     Materialize.toast("<span> <i class='mdi-alert-warning'></i> Error: " + err.message + "</span>" ,4000,"myToastDialog");
 }
+var ErrHandler = errHandler;    /*just another copy/alias of errHandler*/
 /*******************************************/

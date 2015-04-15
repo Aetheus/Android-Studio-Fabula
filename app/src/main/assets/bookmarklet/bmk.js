@@ -10,19 +10,19 @@ if(k&&j[k]&&(e||j[k].data)||void 0!==d||"string"!=typeof b)return k||(k=i?a[h]=c
 }
 
 /*FabulaSysApp is the name of our JS-to-Android interface. If its undefined, probably runing on desktop*/
-/*if(typeof FabulaSysApp == 'undefined'){
+if(typeof FabulaSysApp == 'undefined'){
     var FabulaSysApp = {
         setSelectedDisplayText: function (descOfObj, text){ }
-    }
-}*/
+    };
+    var FabulaSysUsername = "you forgot to pass the username!";
+    var FabulaSysPassword = "you forgot to pass the password!";
+}
 
 
-/*
-var FabulaSysUsername = "you forgot to pass the username!";
-var FabulaSysPassword = "you forgot to pass the password!";*/
+
 (
 /*window.addEventListener("load", */
-	function(){
+	function($){
 		/*load jquery if it isn't already loaded*/
 		/*	due to site policies, these won't on some sites. Thankfully, most sites have jQuery in-page anyway. For the rest,
 		  	try to find a best-fit solution
@@ -31,8 +31,8 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 		alert(FabulaSysUsername + FabulaSysPassword + "\n (tap OK to continue)");
 
 		/* Styles*/
-		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
-
+		/* to hide/unhide the menu, add/remove "visibility:hidden; display:none;" to #FabulaSysMenu's style */
+		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ overflow:auto; position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
 
 		/* Stores values of jQuery objects for the Title, Link, Description*/
 		/* Current Selector Focus keeps track of which button was pressed*/
@@ -323,8 +323,9 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 			FabulaSysIsCustom = $(this).is(':checked');
 		});
 
-		$('#FabulaSysChannelName').on('input propertychange paste', function (){
+		$('#FabulaSysChannelName').on('input propertychange paste change', function (){
     		FabulaSysChannelName = $(this).val();
+    		/*alert(FabulaSysChannelName);*/ /*test*/
 		});
 
 
@@ -397,4 +398,4 @@ var FabulaSysPassword = "you forgot to pass the password!";*/
 		alert("Fabula plugin succesfully loaded");
 	}
 /*, true);*/
-)();
+)(jQuery);

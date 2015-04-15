@@ -25,10 +25,9 @@ route("#AllNews", function (event, $thisContainer){
             var innerBody = $('<blockquote class="inner-body"  style="overflow: auto;"></blockquote>')
             innerBody.append(JSONarray[i].fitfeeditemdescription);
             if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
-                //var image = $("<img src='" + JSONarray[i].fitfeeditemimagelink + "' />");
-                var imageButton = $('<a class="waves-effect waves-light btn">show image</a>');
+                /*var image = $("<img src='" + JSONarray[i].fitfeeditemimagelink + "' />");*/
                 var imageLink = JSONarray[i].fitfeeditemimagelink;
-
+                var imageButton = $('<a class="waves-effect waves-light btn">show image</a>');
                 (function(imageLink,imageButton) {
                     imageButton.click(function (){
                         var thisButton = $(this);
@@ -40,8 +39,8 @@ route("#AllNews", function (event, $thisContainer){
                                     thisButton.after(image);
                                     thisButton.text("hide image");
                                 }
-                                image.onerror = function(){
-                                    thisButton.after("<p>Image could not be loaded!</p>");
+                                image.onerror = function(errorMsg, url, lineNumber){
+                                    errHandler(new Error(errorMsg));
                                 }
                                 image.src = imageLink;
                             }else{
@@ -80,8 +79,20 @@ route("#AllNews", function (event, $thisContainer){
         complete : function(XHR,textStatus){
             alert("Request Status: " + textStatus);
         },
+        timeout: 15000,/*15 second timeout*/
         error : function (XHR,textStatus, errorThrown){
-            errHandler(new Error(errorThrown));
+            if(textStatus == "timeout" || XHR.statusText == "timeout") {
+                errHandler(new Error("Timed out while waiting for response"));
+            }else{
+                if (XHR.responseText == undefined || XHR.responseText == 'undefined'){
+                    errHandler(new Error("Unable to get a response from server"));
+                }else{
+                    console.log("XHR object is " + JSON.stringify(XHR));
+                    var json = JSON.parse(XHR.responseText);
+                    errHandler(new Error(json.Message));
+                }
+            }
+            /*errHandler(new Error(errorThrown));*/
         },
         success: function(data, status){
             onSuccess(data, status);

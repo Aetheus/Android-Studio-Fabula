@@ -12,7 +12,7 @@ route("#StartScraper", function (event, $thisContainer){
         +       '<div class="row">'
         +           '<div class="input-field col s8 offset-s2">'
         +               '<i class="mdi-action-open-in-browser prefix"></i>'
-        +               '<input value="http://" placeholder="" id="url_to_scrape" type="text" class="validate"> '
+        +               '<input value="http://" placeholder="" id="url_to_scrape" type="text" class="validate" autocomplete="off" spellcheck="false" autocorrect="off"> '
         +               '<label class="active" for="url_to_scrape"> URL Address </label>'
         +           '</div>'
         +       '</div>'

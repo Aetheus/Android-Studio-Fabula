@@ -8,6 +8,7 @@
     <string name="landing_page_text">hello from landing page!</string>
     <string name="title_activity_scraper">ScraperActivity</string>
     <string name="scraper_hello">Hello from scraper</string>
+    <string name="fabula_title">fabula</string>
 
 
     <string-array name="ScraperChoices">

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -83,7 +86,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         webview.getSettings().setJavaScriptEnabled(true);
         //webview.getSettings().setBuiltInZoomControls(true);
 
-        webview.getSettings().setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36");
+        webview.getSettings().setUserAgentString("Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0");
 
         webview.setWebChromeClient(new ScraperWebChromeClient(this));
             ScraperWebViewClient scraperWebViewClient = new ScraperWebViewClient(bookmarklet,username,password, new ScraperBottomBarEnablerListener(this));
@@ -107,11 +110,32 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         spinner.setOnItemSelectedListener(this);
         toggleBottomBar(false);
         /***********************************************************/
+
+
+        /***********************************************************/
+        //deal with the edittext
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newChannelName = s.toString();
+                onChangeChannelName(newChannelName);
+            }
+        };
+
+        EditText channelNameEditor = (EditText) findViewById(R.id.ScraperTopBarNewChannelName);
+        channelNameEditor.addTextChangedListener(textWatcher);
+        /***********************************************************/
     }
 
     public void testJSFocusTitle(View view){
         webview = (WebView) findViewById(R.id.webView);
-        webview.loadUrl("javascript:$('#FabulaSysLinkButton').click();");
+        webview.loadUrl("javascript:jQuery('#FabulaSysLinkButton').click();");
     }
 
 
@@ -138,7 +162,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     }
 
     public void onSubmitButtonClick(View view){
-        webview.loadUrl("javascript:$('#FabulaSubmitButton').click();");
+        webview.loadUrl("javascript:jQuery('#FabulaSubmitButton').click();");
     }
 
     public void onDeleteButtonClick(View view){
@@ -146,13 +170,13 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         String virtualButtonPressFunc = "";
 
         if(CurrentSelectFocus.equals("Title")){
-            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonTitle').click();";
+            virtualButtonPressFunc = "jQuery('#FabulaSysDeleteButtonTitle').click();";
         }else if(CurrentSelectFocus.equals("Description")){
-            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonDescription').click();";
+            virtualButtonPressFunc = "jQuery('#FabulaSysDeleteButtonDescription').click();";
         }else if(CurrentSelectFocus.equals("Link")){
-            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonLink').click();";
+            virtualButtonPressFunc = "jQuery('#FabulaSysDeleteButtonLink').click();";
         }else if(CurrentSelectFocus.equals("Image")){
-            virtualButtonPressFunc = "$('#FabulaSysDeleteButtonImageLink').click();";
+            virtualButtonPressFunc = "jQuery('#FabulaSysDeleteButtonImageLink').click();";
         }
 
         webview.loadUrl("javascript:" + virtualButtonPressFunc);
@@ -173,16 +197,16 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
 
         if (selectedOption.equals("Title")){
             displayText = this.Title != null ? this.Title : displayText + " for title";
-            webview.loadUrl("javascript:$('#FabulaSysTitleButton').click();");
+            webview.loadUrl("javascript:jQuery('#FabulaSysTitleButton').click();");
         }else if (selectedOption.equals("Link")){
             displayText = this.Link != null ? this.Link : displayText + " for link";
-            webview.loadUrl("javascript:$('#FabulaSysLinkButton').click();");
+            webview.loadUrl("javascript:jQuery('#FabulaSysLinkButton').click();");
         }else if (selectedOption.equals("Description")){
             displayText = this.Description != null ? this.Description : displayText + " for desc";
-            webview.loadUrl("javascript:$('#FabulaSysDescriptionButton').click();");
+            webview.loadUrl("javascript:jQuery('#FabulaSysDescriptionButton').click();");
         }else if (selectedOption.equals("Image")){
             displayText = this.Image!= null ? this.Image : displayText + " for image";
-            webview.loadUrl("javascript:$('#FabulaSysImageLinkButton').click();");
+            webview.loadUrl("javascript:jQuery('#FabulaSysImageLinkButton').click();");
         }else if (selectedOption.equals("Nothing")){
             displayText = "Use the dropdown to the left to select!";
         }
@@ -192,6 +216,10 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
 
     public void onNothingSelected(AdapterView<?> parent) {
         // intercae function from onitemselectedlistener.
+    }
+
+    public void onChangeChannelName(String newChannelName){
+        webview.loadUrl("javascript:jQuery('#FabulaSysChannelName').val('" + newChannelName + "'); jQuery('#FabulaSysChannelName').trigger('change');");
     }
 
     @JavascriptInterface
