@@ -32,7 +32,7 @@ if(typeof FabulaSysApp == 'undefined'){
 
 		/* Styles*/
 		/* to hide/unhide the menu, add/remove "visibility:hidden; display:none;" to #FabulaSysMenu's style */
-		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ overflow:auto; position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
+		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ visibility:hidden; display:none; overflow:auto; position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
 
 		/* Stores values of jQuery objects for the Title, Link, Description*/
 		/* Current Selector Focus keeps track of which button was pressed*/

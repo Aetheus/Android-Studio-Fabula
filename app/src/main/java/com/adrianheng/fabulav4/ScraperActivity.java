@@ -93,6 +93,10 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
             scraperWebViewClient.addListener(new ScraperWebviewFinishLoadingListener(this));
         webview.setWebViewClient(scraperWebViewClient);
 
+        webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setLoadWithOverviewMode(true);
+
+
         //enable our JS interface
         webview.addJavascriptInterface(this,"FabulaSysApp");
 
@@ -246,13 +250,13 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
                 Title = value!=null ? value : "[EMPTY]";
                 tv.setText(Title);
             }else if(descOfObj.equals("desc")){
-                Description = value!=null ? value : "[EMPTY]";;
+                Description = value!=null ? value : "[EMPTY]";
                 tv.setText(Description);
             }else if(descOfObj.equals("link")){
-                Link = value!=null ? value : "[EMPTY]";;
+                Link = value!=null ? value : "[EMPTY]";
                 tv.setText(Link);
             }else if(descOfObj.equals("imagelink")){
-                Image = value!=null ? value : "[EMPTY]";;
+                Image = value!=null ? value : "[EMPTY]";
                 tv.setText(Image);
             }
         }

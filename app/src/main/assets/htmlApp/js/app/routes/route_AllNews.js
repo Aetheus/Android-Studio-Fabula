@@ -23,7 +23,6 @@ route("#AllNews", function (event, $thisContainer){
             collapsibleHeader.append(JSONarray[i].fitfeeditemtitle);
 
             var innerBody = $('<blockquote class="inner-body"  style="overflow: auto;"></blockquote>')
-            innerBody.append(JSONarray[i].fitfeeditemdescription);
             if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
                 /*var image = $("<img src='" + JSONarray[i].fitfeeditemimagelink + "' />");*/
                 var imageLink = JSONarray[i].fitfeeditemimagelink;
@@ -37,6 +36,7 @@ route("#AllNews", function (event, $thisContainer){
                                 var image = new Image();
                                 image.onload = function (){
                                     thisButton.after(image);
+                                    $(image).before("<br />");
                                     thisButton.text("hide image");
                                 }
                                 image.onerror = function(errorMsg, url, lineNumber){
@@ -44,11 +44,13 @@ route("#AllNews", function (event, $thisContainer){
                                 }
                                 image.src = imageLink;
                             }else{
-                                thisButton.next("img").show();
+                                thisButton.siblings.show();
+
                                 thisButton.text("hide image");
                             }
                         }else{
-                            thisButton.next("img").hide();
+                            thisButton.next("br").hide().next("img").hide();
+                            /*thisButton.siblings("br").hide();*/
                             thisButton.text("show image");
                         }
 
@@ -56,6 +58,9 @@ route("#AllNews", function (event, $thisContainer){
                 })(imageLink,imageButton);
 
                 innerBody.append(imageButton);
+                innerBody.append("<br />");
+                innerBody.append(JSONarray[i].fitfeeditemdescription);
+
             }
             collapsibleBody.append(innerBody);
 
