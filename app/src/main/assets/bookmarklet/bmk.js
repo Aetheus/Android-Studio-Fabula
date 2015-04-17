@@ -32,7 +32,7 @@ if(typeof FabulaSysApp == 'undefined'){
 
 		/* Styles*/
 		/* to hide/unhide the menu, add/remove "visibility:hidden; display:none;" to #FabulaSysMenu's style */
-		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ visibility:hidden; display:none; overflow:auto; position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
+		$("<style type='text/css'> .highlighted{ border: 2px solid yellow;} #FabulaSysMenu{ overflow:auto; position:fixed; bottom:0px; left:0px; width:100%; border: 2px solid black; background-color:white; font-size:large; text-align:center; z-index:9999; } </style>").appendTo("head");
 
 		/* Stores values of jQuery objects for the Title, Link, Description*/
 		/* Current Selector Focus keeps track of which button was pressed*/
@@ -58,8 +58,13 @@ if(typeof FabulaSysApp == 'undefined'){
 		FabulaSysChannelName = null;
 
 
+		var FabulaSysTags = null;
+		FabulaSysTags = null;
+		/**/
+
+
 		/*create a floating "menu"*/
-		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' /> <br /><input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p>       <input id='FabulaSysDeleteButtonTitle' type='button' value='Delete Title' /> <input id='FabulaSysDeleteButtonLink' type='button' value='Delete Link' /><input id='FabulaSysDeleteButtonImageLink' type='button' value='Delete ImageLink' /><input id='FabulaSysDeleteButtonDescription' type='button' value='Delete Description' />          <br /><input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
+		$("body").append("<div id='FabulaSysMenu'> <input id='FabulaSysChannelName' type='text' value='Enter Channel Name' />     <br /><input id='FabulaSysTags' type='text' value='Enter Tags' /> <br />  <input id='FabulaSysTitleButton' type='button' value='Title' /><p id='FabulaSysTitleDisplay'></p> <input id='FabulaSysLinkButton' type='button' value='Link' /><p id='FabulaSysLinkDisplay'></p>  <input id='FabulaSysDescriptionButton' type='button' value='Description' /><p id='FabulaSysDescriptionDisplay'></p> <input id='FabulaSysImageLinkButton' type='button' value='Image Link' /><p id='FabulaSysImageLinkDisplay'></p> <input id='FabulaSysIsCustomCheckbox' type='checkbox' checked='checked' /> Is Custom RSS <br /><p id='FabulaSysAncestorDisplay'></p>       <input id='FabulaSysDeleteButtonTitle' type='button' value='Delete Title' /> <input id='FabulaSysDeleteButtonLink' type='button' value='Delete Link' /><input id='FabulaSysDeleteButtonImageLink' type='button' value='Delete ImageLink' /><input id='FabulaSysDeleteButtonDescription' type='button' value='Delete Description' />          <br /><input id='FabulaSubmitButton' type='button' value='Submit to Web' /> </div>");
 
 
 		function getCommonAncestor(argsArray){
@@ -329,6 +334,12 @@ if(typeof FabulaSysApp == 'undefined'){
 		});
 
 
+
+		$('#FabulaSysTags').on('input propertychange paste change', function (){
+    		FabulaSysTags = $(this).val();
+    		/*alert(FabulaSysChannelName);*/ /*test*/
+		});
+
         $("#FabulaSysDeleteButtonDescription").on("click vclick", function (ev){
             removeFabulaSysItem('desc');
         });
@@ -366,6 +377,7 @@ if(typeof FabulaSysApp == 'undefined'){
 		        	channelname : FabulaSysChannelName?FabulaSysChannelName:null,
 					imagelink : FabulaSysImageLinkSelector?FabulaSysImageLinkSelector:null,
 					iscustom : FabulaSysIsCustom?FabulaSysIsCustom:null,
+					tags : FabulaSysTags?FabulaSysTags:null,
 		        	site: document.URL
 		    	},
 				xhrFields: {

@@ -94,7 +94,7 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         webview.setWebViewClient(scraperWebViewClient);
 
         webview.getSettings().setUseWideViewPort(true);
-        webview.getSettings().setLoadWithOverviewMode(true);
+        //webview.getSettings().setLoadWithOverviewMode(true);
 
 
         //enable our JS interface
@@ -117,8 +117,8 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
 
 
         /***********************************************************/
-        //deal with the edittext
-        TextWatcher textWatcher = new TextWatcher() {
+        //deal with the edittexts for channel name and tags
+        TextWatcher channelTextWatcher = new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
@@ -132,8 +132,25 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
             }
         };
 
+        TextWatcher tagTextWatcher = new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newTags= s.toString();
+                onChangeTags(newTags);
+            }
+        };
+
         EditText channelNameEditor = (EditText) findViewById(R.id.ScraperTopBarNewChannelName);
-        channelNameEditor.addTextChangedListener(textWatcher);
+        channelNameEditor.addTextChangedListener(channelTextWatcher);
+
+        EditText tagEditor = (EditText) findViewById(R.id.ScraperTopBarTags);
+        tagEditor.addTextChangedListener(tagTextWatcher);
         /***********************************************************/
     }
 
@@ -224,6 +241,10 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
 
     public void onChangeChannelName(String newChannelName){
         webview.loadUrl("javascript:jQuery('#FabulaSysChannelName').val('" + newChannelName + "'); jQuery('#FabulaSysChannelName').trigger('change');");
+    }
+
+    public void onChangeTags(String newTags){
+        webview.loadUrl("javascript:jQuery('#FabulaSysTags').val('" + newTags + "'); jQuery('#FabulaSysTags').trigger('change');");
     }
 
     @JavascriptInterface
