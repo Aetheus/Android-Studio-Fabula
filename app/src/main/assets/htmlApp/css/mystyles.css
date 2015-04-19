@@ -18,6 +18,11 @@ section {
 	transform: translateY(-50%);
 }
 
+.small-side-margins{
+    margin-left:5px;
+    margin-right:5px;
+}
+
 .myToastDialog{
     line-height: 1;
 
