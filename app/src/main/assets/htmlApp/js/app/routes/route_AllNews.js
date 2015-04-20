@@ -44,8 +44,8 @@ route("#AllNews", function (event, $thisContainer){
         $linkButton.click(function(){
             var $thisButton = $(this);
 
-            window.location = link;
-            //window.open(link);
+            //window.location = link;
+            window.open(link);
         });
     }
 
@@ -58,15 +58,17 @@ route("#AllNews", function (event, $thisContainer){
 
     /*where $list is a jQuery unordered list element, and the time list is taken from TimeHelper*/
     var populateTimeList = function ($list) {
-        for (var i =0; i< TimeHelper.timeList.length ; i++){
-            var choice = TimeHelper.timeList[i];
-            var $litem = $('<li></li>');
-            var $timeChoice = $('<a href="#!">' + choice +'</a>');
+        for (var key in TimeHelper.defaultTimeFilters){
+            if (TimeHelper.defaultTimeFilters.hasOwnProperty(key)){
+                var choice = key;
+                var $litem = $('<li></li>');
+                var $timeChoice = $('<a href="#!">' + choice +'</a>');
 
-            bindTimeChoice($timeChoice);
+                bindTimeChoice($timeChoice);
 
-            $litem.append($timeChoice);
-            $list.append($litem);
+                $litem.append($timeChoice);
+                $list.append($litem);
+            }
         }
     }
 
@@ -140,7 +142,7 @@ route("#AllNews", function (event, $thisContainer){
             complete : function(XHR,textStatus){
                 alert("Request Status: " + textStatus);
             },
-            timeout: 15000,/*15 second timeout*/
+            timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
                 if(textStatus == "timeout" || XHR.statusText == "timeout") {
                     errHandler(new Error("Timed out while waiting for response"));
