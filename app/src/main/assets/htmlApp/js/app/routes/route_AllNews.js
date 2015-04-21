@@ -161,8 +161,8 @@ route("#AllNews", function (event, $thisContainer){
                 onSuccess(data, status);
             }
         });
-    }
 
+    }
     postRequest(null);
 
 });

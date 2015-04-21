@@ -15,7 +15,7 @@ var Router = (function (){
                 console.log(hrefID + " was added to the section");
            }
 
-           $(selectorString).click(function (event){
+           $(selectorString).on("click", function (event){
                 var targetHrefID = $(event.target).attr("href");
                 var $thisContainer = $(targetHrefID);
 
