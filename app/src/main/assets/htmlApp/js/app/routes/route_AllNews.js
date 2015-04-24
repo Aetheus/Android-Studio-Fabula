@@ -58,8 +58,8 @@ route("#AllNews", function (event, $thisContainer){
 
     /*where $list is a jQuery unordered list element, and the time list is taken from TimeHelper*/
     var populateTimeList = function ($list) {
-        for (var key in TimeHelper.defaultTimeFilters){
-            if (TimeHelper.defaultTimeFilters.hasOwnProperty(key)){
+        for (var key in globalSettings.timeFilters){
+            if (globalSettings.timeFilters.hasOwnProperty(key)){
                 var choice = key;
                 var $litem = $('<li></li>');
                 var $timeChoice = $('<a href="#!">' + choice +'</a>');
