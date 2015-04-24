@@ -75,17 +75,17 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
 
     var $yearsMonthsDateRow =  $("<div class='row' id='" +idPrefix+ "YearsMonthsRow'></div>");
     var yearsMonthsDateRowContents =    '<div class="input-field col s3 offset-s1">';
-        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline prefix"></i>'
+        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline active prefix"></i>'
         yearsMonthsDateRowContents +=   '   <input type="tel" placeholder="0" id="' +idPrefix+ 'YearsInput" data-positivity="-1"> </input> '
         yearsMonthsDateRowContents +=   '   <label for="'+idPrefix+'YearsInput" class="active">Years</label>'
         yearsMonthsDateRowContents +=   '</div>';
         yearsMonthsDateRowContents +=   '<div class="input-field col s3">';
-        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline prefix"></i>'
+        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline active prefix"></i>'
         yearsMonthsDateRowContents +=   '   <input type="tel" placeholder="0" id="' +idPrefix+ 'MonthsInput" data-positivity="-1"> </input> '
         yearsMonthsDateRowContents +=   '   <label for="'+idPrefix+'MonthsInput" class="active">Months</label>'
         yearsMonthsDateRowContents +=   '</div>';
         yearsMonthsDateRowContents +=   '<div class="input-field col s4">';
-        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline prefix"></i>'
+        yearsMonthsDateRowContents +=   '   <i class="small mdi-content-remove-circle-outline active prefix"></i>'
         yearsMonthsDateRowContents +=   '   <input type="tel" placeholder="0" id="' +idPrefix+ 'DateInput" data-positivity="-1"> </input> '
         yearsMonthsDateRowContents +=   '   <label for="'+idPrefix+'DateInput" class="active">Days</label>'
         yearsMonthsDateRowContents +=   '</div>';
@@ -104,19 +104,19 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
         hoursRowContents +=     '   </div>'
         hoursRowContents +=     '   <div id="'+idPrefix+'RelativeHours">'
         hoursRowContents +=     '       <div class="input-field col s4 offset-s1">'
-        hoursRowContents +=     '           <i class="small mdi-content-remove-circle-outline prefix"></i>'
+        hoursRowContents +=     '           <i class="small mdi-content-remove-circle-outline active prefix"></i>'
         hoursRowContents +=     '           <input type="tel" placeholder="0" id="' +idPrefix+ 'HoursInput" data-positivity="-1"> </input> '
         hoursRowContents +=     '           <label for="'+idPrefix+'HoursInput" class="active">Hours</label>'
         hoursRowContents +=     '       </div>';
         hoursRowContents +=     '       <div class="input-field col s4 offset-s1">'
-        hoursRowContents +=     '           <i class="small mdi-content-remove-circle-outline prefix"></i>'
+        hoursRowContents +=     '           <i class="small mdi-content-remove-circle-outline active prefix"></i>'
         hoursRowContents +=     '           <input type="tel" placeholder="0" id="' +idPrefix+ 'MinutesInput" data-positivity="-1"> </input> '
         hoursRowContents +=     '           <label for="'+idPrefix+'MinutesInput" class="active">Minutes</label>'
         hoursRowContents +=     '       </div>';
         hoursRowContents +=     '   </div>';
         hoursRowContents +=     '   <div id="'+idPrefix+'SpecificHours">'
         hoursRowContents +=     '       <div class="input-field input-group clockpicker col s10 offset-s1">'
-        hoursRowContents +=     '           <i class="small mdi-device-access-time prefix"></i>'
+        hoursRowContents +=     '           <i class="small mdi-device-access-time active prefix"></i>'
         hoursRowContents +=     '           <input type="text" class="form-control" id="' +idPrefix+ 'SpecificHoursInput" value="00:00" onfocus="blur();">'
         hoursRowContents +=     '       </div>'
         hoursRowContents +=     '   </div>';
