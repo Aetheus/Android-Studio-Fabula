@@ -117,7 +117,7 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
         hoursRowContents +=     '   <div id="'+idPrefix+'SpecificHours">'
         hoursRowContents +=     '       <div class="input-field input-group clockpicker col s10 offset-s1">'
         hoursRowContents +=     '           <i class="small mdi-device-access-time prefix"></i>'
-        hoursRowContents +=     '           <input type="text" class="form-control" id="' +idPrefix+ 'SpecificHoursInput" value="00:00">'
+        hoursRowContents +=     '           <input type="text" class="form-control" id="' +idPrefix+ 'SpecificHoursInput" value="00:00" onfocus="blur();">'
         hoursRowContents +=     '       </div>'
         hoursRowContents +=     '   </div>';
     $hoursRow.append(hoursRowContents);
