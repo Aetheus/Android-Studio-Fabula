@@ -35,16 +35,51 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
         //e.g: disable editing name of filter
     }
 
-    //blank out the html; maybe remove this if we use loader spinners to indicate loading instead?
-    $thisContainer.html(" ");
+    var initialHTML =   '<h5> Time Filters </h5>';
+        initialHTML +=  '<div>'
+        initialHTML +=  '   <p>To create your own custom time filter, specify the Start and End points of your filter</p>'
+        initialHTML +=  '</div>'
+        initialHTML +=  '<ul class="collapsible" data-collapsible="accordion" id="timeFilterCollapsible"></ul>'
+        initialHTML +=  '<div class="row">';
+        initialHTML +=  '   <div class="col s5 offset-s1">'
+        initialHTML +=  '       <a id="TimeFilterPreviewButton" class="waves-effect waves-light btn">Preview</a>'
+        initialHTML +=  '   </div>'
+        initialHTML +=  '   <div class="col s5 ">'
+        initialHTML +=  '       <a id="TimeFilterSaveButton" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save prefix left"></i> Save</a>'
+        initialHTML +=  '   </div>'
+        initialHTML +=  '</div>'
+    $thisContainer.html(initialHTML);
 
-    var startFormInterface = appendFilterMenu("Start", $thisContainer);
+    var $collapsibleList = $("#timeFilterCollapsible");
+    var isCollapsibleItem = true;
+
+    var $StartForm = appendFilterMenu("Start", $collapsibleList, isCollapsibleItem);
+    var $EndForm = appendFilterMenu("End", $collapsibleList, isCollapsibleItem);
+
+    //enable collapsible list
+    $thisContainer.find('.collapsible').collapsible({
+          // settings go here
+    });
+
+    $("#TimeFilterPreviewButton").on("click", function(){
+        var startInternalFilter = convertFormToFilter("Start");
+        var endInternalFilter = convertFormToFilter("End");
+
+        var fullFilter = {
+            name: "testing",
+            startFilter: startInternalFilter,
+            endFilter: endInternalFilter,
+        }
+
+        var timeConfig = timeHelper.useRelativeFilter(fullFilter);
+        console.log(JSON.stringify(timeConfig));
+    });
 
 }
 
-var appendFilterMenu = function (idPrefix, $parentElement) {
+var appendFilterMenu = function (idPrefix, $parentElement, isCollapsibleItem) {
     /*idPrefix is a unique value we will prefix to all elements that require an ID, to ensure we can generate unique IDs*/
-    var $form = $("<form class='col s12' id='" +idPrefix+ "StartForm'></form>");
+    var $form = $("<form class='col s12' id='" +idPrefix+ "Form'></form>");
 
     //our form-to-filter interface. we return this at the end. very important.
     var formInterface = {};
@@ -123,7 +158,7 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
     $hoursRow.append(hoursRowContents);
 
 
-    var buttonsRowContents =    '<br/> <div class="row">';
+    /*var buttonsRowContents =    '<br/> <div class="row">';
         buttonsRowContents +=   '   <div class="col s4 offset-s1">'
         buttonsRowContents +=   '       <a id="'+idPrefix+'PreviewButton" class="waves-effect waves-light btn">Preview</a>'
         buttonsRowContents +=   '   </div>'
@@ -131,25 +166,40 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
         buttonsRowContents +=   '       <a id="'+idPrefix+'SaveButton" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save"></i>Save</a>'
         buttonsRowContents +=   '   </div>'
         buttonsRowContents +=   '</div>'
+    */
+
+    //$form.append(headerContent).append($nameRow).append($yearsMonthsDateRow).append($hoursRow).append(buttonsRowContents);
+    $form.append(headerContent).append($yearsMonthsDateRow).append($hoursRow);
 
 
-    $form.append(headerContent).append($nameRow).append($yearsMonthsDateRow).append($hoursRow).append(buttonsRowContents);
-    $parentElement.append($form);
+    if (!isCollapsibleItem){
+        //if not a collapsible item, just append the form to the parent element directly
+        $parentElement.append($form);
+    }else{
+        //else, this should be a collapsible item and the parent is a collapsible list. format it appropriately.
+        var $collapsibleListItem = $('<li id="'+idPrefix+ 'ListItem" ></li>');
+        var collapsibleHeaderContent = '<div class="collapsible-header"><i class="mdi-action-schedule"></i>'+idPrefix+'</div>';
+        var $collapsibleBody = $('<div class="collapsible-body"></div>').append($form);
+        $collapsibleListItem.append(collapsibleHeaderContent).append($collapsibleBody);
+        $parentElement.append($collapsibleListItem);
+    }
 
 
     /*now that the form is appended to the parent, we can start binding our event handlers/bootup our JS dependent elements*/
     //enable tabs
-    $('ul.tabs').tabs();
+    var $thisForm = $("#" + idPrefix + "Form");
+    $thisForm.find('ul.tabs').tabs();
 
     //enable clockpicker
-    $('.clockpicker').clockpicker({
+    $thisForm.find('.clockpicker').clockpicker({
         placement: 'top',
         autoclose:"true",
         donetext: 'Done'
     });
 
     //flip the positive-negative values of the icons on click
-    $parentElement.find("i").on("click", function (){
+
+   $thisForm.find("i").on("click", function (){
         var $thisEle = $(this);
 
         if( $thisEle.hasClass("mdi-content-remove-circle-outline") ){
@@ -166,7 +216,7 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
     });
 
     //configure the tabs for the hours settings
-    $parentElement.find("#"+idPrefix+"HoursTabs").find("a").on("click", function(){
+    $thisForm.find("#"+idPrefix+"HoursTabs").find("a").on("click", function(){
         var $thisEle = $(this);
         var $hoursRow = $("#"+idPrefix+"HoursRow");
 
@@ -181,56 +231,10 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
     });
 
 
-    //preview button
-    $parentElement.find("#"+idPrefix+"PreviewButton").on("click", function(){
-        var internalFilter = {
-            years:0, months:0, date:0,
-            hours:0, minutes:0, seconds:0,
-            specifigHours:null
-        };
-
-        var yearsInput = $("#" + idPrefix + "YearsInput");
-        var yearsValue =  ( yearsInput.val() !== "" ) ? yearsInput.val() * yearsInput.data("positivity") : 0;
-        internalFilter.years = yearsValue;
-
-        var monthsInput = $("#" + idPrefix + "MonthsInput");
-        var monthsValue =  ( monthsInput.val() !== "" ) ? monthsInput.val() * monthsInput.data("positivity") : 0;
-        internalFilter.months = monthsValue;
-
-        var dateInput = $("#" + idPrefix + "DateInput");
-        var dateValue =  ( dateInput.val() !== "" ) ? dateInput.val() * dateInput.data("positivity") : 0;
-        internalFilter.date = dateValue;
-
-        var isSpecific = $("#" + idPrefix + "HoursRow").data("isspecific");
-        if( isSpecific === true ){
-            var timestamp = $("#" + idPrefix + "SpecificHoursInput").val();
-            var hours = parseInt(timestamp.substring(0,2));
-            var minutes = parseInt(timestamp.substring(3,5));
-
-            var specifigHours = [hours,minutes,0,0];
-            internalFilter.specifigHours = specifigHours;
-            //console.log("hours are:" + hours + " while minutes are:" + minutes);
-            //[hour,min,second,milsecond]
-            //[23,59,59,999]
-        }else{
-            var hoursInput = $("#" + idPrefix + "HoursInput");
-            var hoursValue =  ( hoursInput.val() !== "" ) ? hoursInput.val() * hoursInput.data("positivity") : 0;
-            internalFilter.hours = hoursValue;
-
-            var minutesInput = $("#" + idPrefix + "MinutesInput");
-            var minutesValue =  ( minutesInput.val() !== "" ) ? minutesInput.val() * minutesInput.data("positivity") : 0;
-            internalFilter.minutes = minutesValue;
-        }
 
 
-        //internalFilter.years =
 
-        console.log(JSON.stringify(internalFilter));
-        formInterface =  internalFilter;
-    });
-
-
-    return formInterface;
+    return $thisForm;
     /*
         years:0, months:0, date:0,
         hours:-2, minutes:0, seconds:0,
@@ -239,4 +243,51 @@ var appendFilterMenu = function (idPrefix, $parentElement) {
     /* NOTE NOTE NOTE: THERE IS NO SECONDS SETTING FOR USERS TO USE! IT DOESNT EXIST! DONT EXPECT IT! THE SCRAPER WORKS MINUTELY ANYWAY! *******************************************/
 
 
+}
+
+var convertFormToFilter = function (idPrefix){
+    var internalFilter = {
+        years:0, months:0, date:0,
+        hours:0, minutes:0, seconds:0,
+        specifigHours:null
+    };
+
+    var yearsInput = $("#" + idPrefix + "YearsInput");
+    var yearsValue =  ( yearsInput.val() !== "" ) ? yearsInput.val() * yearsInput.data("positivity") : 0;
+    internalFilter.years = yearsValue;
+
+    var monthsInput = $("#" + idPrefix + "MonthsInput");
+    var monthsValue =  ( monthsInput.val() !== "" ) ? monthsInput.val() * monthsInput.data("positivity") : 0;
+    internalFilter.months = monthsValue;
+
+    var dateInput = $("#" + idPrefix + "DateInput");
+    var dateValue =  ( dateInput.val() !== "" ) ? dateInput.val() * dateInput.data("positivity") : 0;
+    internalFilter.date = dateValue;
+
+    var isSpecific = $("#" + idPrefix + "HoursRow").data("isspecific");
+    if( isSpecific === true ){
+        var timestamp = $("#" + idPrefix + "SpecificHoursInput").val();
+        var hours = parseInt(timestamp.substring(0,2));
+        var minutes = parseInt(timestamp.substring(3,5));
+
+        var specifigHours = [hours,minutes,0,0];
+        internalFilter.specifigHours = specifigHours;
+        //console.log("hours are:" + hours + " while minutes are:" + minutes);
+        //[hour,min,second,milsecond]
+        //[23,59,59,999]
+    }else{
+        var hoursInput = $("#" + idPrefix + "HoursInput");
+        var hoursValue =  ( hoursInput.val() !== "" ) ? hoursInput.val() * hoursInput.data("positivity") : 0;
+        internalFilter.hours = hoursValue;
+
+        var minutesInput = $("#" + idPrefix + "MinutesInput");
+        var minutesValue =  ( minutesInput.val() !== "" ) ? minutesInput.val() * minutesInput.data("positivity") : 0;
+        internalFilter.minutes = minutesValue;
+    }
+
+
+    //internalFilter.years =
+
+    //console.log(JSON.stringify(internalFilter));
+    return internalFilter;
 }

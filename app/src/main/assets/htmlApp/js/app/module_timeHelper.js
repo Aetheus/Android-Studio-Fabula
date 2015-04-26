@@ -116,15 +116,20 @@ var timeHelper = {
         return timeConfig;
     },
 
+    //helper function to grab appropriate time filter from the globalSettings
     decide : function (keyString){
         var timeConfig = {start:null, end:null};
         var present = new Date();
 
-        if ( this.defaultTimeFilters.hasOwnProperty(keyString) ){
-            console.log("keystirng was " + keyString);
-            timeConfig = this.useRelativeFilter(this.defaultTimeFilters[keyString]);
+        if ( globalSettings.timeFilters.hasOwnProperty(keyString) ){
+                    console.log("keystirng was " + keyString);
+                    timeConfig = this.useRelativeFilter(globalSettings.timeFilters[keyString]);
         }
 
+        /*if ( this.defaultTimeFilters.hasOwnProperty(keyString) ){
+            console.log("keystirng was " + keyString);
+            timeConfig = this.useRelativeFilter(this.defaultTimeFilters[keyString]);
+        }*/
 
         /*
         if (decisionString == "last 2 hours"){

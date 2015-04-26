@@ -140,7 +140,7 @@ route("#AllNews", function (event, $thisContainer){
                 timerange:timeConfig
             },
             complete : function(XHR,textStatus){
-                alert("Request Status: " + textStatus);
+                toaster("Request Status: " + textStatus, 2500);
             },
             timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
