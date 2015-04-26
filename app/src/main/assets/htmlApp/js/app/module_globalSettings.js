@@ -3,7 +3,6 @@
 var globalSettings = {
     /*add in some default time filters; see timeHelper.js for more details*/
     timeFilters: {
-        "all":null,
         "last 2 hours":
             {
                 name: "last 2 hours",
@@ -57,8 +56,11 @@ var globalSettings = {
                     hours:0,minutes:0,seconds:0,
                     specifigHours: [23,59,59,999]
                 }
-            }
+            },
+        "all":null,
     },
 
+    /*set the "current filter" option to this by default; users can switch by tapping on different options.*/
+    currentFilter:"last 2 hours",
 
 }

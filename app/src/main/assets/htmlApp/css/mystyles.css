@@ -23,6 +23,10 @@ section {
     margin-right:5px;
 }
 
+.mySmallText{
+    font-size:x-small;
+}
+
 .myToastDialog{
     line-height: 1;
 

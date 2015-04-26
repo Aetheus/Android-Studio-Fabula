@@ -51,7 +51,8 @@ route("#AllNews", function (event, $thisContainer){
 
     var bindTimeChoice = function ($timeChoice) {
         $timeChoice.click(function (){
-            var timeConfig = TimeHelper.decide($(this).text());
+            globalSettings.currentFilter = $(this).text();
+            var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
             postRequest(timeConfig);
         });
     }
@@ -163,6 +164,7 @@ route("#AllNews", function (event, $thisContainer){
         });
 
     }
-    postRequest(null);
 
+    var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
+    postRequest(currentTimeConfig);
 });

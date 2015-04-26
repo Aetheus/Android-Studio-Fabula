@@ -20,13 +20,44 @@ var Route_Settings_TimeFilter = function (event, $thisContainer){
 }
 
 var Route_Settings_TimeFilter_View = function (event, $thisContainer){
-    var $minicontainer = $("<div></div>");
+    var $list = $('<ul id="timeFilterList" class="collection with-header"></ul>');
+    var listItems = '<li class="collection-header"><h4>Current Filters</h4><p>Drag the filters up/down to reposition them</p></li>';
     for (var key in globalSettings.timeFilters){
-        $filterDiv = $("<div></div>");
-        $filterDiv.html(key);
-        $minicontainer.append($filterDiv);
+        if(globalSettings.timeFilters.hasOwnProperty(key)){
+            listItems += '<li class="collection-item"><div> <span class="filterKey">' +key+ '</span> <a href="#!" class="secondary-content FilterDeleteButton"><i class="mdi-action-delete"></i></a></div></li>'
+        }
     }
-    $thisContainer.html($minicontainer);
+    var saveButtonRow =     '<div class="row">'
+        saveButtonRow +=    '   <div class="col s5 offset-s7">'
+        saveButtonRow +=    '       <a id="TimeFilterViewSave" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save left"></i> Save Changes</a>'
+        saveButtonRow +=    '   </div>'
+        saveButtonRow +=    '</div>'
+    $list.html(listItems);
+    $thisContainer.html($list).append(saveButtonRow);
+
+    //make list sortable
+    $('#timeFilterList').sortable();
+
+    //listener for delete button
+    $(".FilterDeleteButton").on("click", function(){
+        var $parent = $(this).closest(".collection-item").remove();
+
+    });
+
+    //event listener for the savebutton
+    $("#TimeFilterViewSave").on("click", function(){
+        var newTimeFiltersContainer = {};
+
+        $("#timeFilterList").find("li.collection-item").each(function(){
+            var $thisListItem = $(this);
+            var thisKey = $thisListItem.find(".filterKey").text();
+
+            newTimeFiltersContainer[thisKey] = globalSettings.timeFilters[thisKey];
+        });
+        globalSettings.timeFilters = undefined;
+        globalSettings.timeFilters = newTimeFiltersContainer;
+        toaster("Changes saved");
+    });
 }
 
 var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdit){
@@ -39,13 +70,19 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
         initialHTML +=  '<div>'
         initialHTML +=  '   <p>To create your own custom time filter, specify the Start and End points of your filter</p>'
         initialHTML +=  '</div>'
+        initialHTML +=  '<div class="row">'
+        initialHTML +=  '   <div class="col s10 offset-s1 input-field">'
+        initialHTML +=  '       <input placeholder="enter filter name here" id="filterName" type="text">'
+        initialHTML +=  '       <label for="filterName" class="active">Filter Name</label>'
+        initialHTML +=  '   </div>'
+        initialHTML +=  '</div>'
         initialHTML +=  '<ul class="collapsible" data-collapsible="accordion" id="timeFilterCollapsible"></ul>'
         initialHTML +=  '<div class="row">';
         initialHTML +=  '   <div class="col s5 offset-s1">'
-        initialHTML +=  '       <a id="TimeFilterPreviewButton" class="waves-effect waves-light btn">Preview</a>'
+        initialHTML +=  '       <a id="TimeFilterPreviewButton" class="waves-effect waves-light btn">Console Log</a>'
         initialHTML +=  '   </div>'
         initialHTML +=  '   <div class="col s5 ">'
-        initialHTML +=  '       <a id="TimeFilterSaveButton" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save prefix left"></i> Save</a>'
+        initialHTML +=  '       <a id="TimeFilterSaveButton" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save small right"></i>Save</a>'
         initialHTML +=  '   </div>'
         initialHTML +=  '</div>'
     $thisContainer.html(initialHTML);
@@ -73,6 +110,28 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
 
         var timeConfig = timeHelper.useRelativeFilter(fullFilter);
         console.log(JSON.stringify(timeConfig));
+    });
+
+    $("#TimeFilterSaveButton").on("click", function(){
+        var startInternalFilter = convertFormToFilter("Start");
+        var endInternalFilter = convertFormToFilter("End");
+
+        var filterName = $("#filterName").val();
+
+        if(!filterName || filterName == ""){
+            errHandler(new Error("Filter name was empty or invalid!"));
+        }else if(typeof globalSettings.timeFilters[filterName] !== 'undefined'){
+            errHandler(new Error("That filter name has already been used! Pick another one!"));
+        }else{
+              var fullFilter = {
+                  name: filterName,
+                  startFilter: startInternalFilter,
+                  endFilter: endInternalFilter,
+              }
+              globalSettings.timeFilters[filterName] = fullFilter;
+              toaster('"' +filterName+ '" has been added to the custom filters list!');
+              //var timeConfig = timeHelper.useRelativeFilter(fullFilter);
+        }
     });
 
 }
@@ -169,7 +228,7 @@ var appendFilterMenu = function (idPrefix, $parentElement, isCollapsibleItem) {
     */
 
     //$form.append(headerContent).append($nameRow).append($yearsMonthsDateRow).append($hoursRow).append(buttonsRowContents);
-    $form.append(headerContent).append($yearsMonthsDateRow).append($hoursRow);
+    $form.append("<br />").append($yearsMonthsDateRow).append($hoursRow);
 
 
     if (!isCollapsibleItem){
