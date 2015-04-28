@@ -24,7 +24,7 @@ var Route_Settings_TimeFilter_View = function (event, $thisContainer){
     var listItems = '<li class="collection-header"><h4>Current Filters</h4><p>Drag the filters up/down to reposition them</p></li>';
     for (var key in globalSettings.timeFilters){
         if(globalSettings.timeFilters.hasOwnProperty(key)){
-            listItems += '<li class="collection-item"><div> <span class="filterKey">' +key+ '</span> <a href="#!" class="secondary-content FilterDeleteButton"><i class="mdi-action-delete"></i></a></div></li>'
+            listItems += '<li class="collection-item"><div> <span class="filterKey">' +key+ '</span> <a href="#!" class="secondary-content FilterDeleteButton"><i class="mdi-action-delete small"></i></a></div></li>'
         }
     }
     var saveButtonRow =     '<div class="row">'

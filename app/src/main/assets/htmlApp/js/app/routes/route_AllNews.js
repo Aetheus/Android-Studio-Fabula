@@ -53,7 +53,7 @@ route("#AllNews", function (event, $thisContainer){
         $timeChoice.click(function (){
             globalSettings.currentFilter = $(this).text();
             var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
-            postRequest(timeConfig);
+            postRequest(timeConfig, globalSettings.currentTags);
         });
     }
 
@@ -73,12 +73,26 @@ route("#AllNews", function (event, $thisContainer){
         }
     }
 
+    var bindTagInput = function ($input){
+        $input.on("focusout", function(){
+            globalSettings.currentTags = $(this).val();
+            postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
+        });
+    }
+
     var onSuccess = function (data, status){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
         var JSONarray = data;
 
         var $timeDropdownButton = $("<a class='dropdown-button btn' href='#' data-activates='timedropdown'>time filter</a>");
         var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
+        var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
+        var $tagsInput = $( '<div class="input-field col s6">' +
+                                  '<input placeholder="tags" id="last_name" type="text">' +
+                            '</div>');
+
+        var $filterOptionsContainer = $('<div class="row" id="filterContainer"></div>').append($dropdownContainer).append($tagsInput);
+
 
         populateTimeList($timeDropdownList);
 
@@ -117,9 +131,11 @@ route("#AllNews", function (event, $thisContainer){
         }
 
         $thisContainer.html(list);
-        $thisContainer.prepend($timeDropdownList);
-        $thisContainer.prepend($timeDropdownButton);
+        $thisContainer.prepend($filterOptionsContainer);
+        //$thisContainer.prepend($timeDropdownList);
+        //$thisContainer.prepend($timeDropdownButton);
 
+        bindTagInput($tagsInput.find("input"));
 
         $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
         $('.dropdown-button').dropdown({    //initialize dropdown
@@ -131,14 +147,15 @@ route("#AllNews", function (event, $thisContainer){
         );
     };
 
-    var postRequest = function (timeConfig){
+    var postRequest = function (timeConfig, tags){
         $.ajax({
             method: "POST",
             url: "https://fabula-node.herokuapp.com/usersfeeditems",
             data: {
                 userid:FabulaSysUsername,
                 password:FabulaSysPassword,
-                timerange:timeConfig
+                timerange:timeConfig,
+                tags:tags
             },
             complete : function(XHR,textStatus){
                 toaster("Request Status: " + textStatus, 2500);
@@ -166,5 +183,6 @@ route("#AllNews", function (event, $thisContainer){
     }
 
     var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
-    postRequest(currentTimeConfig);
+    var tags = globalSettings.currentTags;
+    postRequest(currentTimeConfig,tags);
 });
