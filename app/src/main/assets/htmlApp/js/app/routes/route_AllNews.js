@@ -49,28 +49,27 @@ route("#AllNews", function (event, $thisContainer){
         });
     }
 
-    var bindTimeChoice = function ($timeChoice) {
-        $timeChoice.click(function (){
-            globalSettings.currentFilter = $(this).text();
+    var bindSelectOptions = function ($selectList){
+        $selectList.on("change", function (){
+            globalSettings.currentFilter = $(this).val();
             var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
             postRequest(timeConfig, globalSettings.currentTags);
         });
     }
 
-    /*where $list is a jQuery unordered list element, and the time list is taken from TimeHelper*/
-    var populateTimeList = function ($list) {
+    var populateSelectList = function ($selectList){
         for (var key in globalSettings.timeFilters){
             if (globalSettings.timeFilters.hasOwnProperty(key)){
                 var choice = key;
-                var $litem = $('<li></li>');
-                var $timeChoice = $('<a href="#!">' + choice +'</a>');
-
-                bindTimeChoice($timeChoice);
-
-                $litem.append($timeChoice);
-                $list.append($litem);
+                var $option = $('<option value="'+key+'">'+key+'</option>');
+                if(choice == globalSettings.currentFilter){
+                    $option.prop("selected",true);
+                }
+                $selectList.append($option);
             }
         }
+        $($selectList).material_select();
+        bindSelectOptions($selectList);
     }
 
     var bindTagInput = function ($input){
@@ -84,17 +83,18 @@ route("#AllNews", function (event, $thisContainer){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
         var JSONarray = data;
 
-        var $timeDropdownButton = $("<a class='dropdown-button btn' href='#' data-activates='timedropdown'>time filter</a>");
-        var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-        var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
+        //var $timeDropdownButton = $("<a class='dropdown-button btn' href='#' data-activates='timedropdown'>time filter</a>");
+        //var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
+        //var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
+
         var $tagsInput = $( '<div class="input-field col s6">' +
                                   '<input placeholder="tags" id="last_name" type="text">' +
                             '</div>');
 
-        var $filterOptionsContainer = $('<div class="row" id="filterContainer"></div>').append($dropdownContainer).append($tagsInput);
+        var $selectList = $('<select id="selectTimeDropdown"></select>');
+        var $selectContainer = $('<div class="input-field col s6"></div>').append($selectList);//.append('<label>Time Selection</label>');
+        var $filterOptionsContainer = $('<div class="row" id="filterContainer"></div>').append($selectContainer).append($tagsInput);
 
-
-        populateTimeList($timeDropdownList);
 
         var list = $('<ul class="collapsible" data-collapsible="accordion"></ul>');
         for(var i=0; i< JSONarray.length; i++){
@@ -136,6 +136,9 @@ route("#AllNews", function (event, $thisContainer){
         //$thisContainer.prepend($timeDropdownButton);
 
         bindTagInput($tagsInput.find("input"));
+        populateSelectList($selectList);
+        $tagsInput.find("input").val(globalSettings.currentTags);
+
 
         $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
         $('.dropdown-button').dropdown({    //initialize dropdown
