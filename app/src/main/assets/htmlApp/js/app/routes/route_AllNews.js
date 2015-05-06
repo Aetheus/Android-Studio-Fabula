@@ -132,8 +132,6 @@ route("#AllNews", function (event, $thisContainer){
 
         $thisContainer.html(list);
         $thisContainer.prepend($filterOptionsContainer);
-        //$thisContainer.prepend($timeDropdownList);
-        //$thisContainer.prepend($timeDropdownButton);
 
         bindTagInput($tagsInput.find("input"));
         populateSelectList($selectList);

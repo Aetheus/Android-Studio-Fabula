@@ -3,6 +3,7 @@ package com.adrianheng.fabulav4;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,6 +55,16 @@ public class LandingActivity extends Activity {
         runOnUiThread(new LaunchScraper(intent,this));
     }
 
+
+    @JavascriptInterface
+    public void signOut(){
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("username");
+        editor.remove("password");
+        editor.commit();
+        this.finish();
+    }
 
 
     private class LaunchScraper implements Runnable {

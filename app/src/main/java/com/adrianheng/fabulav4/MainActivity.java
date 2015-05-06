@@ -3,6 +3,7 @@ package com.adrianheng.fabulav4;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.aedrianheng.utils.CustomWebRequest;
 import com.aedrianheng.utils.IntentStarterListener;
 import com.aedrianheng.utils.LoginIntentStarterListener;
+import com.aedrianheng.utils.SaveAccountLoginListener;
 import com.aedrianheng.utils.SetTextViewListener;
 
 import org.apache.http.entity.StringEntity;
@@ -28,7 +30,22 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String savedUsername = sharedPreferences.getString("username",null);
+        String savedPassword = sharedPreferences.getString("password",null);
+        if (savedUsername == null || savedPassword == null){
+            Toast toast = Toast.makeText(this, "No saved accounts found", Toast.LENGTH_SHORT);
+            toast.show();
+        }else{
+            Toast toast = Toast.makeText(this, "Previous saved account found. Logging in.", Toast.LENGTH_SHORT);
+            toast.show();
 
+            Intent landingPageIntent = new Intent(this,LandingActivity.class);
+            landingPageIntent.putExtra("USERNAME", savedUsername);
+            landingPageIntent.putExtra("PASSWORD", savedPassword);
+            this.startActivity(landingPageIntent);
+            this.finish();
+        }
     }
 
 
@@ -50,6 +67,9 @@ public class MainActivity extends Activity {
         landingPageIntent.putExtra("PASSWORD", password);
         LoginIntentStarterListener isListener = new LoginIntentStarterListener(this, landingPageIntent);
 
+        //save username-password to shared preferences file
+        SaveAccountLoginListener saveAccountListener = new SaveAccountLoginListener(this,username,password);
+
         //the parameters we want to send to our POST request, encapsulated as JSON
         JSONObject jsonobj = new JSONObject();
         try {
@@ -60,6 +80,7 @@ public class MainActivity extends Activity {
         }
 
         CustomWebRequest dler = new CustomWebRequest("https://fabula-node.herokuapp.com/greet",tvListener,jsonobj);
+        dler.addListener(saveAccountListener);
         dler.addListener(isListener);
 
         dler.PostRequest();
