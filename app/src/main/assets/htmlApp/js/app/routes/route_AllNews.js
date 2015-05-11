@@ -139,13 +139,7 @@ route("#AllNews", function (event, $thisContainer){
 
 
         $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
-        $('.dropdown-button').dropdown({    //initialize dropdown
-            inDuration: 300,
-            outDuration: 225,
-            gutter: 0,
-            belowOrigin: true
-          }
-        );
+
     };
 
     var postRequest = function (timeConfig, tags){

@@ -2,7 +2,8 @@ var route = new Router().route;
 
 route("#StartScraper", function (event, $thisContainer){
 
-    if($thisContainer.children().length > 0){
+    //if the loading animation is NOT in thisContainer, that means this route was already loaded previously. no need to reload since the contents wont change
+    if($thisContainer.children(".loaderAnim").length != 1){
         console.log("no need to redraw startScraper page since its already been loaded");
         return;     /*no need to redraw this page since its already been loaded*/
     }

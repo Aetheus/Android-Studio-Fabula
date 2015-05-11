@@ -57,6 +57,7 @@ var Route_Settings_TimeFilter_View = function (event, $thisContainer){
         globalSettings.timeFilters = undefined;
         globalSettings.timeFilters = newTimeFiltersContainer;
         toaster("Changes saved");
+        globalSettingsSave(); //save the global settings to the app's shared preferences
     });
 }
 
@@ -130,6 +131,7 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
               }
               globalSettings.timeFilters[filterName] = fullFilter;
               toaster('"' +filterName+ '" has been added to the custom filters list!');
+              globalSettingsSave(); //save the global settings to the app's shared preferences
               //var timeConfig = timeHelper.useRelativeFilter(fullFilter);
         }
     });

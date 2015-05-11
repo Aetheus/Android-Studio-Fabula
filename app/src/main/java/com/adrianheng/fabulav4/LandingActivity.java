@@ -21,20 +21,25 @@ public class LandingActivity extends Activity {
 
     protected String username;
     protected String password;
-
+    protected String globalSettingsJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
+        //get the intent that started tbis activity, and extract the sent USERNAME and PASSWORD from it
         Intent ourStarter = getIntent();
         this.username = ourStarter.getStringExtra("USERNAME");
         this.password = ourStarter.getStringExtra("PASSWORD");
 
+        //get the globalSettings object (serialized in JSON)
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        this.globalSettingsJSON = sharedPreferences.getString("globalSettings", null);
+
         WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
         landingWebview.getSettings().setJavaScriptEnabled(true);
-        landingWebview.setWebViewClient(new LandingWebViewClient(username, password));
+        landingWebview.setWebViewClient(new LandingWebViewClient(username, password, globalSettingsJSON));
         landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
         landingWebview.addJavascriptInterface(this,"FabulaSysApp");
 
@@ -62,10 +67,19 @@ public class LandingActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("username");
         editor.remove("password");
+        editor.remove("globalSettings");
         editor.commit();
         this.finish();
     }
 
+    @JavascriptInterface
+    public void saveJSONSettings(String JSONObject){
+        //this way of getting the shared preferences should work on services, too
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("globalSettings",JSONObject);
+        editor.commit();
+    }
 
     private class LaunchScraper implements Runnable {
         Intent intent;
