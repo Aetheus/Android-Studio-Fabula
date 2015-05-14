@@ -22,7 +22,9 @@ var Route_Settings_TimeFilter = function (event, $thisContainer){
 var Route_Settings_TimeFilter_View = function (event, $thisContainer){
     var $list = $('<ul id="timeFilterList" class="collection with-header"></ul>');
     var listItems = '<li class="collection-header"><h4>Current Filters</h4><p>Drag the filters up/down to reposition them</p></li>';
+    console.log("debug message - timefilter looks like this now: " + JSON.stringify(globalSettings.timeFilters))
     for (var key in globalSettings.timeFilters){
+        console.log("debug message - current key is : " + key);
         if(globalSettings.timeFilters.hasOwnProperty(key)){
             listItems += '<li class="collection-item"><div> <span class="filterKey">' +key+ '</span> <a href="#!" class="secondary-content FilterDeleteButton"><i class="mdi-action-delete small"></i></a></div></li>'
         }
@@ -35,14 +37,19 @@ var Route_Settings_TimeFilter_View = function (event, $thisContainer){
     $list.html(listItems);
     $thisContainer.html($list).append(saveButtonRow);
 
-    //make list sortable
-    $('#timeFilterList').sortable();
+
 
     //listener for delete button
-    $(".FilterDeleteButton").on("click", function(){
+    $(".FilterDeleteButton").on("click", function(event){
+        event.preventDefault();
+        event.stopPropogation();
+        event.stopImmediatePropagation();
         var $parent = $(this).closest(".collection-item").remove();
 
     });
+
+        //make list sortable
+        $('#timeFilterList').sortable();
 
     //event listener for the savebutton
     $("#TimeFilterViewSave").on("click", function(){
@@ -110,7 +117,8 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
         }
 
         var timeConfig = timeHelper.useRelativeFilter(fullFilter);
-        console.log(JSON.stringify(timeConfig));
+        console.log("The current time filter of this page is defined as: " + JSON.stringify(timeConfig));
+        console.log("ALL the SAVED time filters are: " + JSON.stringify(globalSettings.timeFilters));
     });
 
     $("#TimeFilterSaveButton").on("click", function(){

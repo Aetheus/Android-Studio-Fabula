@@ -1,6 +1,6 @@
 
 
-var globalSettings = {
+globalSettings = {
     /*add in some default time filters; see timeHelper.js for more details*/
     timeFilters: {
         "last 2 hours":
