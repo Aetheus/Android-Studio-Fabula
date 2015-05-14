@@ -23,6 +23,26 @@ section {
     margin-right:5px;
 }
 
+.no-vertical-margins{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+.no-side-margins{
+    margin-left:0px;
+    margin-right:0px;
+}
+
+.negative-vertical-margins{
+    margin-top:-5px;
+    margin-bottom:-15px;
+}
+
+.select-no-vertical-margins{
+    margin-top:-5px;
+    margin-bottom:-15px;
+}
+
 .mySmallText{
     font-size:x-small;
 }

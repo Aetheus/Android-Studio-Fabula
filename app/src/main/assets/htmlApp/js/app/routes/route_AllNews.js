@@ -87,13 +87,14 @@ route("#AllNews", function (event, $thisContainer){
         //var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
         //var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
 
-        var $tagsInput = $( '<div class="input-field col s6">' +
-                                  '<input placeholder="tags" id="last_name" type="text">' +
-                            '</div>');
+
 
         var $selectList = $('<select id="selectTimeDropdown"></select>');
-        var $selectContainer = $('<div class="input-field col s6"></div>').append($selectList);//.append('<label>Time Selection</label>');
-        var $filterOptionsContainer = $('<div class="row" id="filterContainer"></div>').append($selectContainer).append($tagsInput);
+        var $selectContainer = $('<div class="input-field col s12 negative-vertical-margins"></div>').append($selectList);//.append('<label>Time Selection</label>');
+        var $selectRow = $('<div class="row no-vertical-margins" id="filterContainer"></div>').append($selectContainer);
+
+        var $tagRow = $('<div class="row"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+        var $filterOptionsContainer = $('<div class="vertical-margins" id="filterContainer"></div>').append($selectRow).append($tagRow);
 
 
         var list = $('<ul class="collapsible" data-collapsible="accordion"></ul>');
@@ -131,15 +132,14 @@ route("#AllNews", function (event, $thisContainer){
         }
 
         $thisContainer.html(list);
-        $thisContainer.prepend($filterOptionsContainer);
+        $thisContainer.prepend($tagRow);
+        $thisContainer.append($selectRow);
 
-        bindTagInput($tagsInput.find("input"));
-        populateSelectList($selectList);
-        $tagsInput.find("input").val(globalSettings.currentTags);
+        populateSelectList($('#selectTimeDropdown'));
 
 
         $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
-
+        $('ul.tabs').tabs();    //initialize tabs
     };
 
     var postRequest = function (timeConfig, tags){

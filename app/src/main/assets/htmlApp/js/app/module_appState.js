@@ -24,7 +24,7 @@ appState = {
                 }
             }
         }
-    }
+    },
 
     getButtonState: function ($routeObj, $buttonObj){
         var returnVal = null;
@@ -37,6 +37,6 @@ appState = {
         }
 
         return returnVal;
-    }
+    },
 
 }
