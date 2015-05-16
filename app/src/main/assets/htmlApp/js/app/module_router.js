@@ -1,9 +1,10 @@
 
+var routesList = [];
 var Router = (function (){
     var RouterConstructor =
     function () { //class constructor
         var thisSpecific = this;    //helps us access public variables from within our public functions. Otherwise, wed only be able to access private ones
-        Router.routesList = []; //static variable
+        //Router.routesList = []; //static variable
 
         /*callback must have a func signature of : function (event, $thisContainer) { ...  }*/
         this.route = function (hrefID, callback){
@@ -26,9 +27,11 @@ var Router = (function (){
                 callback(event, $thisContainer);
            });
 
+           //Router.routesList[Router.routesList.length] = hrefID;
+           //console.log("Route added for " + hrefID); console.log("Current Routes: " + Router.routesList.toString());
 
-           Router.routesList[Router.routesList.length] = hrefID;
-           console.log("Route added for " + hrefID); console.log("Current Routes: " + Router.routesList.toString());
+           routesList[routesList.length] = hrefID;
+           console.log("Route added for " + hrefID); console.log("Current Routes: " + routesList.toString());
         }
 
     }

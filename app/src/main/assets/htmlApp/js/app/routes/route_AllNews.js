@@ -49,14 +49,6 @@ route("#AllNews", function (event, $thisContainer){
         });
     }
 
-    var bindSelectOptions = function ($selectList){
-        $selectList.on("change", function (){
-            globalSettings.currentFilter = $(this).val();
-            var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
-            postRequest(timeConfig, globalSettings.currentTags);
-        });
-    }
-
 
     var bindTimeChoice = function ($timeChoice) {
         $timeChoice.click(function (){
@@ -131,34 +123,55 @@ route("#AllNews", function (event, $thisContainer){
         var headerHeight = $header.height();
         var footerHeight = $footer.height();
 
-
-        console.log("Parent height: " + parentHeight + "\n Header Height: " + headerHeight + "\n Footer height: " + footerHeight);
+        //console.log("Parent height: " + parentHeight + "\n Header Height: " + headerHeight + "\n Footer height: " + footerHeight);
         $content.height(parentHeight - headerHeight - footerHeight);
     }
 
-    var buildTagRow = function ($tagRow){
+
+    var bindTagItems = function ($tagItem){
+        $tagItem.on("click", function(){
+            var extractedTag = $(this).text();
+            extractedTag = (extractedTag != "all") ? extractedTag : null;
+            globalSettings.currentTags = extractedTag;
+            postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
+        })
+    }
+
+    //builds and returns a tagRow jquery elem
+    var buildTagRow = function (){
         //replace this placeholder code with actual tags from settings later
-        var tagsList = ["all", "games", "local"]
+        var tagsArr = ["all", "games", "local", "uni"];
+        var currentTag = globalSettings.currentTags;
+
+        var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"></div>');
+        var $columnWrapper = $('<div class="col s12"></div>');
+        var $unorderedList = $('<ul class="tabs"></ul');
+
+        for(var i =0; i< tagsArr.length; i++){
+            var cssclass = (currentTag == tagsArr[i]) ? "active" : "";
+
+            var $entry = $('<a href="#' +  tagsArr[i] + '" class="' + cssclass + '">' +  tagsArr[i] + '</a>');
+            var $listItemWrapper = $('<li class="tab col s3"></li>').append($entry);
+            $unorderedList.append($listItemWrapper);
+            bindTagItems($entry);
+        }
+
+        $columnWrapper.append($unorderedList);
+        $tagRow.append($columnWrapper);
+        return $tagRow;
     }
 
     var onSuccess = function (data, status){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
         var JSONarray = data;
 
-        //var $timeDropdownButton = $("<a class='dropdown-button btn' href='#' data-activates='timedropdown'>time filter</a>");
-        //var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-        //var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
-
 
         var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
         var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-        //var $timeDropdownContainer = $('<div class="input-field col s12"></div>').append($timeDropdownButton).append($timeDropdownList);//.append('<label>Time Selection</label>');
-        //var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownContainer);
         var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
 
-        var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
-        //var $filterOptionsContainer = $('<div class="vertical-margins" id="filterContainer"></div>').append($timeDropdownRow).append($tagRow);
-
+        //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+        var $tagRow = buildTagRow();
 
         var list = $('<ul id="newsList" class="collapsible" data-collapsible="accordion"></ul>');
         for(var i=0; i< JSONarray.length; i++){
@@ -217,6 +230,7 @@ route("#AllNews", function (event, $thisContainer){
     };
 
     var postRequest = function (timeConfig, tags){
+        console.log("Request posted with a timeConfig: " + JSON.stringify(timeConfig) + " and tag: " + tags);
         $.ajax({
             method: "POST",
             url: "https://fabula-node.herokuapp.com/usersfeeditems",
@@ -227,7 +241,7 @@ route("#AllNews", function (event, $thisContainer){
                 tags:tags
             },
             complete : function(XHR,textStatus){
-                toaster("Request Status: " + textStatus, 2500);
+                toaster("Request Status: " + textStatus, 500);
             },
             timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
@@ -252,6 +266,6 @@ route("#AllNews", function (event, $thisContainer){
     }
 
     var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
-    var tags = globalSettings.currentTags;
-    postRequest(currentTimeConfig,tags);
+    var currentTag = globalSettings.currentTags;
+    postRequest(currentTimeConfig,currentTag);
 });
