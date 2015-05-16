@@ -113,16 +113,32 @@ route("#AllNews", function (event, $thisContainer){
                                 //we're at the bottom of the page
                                 isBottomOfPage = true;
                                 window.scrollTo(0,document.body.scrollHeight);
-                                console.log("we've reached bottom");
+                                //console.log("we've reached bottom");
                                 break;
                             }else{
-                                console.log("still looping");
+                                //console.log("still looping");
                                 window.scrollTo(0,document.body.scrollHeight);
                             }
                     }
-            }, counter);
+            }, timeOut);
         });
 
+    }
+
+    //resizes the $content so it fills whatever vertical space is between $footer and $header
+    var resizeRouteContent = function ($content, $header, $footer){
+        var parentHeight = window.innerHeight - $(".navbar-fixed").height();
+        var headerHeight = $header.height();
+        var footerHeight = $footer.height();
+
+
+        console.log("Parent height: " + parentHeight + "\n Header Height: " + headerHeight + "\n Footer height: " + footerHeight);
+        $content.height(parentHeight - headerHeight - footerHeight);
+    }
+
+    var buildTagRow = function ($tagRow){
+        //replace this placeholder code with actual tags from settings later
+        var tagsList = ["all", "games", "local"]
     }
 
     var onSuccess = function (data, status){
@@ -140,7 +156,7 @@ route("#AllNews", function (event, $thisContainer){
         //var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownContainer);
         var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
 
-        var $tagRow = $('<div id="tagsRow" class="row"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+        var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
         //var $filterOptionsContainer = $('<div class="vertical-margins" id="filterContainer"></div>').append($timeDropdownRow).append($tagRow);
 
 
@@ -177,9 +193,9 @@ route("#AllNews", function (event, $thisContainer){
             listItem.append(collapsibleBody);
             list.append(listItem);
         }
-        var listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append(list);
+        var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append(list);
 
-        $thisContainer.html(listRow);
+        $thisContainer.html($listRow);
         $thisContainer.prepend($tagRow);
         $thisContainer.append($timeDropdownRow);
 
@@ -197,6 +213,7 @@ route("#AllNews", function (event, $thisContainer){
         );
 
         onClickGoBottom($('#timedropdownbutton'), 110);
+        resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"))
     };
 
     var postRequest = function (timeConfig, tags){

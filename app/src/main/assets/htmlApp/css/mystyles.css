@@ -67,17 +67,20 @@ html, body {
     bottom:0px;
 }
 
+#AllNews{
+    height:100%;
+}
+
 #tagsRow{
 
 }
 
 #listRow{
-    height:100px;
     overflow:scroll;
 }
 
 
 #timeDropdownRow{
-
+    width:100%;
 }
 
