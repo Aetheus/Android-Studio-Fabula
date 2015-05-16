@@ -1,5 +1,9 @@
 section {
-    /* no need to set the height; we've set it to "100%" via initialize.js by setting it to the window height*/
+    /*height: 100%;*/
+}
+
+html, body {
+    height: 100%;
 }
 
 .smallFont{
@@ -43,6 +47,8 @@ section {
     margin-bottom:-15px;
 }
 
+
+
 .mySmallText{
     font-size:x-small;
 }
@@ -54,3 +60,24 @@ section {
     margin-left:10px;
     border-radius: 5px;
 }
+
+
+.fixed-position-bottom{
+    position:fixed;
+    bottom:0px;
+}
+
+#tagsRow{
+
+}
+
+#listRow{
+    height:100px;
+    overflow:scroll;
+}
+
+
+#timeDropdownRow{
+
+}
+

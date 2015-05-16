@@ -57,19 +57,29 @@ route("#AllNews", function (event, $thisContainer){
         });
     }
 
-    var populateSelectList = function ($selectList){
+
+    var bindTimeChoice = function ($timeChoice) {
+        $timeChoice.click(function (){
+            globalSettings.currentFilter = $(this).text();
+            var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
+            postRequest(timeConfig, globalSettings.currentTags);
+        });
+    }
+
+    /*where $list is a jQuery unordered list element, and the time list is taken from TimeHelper*/
+    var populateTimeList = function ($list) {
         for (var key in globalSettings.timeFilters){
             if (globalSettings.timeFilters.hasOwnProperty(key)){
                 var choice = key;
-                var $option = $('<option value="'+key+'">'+key+'</option>');
-                if(choice == globalSettings.currentFilter){
-                    $option.prop("selected",true);
-                }
-                $selectList.append($option);
+                var $litem = $('<li></li>');
+                var $timeChoice = $('<a href="#!">' + choice +'</a>');
+
+                bindTimeChoice($timeChoice);
+
+                $litem.append($timeChoice);
+                $list.append($litem);
             }
         }
-        $($selectList).material_select();
-        bindSelectOptions($selectList);
     }
 
     var bindTagInput = function ($input){
@@ -77,6 +87,42 @@ route("#AllNews", function (event, $thisContainer){
             globalSettings.currentTags = $(this).val();
             postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
         });
+    }
+
+    //adds a Listener to the clickedElem that makes the page scroll to the very bottom on clicking it
+    var onClickGoBottom = function ($clickedElem, timeBeforeGo){
+        /*$clickedElem.on("click", function (){
+            var waitTime = timeBeforeGo ? timeBeforeGo : 0;
+            setTimeout(function(){
+                window.scrollTo(0,document.body.scrollHeight);
+                console.log('this worked');
+            }, waitTime);
+        });*/
+
+        $clickedElem.on("click", function (){
+            var counter = 0;
+
+            var timeOut = timeBeforeGo ? timeBeforeGo : 0;
+            setTimeout(function(){
+                    var isBottomOfPage = false;
+
+                    while(!isBottomOfPage){
+                            counter++;
+                            console.log("this is loop " + counter);
+                            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                                //we're at the bottom of the page
+                                isBottomOfPage = true;
+                                window.scrollTo(0,document.body.scrollHeight);
+                                console.log("we've reached bottom");
+                                break;
+                            }else{
+                                console.log("still looping");
+                                window.scrollTo(0,document.body.scrollHeight);
+                            }
+                    }
+            }, counter);
+        });
+
     }
 
     var onSuccess = function (data, status){
@@ -88,16 +134,17 @@ route("#AllNews", function (event, $thisContainer){
         //var $dropdownContainer = $('<div class="input-field col s6"></div>').append($timeDropdownButton).append($timeDropdownList);
 
 
+        var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
+        var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
+        //var $timeDropdownContainer = $('<div class="input-field col s12"></div>').append($timeDropdownButton).append($timeDropdownList);//.append('<label>Time Selection</label>');
+        //var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownContainer);
+        var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
 
-        var $selectList = $('<select id="selectTimeDropdown"></select>');
-        var $selectContainer = $('<div class="input-field col s12 negative-vertical-margins"></div>').append($selectList);//.append('<label>Time Selection</label>');
-        var $selectRow = $('<div class="row no-vertical-margins" id="filterContainer"></div>').append($selectContainer);
-
-        var $tagRow = $('<div class="row"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
-        var $filterOptionsContainer = $('<div class="vertical-margins" id="filterContainer"></div>').append($selectRow).append($tagRow);
+        var $tagRow = $('<div id="tagsRow" class="row"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+        //var $filterOptionsContainer = $('<div class="vertical-margins" id="filterContainer"></div>').append($timeDropdownRow).append($tagRow);
 
 
-        var list = $('<ul class="collapsible" data-collapsible="accordion"></ul>');
+        var list = $('<ul id="newsList" class="collapsible" data-collapsible="accordion"></ul>');
         for(var i=0; i< JSONarray.length; i++){
             var listItem = $(document.createElement('li'));
 
@@ -130,16 +177,26 @@ route("#AllNews", function (event, $thisContainer){
             listItem.append(collapsibleBody);
             list.append(listItem);
         }
+        var listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append(list);
 
-        $thisContainer.html(list);
+        $thisContainer.html(listRow);
         $thisContainer.prepend($tagRow);
-        $thisContainer.append($selectRow);
+        $thisContainer.append($timeDropdownRow);
 
-        populateSelectList($('#selectTimeDropdown'));
+        populateTimeList($('#timedropdown'));
 
 
         $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
         $('ul.tabs').tabs();    //initialize tabs
+        $('.dropdown-button').dropdown({    //initialize dropdown
+            inDuration: 0,
+            outDuration: 100,
+            gutter: 0,
+
+          }
+        );
+
+        onClickGoBottom($('#timedropdownbutton'), 110);
     };
 
     var postRequest = function (timeConfig, tags){
