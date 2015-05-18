@@ -161,23 +161,11 @@ route("#AllNews", function (event, $thisContainer){
         return $tagRow;
     }
 
-    var onSuccess = function (data, status){
-        //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
-        var JSONarray = data;
-
-
-        var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
-        var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-        var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
-
-        //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
-        var $tagRow = buildTagRow();
-
-        var list = $('<ul id="newsList" class="collapsible" data-collapsible="accordion"></ul>');
-        for(var i=0; i< JSONarray.length; i++){
+    var populateNewsList = function ($list, JSONarray){
+       for(var i=0; i< JSONarray.length; i++){
             var listItem = $(document.createElement('li'));
 
-            var collapsibleHeader = $('<div class="collapsible-header" style="white-space: nowrap; overflow: auto; -webkit-overflow-scrolling: touch;"><i class="medium mdi-av-my-library-books"></i></div>');
+            var collapsibleHeader = $('<div class="collapsible-header" style="white-space: nowrap; overflow: auto; -webkit-overflow-scrolling: touch;"><i class="large mdi-av-my-library-books"></i></div>');
             var collapsibleBody = $('<div class="collapsible-body"></div>');
 
             collapsibleHeader.append(JSONarray[i].fitfeeditemtitle);
@@ -204,9 +192,25 @@ route("#AllNews", function (event, $thisContainer){
 
             listItem.append(collapsibleHeader);
             listItem.append(collapsibleBody);
-            list.append(listItem);
+            $list.append(listItem);
         }
-        var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append(list);
+    }
+
+    var onSuccess = function (data, status){
+        //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
+        var JSONarray = data;
+
+
+        var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
+        var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
+        var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
+
+        //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+        var $tagRow = buildTagRow();
+
+        var $list = $('<ul id="newsList" class="collapsible" data-collapsible="accordion"></ul>');
+        populateNewsList($list, JSONarray);
+        var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append($list);
 
         $thisContainer.html($listRow);
         $thisContainer.prepend($tagRow);
