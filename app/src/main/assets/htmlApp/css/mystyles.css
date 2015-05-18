@@ -15,6 +15,9 @@ html, body {
     margin-right: auto;
 }
 
+.redFont{
+    color: #EE6E73 !important;
+}
 
 .vertcenter{
     position: relative;
@@ -71,20 +74,84 @@ html, body {
 
 }
 
+.avatarCollectionOverflow{
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.avatarCollectionImage{
+    width: 60px !important;
+    height: 60px !important;
+    left: 5px !important;
+    margin-bottom: 25px !important;
+}
+
+.avatarCollectionIcon{
+    width: 60px !important;
+    height: 60px !important;
+    left: 5px !important;
+    margin-bottom: 25px !important;
+
+    font-size: 30px !important;
+
+    /*for centering*/
+    display: flex !important;
+    justify-content: center !important; /* align horizontal */
+    align-items: center !important; /* align vertical */
+}
+
+
+.tags-tabs{
+    width:100%;
+}
+
+.tags-tabs li{
+    list-style-type: none;
+    display: inline;
+    min-width: 25%;
+    padding-right: 20px;
+    padding-left: 20px;
+    position:relative;
+}
+
+.tags-tabs li{
+    text-align:center;
+}
+
+.tags-tabs li a{
+    color: #999999;
+    font-size:1.2em;
+}
+
+.tags-tabs li.activeTag a{
+    color: #EE6E73;
+}
+
+
+
 #AllNews{
     height:100%;
 }
 
 #tagsRow{
-
+    /*white-space: nowrap;*/
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #listRow{
     overflow:scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 
 #timeDropdownRow{
     width:100%;
+}
+
+#timedropdownbutton{
+    height:45px;
 }
 

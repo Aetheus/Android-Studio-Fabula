@@ -49,7 +49,6 @@ route("#AllNews", function (event, $thisContainer){
         });
     }
 
-
     var bindTimeChoice = function ($timeChoice) {
         $timeChoice.click(function (){
             globalSettings.currentFilter = $(this).text();
@@ -64,7 +63,9 @@ route("#AllNews", function (event, $thisContainer){
             if (globalSettings.timeFilters.hasOwnProperty(key)){
                 var choice = key;
                 var $litem = $('<li></li>');
-                var $timeChoice = $('<a href="#!">' + choice +'</a>');
+
+                var cssclass = (globalSettings.currentFilter == choice) ? "redFont" : "";
+                var $timeChoice = $('<a class="'+ cssclass +'" href="#!">' + choice +'</a>');
 
                 bindTimeChoice($timeChoice);
 
@@ -100,7 +101,7 @@ route("#AllNews", function (event, $thisContainer){
 
                     while(!isBottomOfPage){
                             counter++;
-                            console.log("this is loop " + counter);
+                            //console.log("this is loop " + counter);
                             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                                 //we're at the bottom of the page
                                 isBottomOfPage = true;
@@ -127,9 +128,16 @@ route("#AllNews", function (event, $thisContainer){
         $content.height(parentHeight - headerHeight - footerHeight);
     }
 
-
-    var bindTagItems = function ($tagItem){
+    var bindTagItems = function ($tagItem, $tagRow){
         $tagItem.on("click", function(){
+            //scroll to the element and give this the "activeTag" class
+            /*$tagRow.animate({
+                scrollLeft: $(this).parent().position().left - $(this).position().left + 'px'
+            }, 100);*/
+            $tagRow.find(".activeTag").removeClass("activeTag");
+            $(this).parent().addClass("activeTag");
+
+            //make the request
             var extractedTag = $(this).text();
             extractedTag = (extractedTag != "all") ? extractedTag : null;
             globalSettings.currentTags = extractedTag;
@@ -140,60 +148,73 @@ route("#AllNews", function (event, $thisContainer){
     //builds and returns a tagRow jquery elem
     var buildTagRow = function (){
         //replace this placeholder code with actual tags from settings later
-        var tagsArr = ["all", "games", "local", "uni"];
+        var tagsArr = globalSettings.tagsList;
         var currentTag = globalSettings.currentTags;
 
-        var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"></div>');
-        var $columnWrapper = $('<div class="col s12"></div>');
-        var $unorderedList = $('<ul class="tabs"></ul');
+        //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"></div>');
+        //var $columnWrapper = $('<div class="col s12"></div>');
+        //var $unorderedList = $('<ul class="tabs"></ul');
+        var $tagRow = $('<div id="tagsRow" class="no-vertical-margins"></div>');
+        var $columnWrapper = $('<div class=""></div>');
+        var $unorderedList = $('<ul class="tags-tabs"></ul');
 
         for(var i =0; i< tagsArr.length; i++){
-            var cssclass = (currentTag == tagsArr[i]) ? "active" : "";
+            var cssclass = (currentTag == tagsArr[i]) ? "activeTag" : "";
+            if(currentTag == null && tagsArr[i] == "all"){
+                cssclass = "activeTag";
+            }
 
-            var $entry = $('<a href="#' +  tagsArr[i] + '" class="' + cssclass + '">' +  tagsArr[i] + '</a>');
-            var $listItemWrapper = $('<li class="tab col s3"></li>').append($entry);
+            var $entry = $('<a href="#' +  tagsArr[i] + '" class="">' +  tagsArr[i] + '</a>');
+            var $listItemWrapper = $('<li class="' + cssclass + '"></li>').append($entry);
             $unorderedList.append($listItemWrapper);
-            bindTagItems($entry);
+            bindTagItems($entry, $tagRow);
         }
+
 
         $columnWrapper.append($unorderedList);
         $tagRow.append($columnWrapper);
+
+
         return $tagRow;
     }
 
     var populateNewsList = function ($list, JSONarray){
        for(var i=0; i< JSONarray.length; i++){
-            var listItem = $(document.createElement('li'));
+            var $listItem = $('<li class="collection-item avatar"></li>');
+            var $iconImage;
+            var $title = $('<div class="title avatarCollectionOverflow">' + JSONarray[i].fitfeeditemtitle + '</div>');
+            var $content = $('<div></div>');
 
-            var collapsibleHeader = $('<div class="collapsible-header" style="white-space: nowrap; overflow: auto; -webkit-overflow-scrolling: touch;"><i class="large mdi-av-my-library-books"></i></div>');
-            var collapsibleBody = $('<div class="collapsible-body"></div>');
+            //if image exists, use it as thumbnail. else, use a default icon
+            if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
+                $iconImage = $('<img src="' + JSONarray[i].fitfeeditemimagelink + '" class="circle avatarCollectionImage" />');
+            }else{
+                $iconImage = $('<i class="mdi-action-assessment large circle green avatarCollectionIcon"></i>');
+            }
 
-            collapsibleHeader.append(JSONarray[i].fitfeeditemtitle);
+            //if desc exists, use it
+            if (JSONarray[i].fitfeeditemdescription != null && JSONarray[i].fitfeeditemdescription != DBNull){
+                $content.append('<p class="truncate">' + JSONarray[i].fitfeeditemdescription + '</p> </br />');
+            }else{
+            //else if desc doesn't exist, make the title bigger to compensate
+                $title.removeClass("avatarCollectionOverflow");
+            }
 
-            var innerBody = $('<blockquote class="inner-body"  style="overflow: auto;"></blockquote>')
+            //add a link button
             if(JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull){
                 var link = JSONarray[i].fitfeeditemlink;
                 var $linkButton = $('<a class="waves-effect waves-light btn small-side-margins">go to link</a>');
 
                 bindLinkButton(link,$linkButton);
-                innerBody.append($linkButton);
+                //$content.append($linkButton);
             }
-            if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
-                /*var image = $("<img src='" + JSONarray[i].fitfeeditemimagelink + "' />");*/
-                var imageLink = JSONarray[i].fitfeeditemimagelink;
-                var $imageButton = $('<a class="waves-effect waves-light btn small-side-margins">show image</a>');
 
-                bindImageButton(imageLink,$imageButton);
-                innerBody.append($imageButton);
-            }
-            innerBody.append("<br />");
-            innerBody.append(JSONarray[i].fitfeeditemdescription);
-            collapsibleBody.append(innerBody);
-
-            listItem.append(collapsibleHeader);
-            listItem.append(collapsibleBody);
-            $list.append(listItem);
+            $listItem.append($iconImage).append($title).append($content);
+            $list.append($listItem);
         }
+
+        var $enderDiv = $('<div id=enderDiv>----</div>');
+        $list.append($enderDiv);
     }
 
     var onSuccess = function (data, status){
@@ -208,7 +229,7 @@ route("#AllNews", function (event, $thisContainer){
         //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
         var $tagRow = buildTagRow();
 
-        var $list = $('<ul id="newsList" class="collapsible" data-collapsible="accordion"></ul>');
+        var $list = $('<ul id="newsList" class="collection no-vertical-margins"></ul>');
         populateNewsList($list, JSONarray);
         var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append($list);
 
@@ -219,14 +240,22 @@ route("#AllNews", function (event, $thisContainer){
         populateTimeList($('#timedropdown'));
 
 
-        $('.collapsible').collapsible({ accordion:true });  //initialize the collapsible list
-        $('ul.tabs').tabs();    //initialize tabs
-        $('.dropdown-button').dropdown({    //initialize dropdown
-            inDuration: 0,
-            outDuration: 100,
-            gutter: 0,
+        //scroll to active tag
+        if($tagRow.find(".activeTag").length > 0){
+            //console.log("position value: " + $tagRow.find(".activeTag").position().left);
+            /*$tagRow.animate({
+                scrollLeft: $tagRow.find(".activeTag").position().left + 'px'
+            }, 200);*/
+            $tagRow.scrollLeft($tagRow.find(".activeTag").position().left);
+        }
 
-          }
+        //$('ul.tabs').tabs();    //initialize tabs
+        $('.dropdown-button').dropdown(
+            {    //initialize dropdown
+                inDuration: 0,
+                outDuration: 100,
+                gutter: 0,
+            }
         );
 
         onClickGoBottom($('#timedropdownbutton'), 110);

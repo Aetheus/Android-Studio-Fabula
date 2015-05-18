@@ -59,6 +59,7 @@ globalSettings = {
             },
         "all":null,
     },
+    tagsList: ["all", "games", "local", "uni", "more", "filler", "haha", "what?"],
 
     /*set the "current filter" option to this by default; users can switch by tapping on different options.*/
     currentFilter:"last 2 hours",

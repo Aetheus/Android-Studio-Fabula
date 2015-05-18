@@ -43,6 +43,7 @@ public class LandingActivity extends Activity {
         landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
         landingWebview.addJavascriptInterface(this,"FabulaSysApp");
 
+
         landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
 
         //TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
