@@ -1,19 +1,107 @@
 var route = new Router().route;
 
 route("#Settings", function (event, $thisContainer){
-    var $Settings_TimeFilter_Button = $("<a class='btn' href='#Settings_TimeFilter'>Time Filters</a>");
-    $thisContainer.html($Settings_TimeFilter_Button);
+    var $Settings_TimeFilter_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter'>Time Filters</a>");
+    var $Settings_Tags_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Tags'>Tags Settings</a>");
+
+    var $row = $('<div class="row small-vertical-margins"></div>');
+    $row.append('<br />').append($Settings_TimeFilter_Button).append($Settings_Tags_Button);
+
+    $thisContainer.html($row);
 
     //we have to move the route declaration here instead of outside, since Click listeners aren't bound while the elements they're listening for don't exist yet
     route("#Settings_TimeFilter", Route_Settings_TimeFilter);
+    route("#Settings_Tags", Route_Settings_Tags);
 });
 
-var Route_Settings_TimeFilter = function (event, $thisContainer){
-    var $Settings_TimeFilter_View_Button = $("<a class='btn' href='#Settings_TimeFilter_View'>View Time Filters</a>");
-    var $Settings_TimeFilter_AddCustom_Button = $("<a class='btn' href='#Settings_TimeFilter_AddCustom'>Add Custom Time Filters</a>");
+var Route_Settings_Tags = function (event, $thisContainer){
+    var $toplevelrow = $('<div class="row"></div>');
+    var $form = $('<form class="col s12"></form>');
+    var $addTagsButton = $('<a id="SettingsTagsSave" class="col s4 offset-s1 waves-effect waves-light btn light-teal darken-1"><i class="mdi-av-my-library-add left"></i>Add Tag</a>');
+    var $saveButton = $('<a id="SettingsTagsSave" class="col s4 offset-s2 waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save left"></i> Save</a>');
 
-    var $minicontainer = $("<div></div>").append($Settings_TimeFilter_View_Button).append($Settings_TimeFilter_AddCustom_Button);
-    $thisContainer.html($minicontainer);
+    var userTags = globalSettings.tagsList;
+
+    for (var i =0; i< userTags.length; i++){
+        var $row = $('<div class="row"></row>');
+        var $deleteButton = $('<i class="col s1 mdi-navigation-close small" style="margin-top: 15px;"></i>');
+        var $inputFieldWrapper = $('<div class="input-field col s9 offset-s1 "></div>');
+        var $inputField = $('<input class="center-align" value="' +  userTags[i] +  '" type="text"></input>');
+
+        $inputFieldWrapper.append($inputField);
+        $row.append($inputFieldWrapper).append($deleteButton);
+        $form.append($row);
+
+        $deleteButton.on("click", function(){
+            var inputVal = $(this).parent().find("div.input-field > input").val();
+
+            //prevents the "all" tag from being removed
+            if (inputVal == "all"){
+                toaster("The 'all' tag cannot be removed!");
+            }else{
+                $(this).parent().remove();
+            }
+        })
+    }
+
+    $toplevelrow.append('<div class="row no-vertical-margins"><h4 class="col s6 offset-s3 center-align">Tags List</h4></div>').append('<div class="row no-vertical-margins"><p class="col s10 offset-s1 center-align">Edit any of the tags below or click the Add Tags button to add more. Click on the Save button to save changes. </p></div>').append($form).append($('<div class="row"></div>').append($addTagsButton).append($saveButton));
+
+    $saveButton.on("click", function (){
+        var newArr = [];
+        $form.find("div.input-field > input").each(function (){
+            if ($(this).val() != ""){
+                newArr[newArr.length] =  $(this).val();
+            }
+        });
+        globalSettings.tagsList = newArr;
+        toaster("Changes saved");
+
+        //just incase the currentTag was deleted, substitute current tag with a null
+        var isInList = false;
+        for (var i= 0; i< globalSettings.tagsList.length; i++){
+            if (globalSettings.currentTags == globalSettings.tagsList[i]){
+                isInList = true;
+                break;
+            }
+        }
+        if (!isInList){
+            globalSettings.currentTags = null;
+        }
+    });
+
+    $addTagsButton.on("click", function (){
+        var $row = $('<div class="row"></row>');
+        var $deleteButton = $('<i class="col s1 mdi-navigation-close small" style="margin-top: 15px;"></i>');
+        var $inputFieldWrapper = $('<div class="input-field col s9 offset-s1 "></div>');
+        var $inputField = $('<input class="center-align" type="text"></input>');
+
+        $inputFieldWrapper.append($inputField);
+        $row.append($inputFieldWrapper).append($deleteButton);
+        $form.append($row);
+
+        $deleteButton.on("click", function(){
+            var inputVal = $(this).parent().find("div.input-field > input").val();
+
+            //prevents the "all" tag from being removed
+            if (inputVal == "all"){
+                toaster("The 'all' tag cannot be removed!");
+            }else{
+                $(this).parent().remove();
+            }
+        })
+    })
+
+    $thisContainer.html($toplevelrow);
+}
+
+var Route_Settings_TimeFilter = function (event, $thisContainer){
+    var $Settings_TimeFilter_View_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter_View'>View Time Filters</a>");
+    var $Settings_TimeFilter_AddCustom_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter_AddCustom'>Add Custom Time Filters</a>");
+
+    var $row = $('<div class="row small-vertical-margins"></div>');
+    $row.append('<br />').append($Settings_TimeFilter_View_Button).append('<br />').append($Settings_TimeFilter_AddCustom_Button);
+
+    $thisContainer.html($row);
 
     route("#Settings_TimeFilter_View", Route_Settings_TimeFilter_View);
     route("#Settings_TimeFilter_AddCustom", Route_Settings_TimeFilter_AddCustom);
@@ -21,7 +109,7 @@ var Route_Settings_TimeFilter = function (event, $thisContainer){
 
 var Route_Settings_TimeFilter_View = function (event, $thisContainer){
     var $list = $('<ul id="timeFilterList" class="collection with-header"></ul>');
-    var listItems = '<li class="collection-header"><h4>Current Filters</h4><p>Drag the filters up/down to reposition them</p></li>';
+    var listItems = '';
     console.log("debug message - timefilter looks like this now: " + JSON.stringify(globalSettings.timeFilters))
     for (var key in globalSettings.timeFilters){
         console.log("debug message - current key is : " + key);
@@ -35,21 +123,37 @@ var Route_Settings_TimeFilter_View = function (event, $thisContainer){
         saveButtonRow +=    '   </div>'
         saveButtonRow +=    '</div>'
     $list.html(listItems);
-    $thisContainer.html($list).append(saveButtonRow);
 
+    var $header = $('<ul class="collection with-header"><li class="collection-header"><h4>Current Filters</h4></li></ul>');
+    var $listItemWrapper = $('<li class="collection-item"></li>');
+    var $inputWrapper = $('<div class="input-field small-vertical-margins"></div>');
+    var $checkbox = $('<input type="checkbox" class="filled-in" id="sortableLever" />');
+
+    $inputWrapper.append($checkbox).append('<label for="sortableLever">enable repositioning</label>');
+    $header.find(".collection-header").append('<div class="no-vertical-margins">To reposition, check or uncheck the checkbox below. To delete, ensure the checkbox is unchecked and click on the garbage bin icons </div>').append($inputWrapper);
+
+    $thisContainer.html($list).append(saveButtonRow).prepend($header);
+
+
+    //bind the sortability of the #timeFilterList list to our #sortableLever checkbox
+    $("#sortableLever").on("change", function (){
+        var isChecked = $(this).is(':checked');
+        if (isChecked){
+            //make list sortable
+            $('#timeFilterList').sortable();
+        }else{
+            //make list unsortable
+            $('#timeFilterList').sortable("destroy");
+        }
+    });
 
 
     //listener for delete button
     $(".FilterDeleteButton").on("click", function(event){
-        event.preventDefault();
-        event.stopPropogation();
-        event.stopImmediatePropagation();
         var $parent = $(this).closest(".collection-item").remove();
 
     });
 
-        //make list sortable
-        $('#timeFilterList').sortable();
 
     //event listener for the savebutton
     $("#TimeFilterViewSave").on("click", function(){

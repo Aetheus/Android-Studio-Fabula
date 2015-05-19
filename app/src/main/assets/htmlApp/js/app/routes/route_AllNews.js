@@ -8,35 +8,24 @@ route("#AllNews", function (event, $thisContainer){
 
     /*$("section").html('<div class="preloader-wrapper big active"><div class="spinner-layer spinner-blue"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div>');*/
 
-    /*where imagebutton is a jQuery element, and imagelink is a string for a link*/
-    var bindImageButton = function (imageLink,imageButton){
-        imageButton.click(function (){
-            var thisButton = $(this);
+    //opens the link by creating an iframe and appending it to $thisContainer
+    var openLink = function (link){
+        var $iframe = $('<iframe src="' + link +'"></iframe>');
+        var $topBar = $('<div class="topBar"></div>');
 
-            if(thisButton.text() == "show image"){
-                if(thisButton.next("img").length == 0){
-                    var image = new Image();
-                    image.onload = function (){
-                        thisButton.after(image);
-                        $(image).before("<br />");
-                        thisButton.text("hide image");
-                    }
-                    image.onerror = function(errorMsg, url, lineNumber){
-                        errHandler(new Error(errorMsg));
-                    }
-                    image.src = imageLink;
-                }else{
-                    thisButton.siblings.show();
 
-                    thisButton.text("hide image");
-                }
-            }else{
-                thisButton.next("br").hide().next("img").hide();
-                /*thisButton.siblings("br").hide();*/
-                thisButton.text("show image");
-            }
+        var $closeButton = $('<i class="medium mdi-navigation-cancel"></i>');
+        $closeButton.on("click", function(){
+            $(this).parents(".externalContentWrapper").remove();
+        })
 
-        });
+        var $buttonWrapper = $('<span class="closeButtonWrapper"></span>').append($closeButton);
+        $topBar.append($buttonWrapper);
+
+
+
+        var $divWrapper = $('<div class="externalContentWrapper"></div>').append($topBar).append($iframe);
+        $thisContainer.append($divWrapper);
     }
 
     /*where linkButton is a jQuery element, and link is a string for a link*/
@@ -185,6 +174,7 @@ route("#AllNews", function (event, $thisContainer){
             var $title = $('<div class="title avatarCollectionOverflow">' + JSONarray[i].fitfeeditemtitle + '</div>');
             var $content = $('<div></div>');
 
+
             //if image exists, use it as thumbnail. else, use a default icon
             if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
                 $iconImage = $('<img src="' + JSONarray[i].fitfeeditemimagelink + '" class="circle avatarCollectionImage" />');
@@ -192,9 +182,18 @@ route("#AllNews", function (event, $thisContainer){
                 $iconImage = $('<i class="mdi-action-assessment large circle green avatarCollectionIcon"></i>');
             }
 
+
+
             //if desc exists, use it
             if (JSONarray[i].fitfeeditemdescription != null && JSONarray[i].fitfeeditemdescription != DBNull){
                 $content.append('<p class="truncate">' + JSONarray[i].fitfeeditemdescription + '</p> </br />');
+                $content.children(".truncate").on("click", function (){
+                    $(this).removeClass("truncate");
+                    //$(this).parents("li.collection-item.avatar").addClass("y-overflow")
+                    $(this).on("click", function (){
+
+                    })
+                })
             }else{
             //else if desc doesn't exist, make the title bigger to compensate
                 $title.removeClass("avatarCollectionOverflow");
@@ -203,9 +202,15 @@ route("#AllNews", function (event, $thisContainer){
             //add a link button
             if(JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull){
                 var link = JSONarray[i].fitfeeditemlink;
-                var $linkButton = $('<a class="waves-effect waves-light btn small-side-margins">go to link</a>');
 
-                bindLinkButton(link,$linkButton);
+                $iconImage.on("click", function (){
+                    openLink(link);
+                });
+
+                $title.on("click", function (){
+                    openLink(link);
+                });
+                //bindLinkButton(link,$linkButton);
                 //$content.append($linkButton);
             }
 
