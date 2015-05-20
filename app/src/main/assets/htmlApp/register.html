@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="css/jquery-clockpicker.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="css/mystyles.css"  media="screen,projection"/>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+</head>
+
+<body>
+    <div class="navbar-fixed">
+        <nav class="teal lighten-2">    <!--cyan lighten 2 is: #4db6ac -->
+            <a href="#!" class="brand-logo">registration</a>
+            <!--<ul class="right hide-on-med-and-down">
+                <li><a href="#!" id="Nav">First</a></li>
+                <li><a href="#!" id="">Second Sidebar Link</a></li>
+            </ul>-->
+        </nav>
+    </div>
+
+
+    <!-- main content goes here -->
+    <section>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s10 offset-s1">
+                        <p class="center">Fill in the values below and click the submit button to register</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s10 offset-s1">
+                        <input id="userid" type="text" class="validate">
+                        <label class="active" for="userid">User ID</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s10 offset-s1">
+                        <input id="userpw" type="password" class="validate">
+                        <label class="active" for="userpw">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s10 offset-s1">
+                        <input id="pwquestion" type="text" class="validate">
+                        <label class="active" for="pwquestion">Secret Question</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s10 offset-s1">
+                        <input id="pwanswer" type="text" class="validate">
+                        <label class="active" for="pwanswer">Secret Answer</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <a id="registrationButton" class="waves-effect waves-light btn col s10 offset-s1">Submit</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s10 offset-s1">
+                        <a id="backButton" class="waves-effect grey darken-1 waves-light btn col s10 offset-s1">Back</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+
+
+    <!--//require libraries-->
+    <script type="text/javascript" src="js/libs/jquery.js"></script>
+    <script type="text/javascript" src="js/libs/materialize.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-clockpicker.min.js"></script>
+    <script type="text/javascript" src="js/libs/Sortable.min.js"></script>
+    <script type="text/javascript" src="js/libs/Sortable.jquery.binding.js"></script>
+
+
+    <!--//require modules-->
+    <script type="text/javascript" src="js/app/module_errHandler.js"></script>
+    <script type="text/javascript" src="js/app/module_toaster.js"></script>
+
+
+    <!--//require main.js-->
+    <script type="text/javascript" src="js/app/pre_login_registration.js"></script>
+
+</body>
+</html>

@@ -48,7 +48,17 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void onClickRegisterButton(View view){
+        Intent intent = new Intent(this, PreLogin.class);
+        intent.putExtra("mode", "register");
+        this.startActivity(intent);
+    }
 
+    public void onClickResetButton(View view){
+        Intent intent = new Intent(this, PreLogin.class);
+        intent.putExtra("mode", "reset");
+        this.startActivity(intent);
+    }
 
     public void onClickSubmitButton(View view){
         //get the username and password

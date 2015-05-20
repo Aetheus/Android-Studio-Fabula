@@ -50,9 +50,9 @@ public class SetTextViewListener implements CustomListener {
     //overrides interface
     public void callbackMethod(Object... o){
         //we're only expecting one, so only take the "first"
-        text = o[0].toString();
-        view.setText(text);
-        Log.i(TAG,"callback was invoked");
+        //text = o[0].toString();
+        //view.setText(text);
+        //Log.i(TAG,"callback was invoked");
     }
 
 

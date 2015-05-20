@@ -18,5 +18,6 @@
         <item>Link</item>
         <item>Image</item>
     </string-array>
+    <string name="title_activity_pre_login">PreLogin</string>
 
 </resources>

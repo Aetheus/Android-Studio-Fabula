@@ -289,9 +289,16 @@ route("#AllNews", function (event, $thisContainer){
                     if (XHR.responseText == undefined || XHR.responseText == 'undefined'){
                         errHandler(new Error("Unable to get a response from server"));
                     }else{
+                        //console.log("XHR object is " + JSON.stringify(XHR));
+                        //var json = JSON.parse(XHR.responseText);
+                        //errHandler(new Error(json.Message));
                         console.log("XHR object is " + JSON.stringify(XHR));
-                        var json = JSON.parse(XHR.responseText);
-                        errHandler(new Error(json.Message));
+                        var responseText = XHR.responseText;
+                        var errorMessage = responseText.match("<h1>(.*)</h1>")[1];
+                        //match returns an array: the result we want is the second one
+
+                        console.log(errorMessage);
+                        errHandler(new Error(errorMessage));
                     }
                 }
                 /*errHandler(new Error(errorThrown));*/

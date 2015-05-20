@@ -18,29 +18,35 @@
         android:layout_marginTop="111dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="50dp"
+        android:textIsSelectable="true"
+        android:textColorHighlight="#000000"
+        android:textColor="#F0F0F0" />
 
     <EditText
         android:id="@+id/loginUsername"
         android:background="#80FFFFFF"
         android:gravity="center"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:hint="username" />
 
     <EditText
         android:id="@+id/loginPassword"
         android:background="#80FFFFFF"
         android:gravity="center"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:inputType="textPassword"
         android:ems="10"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/loginUsername"
         android:layout_alignLeft="@+id/loginUsername"
-        android:layout_alignStart="@+id/loginUsername" />
+        android:layout_alignStart="@+id/loginUsername"
+        android:hint="password" />
 
     <Button
         android:id="@+id/button"
@@ -48,9 +54,40 @@
         android:layout_height="wrap_content"
         android:text="@string/loginButtonText"
         android:layout_below="@+id/loginPassword"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="38dp"
-        android:onClick="onClickSubmitButton"/>
+        android:onClick="onClickSubmitButton"
+        android:layout_alignRight="@+id/loginPassword"
+        android:layout_alignEnd="@+id/loginPassword"
+        android:layout_alignLeft="@+id/loginPassword"
+        android:layout_alignStart="@+id/loginPassword"
+        android:background="#33CCFF"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#e57373" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register New Account"
+        android:id="@+id/registerButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button"
+        android:layout_marginBottom="34dp"
+        android:onClick="onClickRegisterButton"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Password"
+        android:id="@+id/resetButton"
+        android:layout_alignTop="@+id/registerButton"
+        android:layout_alignRight="@+id/button"
+        android:layout_alignEnd="@+id/button"
+        android:onClick="onClickResetButton"
+        android:textColor="#FFFFFF" />
 
 
 </RelativeLayout>

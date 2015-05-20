@@ -1,9 +1,7 @@
 
-route("#NewsChannels", function (event){
+route("#NewsChannels", function (event, $thisContainer){
         errHandler(new Error("We need to give this a job ^^'' "));
-        /*try{
-            $("section").html("<p class='flow-text'> Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF Welcome from NewsChannel. This is obviously placeholder text. I'mn actrually trying ot overflow the display with text. Wanna help me? <br /><br /><br /><br /><br /><br /><br /><br /> HI HI HI HI HI H IH IH IH I HIH IH IH I HIASDFASDFASDF </p>");
-        }catch(err){
-            return errHandler(err);
-        }*/
+
+
+
 });

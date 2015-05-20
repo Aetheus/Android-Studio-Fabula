@@ -10,9 +10,11 @@ route("#SignOut", function (event, $thisContainer){
     var $content = $(
             '<form class="col s12">'
         +       '<div class="row">'
+        +           '<br />'
         +           '<div class="col s8 offset-s2">'
-        +               '<div> Click the below button to sign out of the current user account (' + FabulaSysUsername + ') </div>'
+        +               '<div class="center"> Click the below button to sign out of the current user account (' + FabulaSysUsername + ') and close the app </div>'
         +           '</div>'
+        +           '<br />'
         +           '<div class="col s8 offset-s2">'
         +               '<a id="toLogout" class="waves-effect waves-light btn col s8 offset-s2">Log Out</a>'
         +           '</div>'
