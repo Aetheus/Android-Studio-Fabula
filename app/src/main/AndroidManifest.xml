@@ -41,6 +41,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar" >
         </activity>
+        <activity
+            android:name=".ExternalPreview"
+            android:label="@string/title_activity_external_preview"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

@@ -10,6 +10,8 @@ route("#AllNews", function (event, $thisContainer){
 
     //opens the link by creating an iframe and appending it to $thisContainer
     var openLink = function (link){
+        FabulaSysApp.openLink(link);
+        /*
         var $iframe = $('<iframe src="' + link +'"></iframe>');
         var $topBar = $('<div class="topBar"></div>');
 
@@ -26,7 +28,7 @@ route("#AllNews", function (event, $thisContainer){
 
 
         var $divWrapper = $('<div class="externalContentWrapper"></div>').append($topBar).append($iframe);
-        $thisContainer.append($divWrapper);
+        $thisContainer.append($divWrapper);*/
     }
 
     /*where linkButton is a jQuery element, and link is a string for a link*/
@@ -201,7 +203,8 @@ route("#AllNews", function (event, $thisContainer){
             }
 
             //add a link button - the immediately invoked function expression is to "freeze" the value of link by providing a function scope
-            var link = (JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull) ? JSONarray[i].fitfeeditemlink : null;
+            //if there is no link, use the channel's URL instead
+            var link = (JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull) ? JSONarray[i].fitfeeditemlink : JSONarray[i].fedfeedchannelurl;
             (function (link){
                 if(link != null){
                     $iconImage.on("click", function (){

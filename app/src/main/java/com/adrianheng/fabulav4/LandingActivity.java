@@ -61,6 +61,14 @@ public class LandingActivity extends Activity {
         runOnUiThread(new LaunchScraper(intent,this));
     }
 
+    @JavascriptInterface
+    public void openLink(String url){
+        Intent intent = new Intent(this,ExternalPreview.class);
+        intent.putExtra("url", url);
+
+        runOnUiThread(new LaunchScraper(intent,this));
+    }
+
 
     @JavascriptInterface
     public void signOut(){

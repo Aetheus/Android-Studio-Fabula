@@ -19,5 +19,6 @@
         <item>Image</item>
     </string-array>
     <string name="title_activity_pre_login">PreLogin</string>
+    <string name="title_activity_external_preview">ExternalPreview</string>
 
 </resources>
