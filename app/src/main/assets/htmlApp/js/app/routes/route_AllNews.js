@@ -13,6 +13,7 @@ route("#AllNews", function (event, $thisContainer){
         var $iframe = $('<iframe src="' + link +'"></iframe>');
         var $topBar = $('<div class="topBar"></div>');
 
+        console.log("provided link is: " + link);
 
         var $closeButton = $('<i class="medium mdi-navigation-cancel"></i>');
         $closeButton.on("click", function(){
@@ -199,20 +200,21 @@ route("#AllNews", function (event, $thisContainer){
                 $title.removeClass("avatarCollectionOverflow");
             }
 
-            //add a link button
-            if(JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull){
-                var link = JSONarray[i].fitfeeditemlink;
+            //add a link button - the immediately invoked function expression is to "freeze" the value of link by providing a function scope
+            var link = (JSONarray[i].fitfeeditemlink != null && JSONarray[i].fitfeeditemlink != DBNull) ? JSONarray[i].fitfeeditemlink : null;
+            (function (link){
+                if(link != null){
+                    $iconImage.on("click", function (){
+                        openLink(link);
+                    });
 
-                $iconImage.on("click", function (){
-                    openLink(link);
-                });
-
-                $title.on("click", function (){
-                    openLink(link);
-                });
-                //bindLinkButton(link,$linkButton);
-                //$content.append($linkButton);
-            }
+                    $title.on("click", function (){
+                        openLink(link);
+                    });
+                    //bindLinkButton(link,$linkButton);
+                    //$content.append($linkButton);
+                }
+            })(link);
 
             $listItem.append($iconImage).append($title).append($content);
             $list.append($listItem);
