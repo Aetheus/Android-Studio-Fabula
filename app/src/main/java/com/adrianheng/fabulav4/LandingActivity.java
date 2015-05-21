@@ -1,20 +1,34 @@
 package com.adrianheng.fabulav4;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aedrianheng.utils.NotificationBroadcastReceiver;
+import com.aedrianheng.utils.NotificationLauncher;
 import com.aedrianheng.utils.htmlApp.LandingWebViewClient;
 import com.aedrianheng.utils.web.ScraperWebChromeClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class LandingActivity extends Activity {
@@ -22,6 +36,10 @@ public class LandingActivity extends Activity {
     protected String username;
     protected String password;
     protected String globalSettingsJSON;
+
+    //used by our backgroundtask
+    protected int requestCode = 163837879;
+    protected int defaultBackgroundInterval = 1;    //measured in minutes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +64,147 @@ public class LandingActivity extends Activity {
 
         landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
 
+        updateCheckTime();
+
+        //get background task settings
+        JSONObject backgroundTaskSettings = getBackgroundTaskSettings();
+        boolean isBackgroundTaskOn = true;
+        int backgroundTaskInterval = 1;
+        try {
+            isBackgroundTaskOn = backgroundTaskSettings.getBoolean("isBackgroundTaskOn");
+            backgroundTaskInterval = backgroundTaskSettings.getInt("backgroundInterval");
+        } catch (JSONException e) {Log.e("LandingActivity", e.getMessage());}
+
+        //if background is set to true, launch it
+        if(isBackgroundTaskOn){
+            Log.i("LandingActivity", "background was set to 'On' on first launch. launching it now");
+            startBackgroundTask(backgroundTaskInterval);
+        }
+        //NotificationTest();
         //TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
         //mainMessage.setText(username + " : " + password);
     }
+
+    //updates the lastCheckTime of our sharedPreferences
+    public void updateCheckTime(){
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+        //get the currenttime as an ISO time string
+        Date timeNow = new Date();
+        TimeZone timeZone= TimeZone.getTimeZone("UTC");
+        DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        dateFormat.setTimeZone(timeZone);
+        String nowTimeString = dateFormat.format(timeNow);
+
+        //update the lastcheckedtime to now
+        sharedPreferences.edit().putString("lastCheckTime", nowTimeString).commit();
+    }
+
+    //start background scheduled task
+    @JavascriptInterface
+    public void startBackgroundTask(int numOfMins){
+        //our alarm's requestCode. we'll need this if we want to shut it down.
+        Intent intent = new Intent(this.getApplicationContext(), NotificationBroadcastReceiver.class);
+        intent.putExtra("username",username);
+        intent.putExtra("password",password);
+
+        int minutes = (60*1000);
+        int intervalTime = numOfMins * minutes;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestCode, intent, Intent.FILL_IN_DATA);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,intervalTime,intervalTime, pendingIntent);
+    }
+
+    @JavascriptInterface
+    public void stopBackgroundTask(){
+        //our alarm's requestCode. we'll need this if we want to shut it down.
+        Intent intent = new Intent(this.getApplicationContext(), NotificationBroadcastReceiver.class);
+        intent.putExtra("username",username);
+        intent.putExtra("password",password);
+
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestCode, intent, Intent.FILL_IN_DATA);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        alarmManager.cancel(pendingIntent);
+    }
+
+    @JavascriptInterface
+    public String getBackgroundTaskSettingsAsJSONString(){
+        JSONObject jsObj = getBackgroundTaskSettings();
+        return jsObj.toString();
+    }
+
+    @JavascriptInterface
+    public JSONObject getBackgroundTaskSettings(){
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+        int backgroundInterval = sharedPreferences.getInt("backgroundInterval", 0);
+        boolean isBackgroundTaskOn = sharedPreferences.getBoolean("isBackgroundTaskOn", false);
+
+        //to check if the keys exist
+        boolean isContainInterval =  sharedPreferences.contains("backgroundInterval");
+        boolean isContainTaskOn =  sharedPreferences.contains("isBackgroundTaskOn");
+
+        //if the backgroundInterval wasn't set, set it to the default of 1 minute
+        if(!isContainInterval){
+            sharedPreferences.edit().putInt("backgroundInterval", defaultBackgroundInterval).commit();
+            backgroundInterval = defaultBackgroundInterval;
+        }
+
+        //if isBackgroundTaskOn was empty, set it to false by default
+        if (!isContainTaskOn){
+            sharedPreferences.edit().putBoolean("isBackgroundTaskOn", false).commit();
+            isBackgroundTaskOn = false;
+        }
+
+        JSONObject returnObj = new JSONObject();
+        try {
+            returnObj.put("backgroundInterval",backgroundInterval);
+            returnObj.put("isBackgroundTaskOn",isBackgroundTaskOn);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("LandingActivity", e.getMessage());
+        }
+        return returnObj;
+    }
+
+    @JavascriptInterface
+    public void setBackgroundTaskSettings(boolean isBackgroundTaskOn, int intervalTime){
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+        sharedPreferences.edit().putInt("backgroundInterval", intervalTime).commit();
+        sharedPreferences.edit().putBoolean("isBackgroundTaskOn", isBackgroundTaskOn).commit();
+
+        Log.i("LandingActivity", "interval: " + intervalTime + " | isBackgroundTaskOn: " + isBackgroundTaskOn);
+        if (!isBackgroundTaskOn){
+            stopBackgroundTask();
+        }else{
+            startBackgroundTask(intervalTime);
+        }
+    }
+
+
+    //temp function to test around with notifications
+    public void NotificationTest(){
+        Context context = this;
+        Intent intent = new Intent(context,LandingActivity.class);
+        int notificationID = 555;
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        String lastTimeString = sharedPreferences.getString("lastCheckTime", null);
+        Date timeNow = new Date();
+            TimeZone timeZone= TimeZone.getTimeZone("UTC");
+            DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+            dateFormat.setTimeZone(timeZone);
+        String nowTimeString = dateFormat.format(timeNow);
+
+        NotificationLauncher NL = new NotificationLauncher(intent,context,"now: " + nowTimeString, "last: " + lastTimeString ,notificationID);
+        NL.launchNotification();
+    }
+
+
 
     @JavascriptInterface
     public void goToScraper(String url){

@@ -3,16 +3,72 @@ var route = new Router().route;
 route("#Settings", function (event, $thisContainer){
     var $Settings_TimeFilter_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter'>Time Filters</a>");
     var $Settings_Tags_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Tags'>Tags Settings</a>");
+    var $Settings_Notifications_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Notifications'>Notifications</a>");
 
     var $row = $('<div class="row small-vertical-margins"></div>');
-    $row.append('<br />').append($Settings_TimeFilter_Button).append($Settings_Tags_Button);
+    $row.append('<br />').append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button);
 
     $thisContainer.html($row);
 
     //we have to move the route declaration here instead of outside, since Click listeners aren't bound while the elements they're listening for don't exist yet
     route("#Settings_TimeFilter", Route_Settings_TimeFilter);
     route("#Settings_Tags", Route_Settings_Tags);
+    route("#Settings_Notifications", Route_Settings_Notifications);
 });
+
+var Route_Settings_Notifications = function (event, $thisContainer){
+    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Notification Settings </h4> <p class="center"> Here you can enable or disable the notifications. Additionally, you can set the frequency of how often they are checked for. </p></div>';
+
+    var jsonNotificationSettings = JSON.parse(FabulaSysApp.getBackgroundTaskSettingsAsJSONString());
+    console.log(jsonNotificationSettings);
+
+    var backgroundInterval = jsonNotificationSettings.backgroundInterval;
+    var isBackgroundTaskOn = jsonNotificationSettings.isBackgroundTaskOn;
+
+
+    var htmlFields      = "";
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((isBackgroundTaskOn) ? ' checked="checked" ' : "") + 'id="NotificationsIsBackgroundTaskOn"  />'
+    htmlFields          +=  '   <label for="NotificationsIsBackgroundTaskOn">toggle background tasks on/off</label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input id="NotificationsBackgroundInterval" value="' + backgroundInterval + '" type="tel" class="validate">'
+    htmlFields          +=  '   <label class="active" for="NotificationsBackgroundInterval">Notification Checking Intervals (in minutes) </label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <a id="SettingsNotificationsSave" class="col s6 offset-s6 waves-effect waves-light btn light-blue darken-1">'
+    htmlFields          +=  '       <i class="mdi-content-save left"></i> Save'
+    htmlFields          +=  '   </a>'
+    htmlFields          +=  '</div>'
+    var $saveButton = $('<a id="SettingsNotificationsSave" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save left"></i> Save</a>');
+
+
+    var $row =
+        $('<div class="row small-vertical-margins"></div>').append(htmlTitle).append("<br />").append(htmlFields);
+
+    $thisContainer.html($row);
+
+    $("#SettingsNotificationsSave").on("click", function (){
+        var interval = parseInt($("#NotificationsBackgroundInterval").val());
+        var isOn = $("#NotificationsIsBackgroundTaskOn").is(":checked");
+
+        var isNumber = !isNaN(parseFloat(interval)) && isFinite(interval);
+
+        if(isNumber){
+            //boolean isBackgroundTaskOn, int intervalTime
+            FabulaSysApp.setBackgroundTaskSettings(isOn,interval);
+            toaster("Save successful");
+        }else{
+            errHandler(new Error("Please enter only numbers"));
+        }
+    });
+}
 
 var Route_Settings_Tags = function (event, $thisContainer){
     var $toplevelrow = $('<div class="row"></div>');

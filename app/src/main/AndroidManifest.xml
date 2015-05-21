@@ -47,6 +47,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar" >
         </activity>
+        <receiver android:name="com.aedrianheng.utils.NotificationBroadcastReceiver" >
+        </receiver>
     </application>
 
 </manifest>

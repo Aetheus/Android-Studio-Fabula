@@ -72,8 +72,8 @@ public class CustomWebRequest {
 
 
             StringEntity entity = new StringEntity(jsobj.toString());
-            Log.i(TAG,"The JSONObject in toString looks like this: " + jsobj.toString());
-            Log.i(TAG,"The entity in toString looks like this: " );
+            //Log.i(TAG,"The JSONObject in toString looks like this: " + jsobj.toString());
+            //Log.i(TAG,"The entity in toString looks like this: " );
             post.setHeader("Content-type", "application/json");
             post.setEntity(entity);
 
