@@ -48,11 +48,14 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
             int ourNotifyID = 555;
             int rowcount = 0;
 
+            boolean isErrorFree = true;
+
             try{
                 JSONObject tempJson = new JSONObject((String) o[0]);
                 rowcount = tempJson.getInt("rowCount");
             }catch (Exception e){
                 Log.e(listenerType(), e.getMessage());
+                isErrorFree = false;
             }
 
             Log.i(listenerType(),"rowcount: " + rowcount);
@@ -79,6 +82,11 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
                 Log.i(listenerType(),"No new rows, so no notification launched");
             }
 
+            if(isErrorFree){
+                updateCheckTime(context);
+            }else{
+                Log.i(listenerType(), "An error occured while parsing the JSON, so we won't update this time. It's safe, and likely just bcuz no internet");
+            }
         }
     }
 
@@ -126,8 +134,13 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
             String password = intent.getStringExtra("password");
 
             String startTime = getLastCheckTime(context);
-            updateCheckTime(context);
-            String endTime = getLastCheckTime(context);
+            //get the currenttime as an ISO time string
+                Date timeNow = new Date();
+                TimeZone timeZone= TimeZone.getTimeZone("UTC");
+                DateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+                dateFormat.setTimeZone(timeZone);
+                String nowTimeString = dateFormat.format(timeNow);
+            String endTime = nowTimeString;
 
 
             ServiceCommListener SCL = new ServiceCommListener(context,intent);
