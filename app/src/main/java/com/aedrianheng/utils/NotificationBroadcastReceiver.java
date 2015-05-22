@@ -64,8 +64,11 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
 
             //rowcount > 0
             if(rowcount > 0){
+                Intent mainActivityIntent = new Intent(context, MainActivity.class);
+                mainActivityIntent.putExtra("isFromNotification",true);
+
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 1,
-                        new Intent(context, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                        mainActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 String title = "Fabula: " + rowcount + " new news items";
                 String message = "click to go to Fabula app";

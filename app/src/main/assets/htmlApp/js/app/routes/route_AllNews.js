@@ -280,6 +280,7 @@ route("#AllNews", function (event, $thisContainer){
             timerange:timeConfig,
             tags:tags
         };
+
         console.log("Request posted with the following params: " + JSON.stringify(requestParams));
 
         $.ajax({
@@ -324,7 +325,15 @@ route("#AllNews", function (event, $thisContainer){
 
     }
 
+
     var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
     var currentTag = globalSettings.currentTags;
+
+    //isPendingNotification and notificationFilter come from our app's LandingWebViewClient in the LandingActivity
+    if(typeof isPendingFromNotification != "undefined" && isPendingFromNotification){
+        currentTimeConfig = notificationFilter;
+        console.log("sending news request that originated from a notification");
+    }
+
     postRequest(currentTimeConfig,currentTag);
 });

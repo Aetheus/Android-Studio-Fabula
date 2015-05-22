@@ -30,6 +30,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent starterIntent = this.getIntent();
+        boolean isFromNotification = false;
+        if (starterIntent.hasExtra("isFromNotification")){
+            isFromNotification = starterIntent.getBooleanExtra("IsFromNotification", false);
+        }
+
+
 
         SharedPreferences sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String savedUsername = sharedPreferences.getString("username",null);
@@ -44,6 +51,7 @@ public class MainActivity extends Activity {
             Intent landingPageIntent = new Intent(this,LandingActivity.class);
             landingPageIntent.putExtra("USERNAME", savedUsername);
             landingPageIntent.putExtra("PASSWORD", savedPassword);
+            landingPageIntent.putExtra("isFromNotification", isFromNotification);
             this.startActivity(landingPageIntent);
             this.finish();
         }

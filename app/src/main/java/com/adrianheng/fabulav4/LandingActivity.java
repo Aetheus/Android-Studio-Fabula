@@ -50,18 +50,22 @@ public class LandingActivity extends Activity {
         NotificationLauncher NL = new NotificationLauncher(555,this.getApplicationContext());
         NL.cancelNotification();
 
-        //get the intent that started tbis activity, and extract the sent USERNAME and PASSWORD from it
-        Intent ourStarter = getIntent();
-        this.username = ourStarter.getStringExtra("USERNAME");
-        this.password = ourStarter.getStringExtra("PASSWORD");
 
         //get the globalSettings object (serialized in JSON)
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         this.globalSettingsJSON = sharedPreferences.getString("globalSettings", null);
 
+        //get the intent that started tbis activity, and extract the sent USERNAME and PASSWORD from it, as well as the flag for whether or not the activity was started from a notification
+        Intent ourStarter = getIntent();
+        this.username = ourStarter.getStringExtra("USERNAME");
+        this.password = ourStarter.getStringExtra("PASSWORD");
+        boolean isFromNotification = ourStarter.getBooleanExtra("isFromNotification", false);
+        String lastCheckTime = sharedPreferences.getString("lastCheckTime", null);
+
+
         WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
         landingWebview.getSettings().setJavaScriptEnabled(true);
-        landingWebview.setWebViewClient(new LandingWebViewClient(username, password, globalSettingsJSON));
+        landingWebview.setWebViewClient(new LandingWebViewClient(username, password, globalSettingsJSON,lastCheckTime,isFromNotification));
         landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
         landingWebview.addJavascriptInterface(this,"FabulaSysApp");
 
@@ -71,7 +75,6 @@ public class LandingActivity extends Activity {
         landingWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
-
 
         updateCheckTime();
 
