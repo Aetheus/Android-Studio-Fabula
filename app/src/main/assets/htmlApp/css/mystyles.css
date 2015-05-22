@@ -10,6 +10,10 @@ html, body {
     font-size:small;
 }
 
+.boldFont{
+    font-weight:600;
+}
+
 .center {
     margin-left: auto;
     margin-right: auto;
@@ -55,7 +59,17 @@ html, body {
     margin-bottom:-15px;
 }
 
+.displayTable{
+    display:table;
+}
 
+.overflow-y-auto{
+    overflow-y:auto;
+}
+
+.itemDescription{
+    overflow-y:auto;
+}
 
 .mySmallText{
     font-size:x-small;

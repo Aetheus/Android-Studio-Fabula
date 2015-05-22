@@ -8,6 +8,49 @@ route("#AllNews", function (event, $thisContainer){
 
     /*$("section").html('<div class="preloader-wrapper big active"><div class="spinner-layer spinner-blue"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div>');*/
 
+    var timeAgo = function (date) {
+        var seconds = Math.floor((new Date() - date) / 1000);
+
+        var interval = Math.floor(seconds / 31536000);
+        if (interval > 1) {
+            return interval + " years";
+        }
+
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) {
+            return interval + " months";
+        }
+
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) {
+            return interval + " days";
+        }
+
+
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) {
+            return interval + " hours";
+        }
+
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) {
+            return interval + " minutes";
+        }
+
+        return Math.floor(seconds) + " seconds";
+    }
+
+    var linesOccupiedByElement = function ($element){
+        var DOMelement = $element[0];
+        var height = DOMelement.offsetHeight;
+        var lineHeight = parseInt($element.css("line-height").slice(0,-2) , 10);
+
+
+        //console.log("lines: " + (height/lineHeight) + " || flooredLines: " + Math.floor(height/lineHeight));
+        lines = Math.floor(height/lineHeight);
+        return lines;
+    }
+
     //opens the link by creating an iframe and appending it to $thisContainer
     var openLink = function (link){
         FabulaSysApp.openLink(link);
@@ -170,11 +213,46 @@ route("#AllNews", function (event, $thisContainer){
         return $tagRow;
     }
 
+
+    //to be called by onSuccess ONLY
+    var touchUpNewsList = function ($list){
+
+        //trim titles that are too long
+        $list.find("li.collection-item").each(function (){
+
+            var $listItem = $(this);
+            var $title = $listItem.find(".title");
+            var isDescription = $listItem.find(".itemDescription").length > 0 ? true : false;
+
+            var occupiedLines = linesOccupiedByElement($title);
+
+            //(function (occupiedLines,$listItem,$title,isDescription){
+                if((occupiedLines >= 2 && isDescription) || (occupiedLines >= 3) ){
+                    $title.addClass("truncate");
+
+
+                    //add another listener to toggle news link
+                    $title.on("click", function (){
+                        $title.toggleClass("truncate");
+
+                    });
+                }
+
+                //we need 3 lines per news item to look tidy. if we don't have 3 lines ... make margins compensate.
+                if((occupiedLines == 1) && (!isDescription) || (occupiedLines >= 3) && (!isDescription) ){
+                    $title.css('margin-bottom', $title.css("line-height") );
+                }
+            //})(occupiedLines,$listItem,$title,isDescription);
+
+        });
+    }
+
     var populateNewsList = function ($list, JSONarray){
        for(var i=0; i< JSONarray.length; i++){
-            var $listItem = $('<li class="collection-item avatar"></li>');
+            var itemID = JSONarray[i].fitfeeditemid;
+            var $listItem = $('<li class="collection-item avatar overflow-y-auto" ></li>');
             var $iconImage;
-            var $title = $('<div class="title avatarCollectionOverflow">' + JSONarray[i].fitfeeditemtitle + '</div>');
+            var $title = $('<div  class="title avatarCollectionOverflow boldFont">' + JSONarray[i].fitfeeditemtitle + '</div>'); //id="NewsItem' + itemID + 'Title"
             var $content = $('<div></div>');
 
 
@@ -186,21 +264,20 @@ route("#AllNews", function (event, $thisContainer){
             }
 
 
-
+            $title.removeClass("avatarCollectionOverflow");
             //if desc exists, use it
             if (JSONarray[i].fitfeeditemdescription != null && JSONarray[i].fitfeeditemdescription != DBNull){
-                $content.append('<p class="truncate">' + JSONarray[i].fitfeeditemdescription + '</p> </br />');
+                var feedItemDesc = JSONarray[i].fitfeeditemdescription.replace(/(\r\n|\n|\r)/gm," ");   //get the description, but replace all linebreaks with a space to preserve our formatting
+                $content.append('<div class="itemDescription truncate">' + feedItemDesc + '</div>');
                 $content.children(".truncate").on("click", function (){
-                    $(this).removeClass("truncate");
+                    $(this).toggleClass("truncate");
                     //$(this).parents("li.collection-item.avatar").addClass("y-overflow")
-                    $(this).on("click", function (){
-
-                    })
-                })
-            }else{
-            //else if desc doesn't exist, make the title bigger to compensate
-                $title.removeClass("avatarCollectionOverflow");
+                });
             }
+
+            var timeSinceNow = timeAgo(new Date(JSONarray[i].fittimestamp));
+            $content.append('<p class="right">' + timeSinceNow +' ago </p>');
+
 
             //add a link button - the immediately invoked function expression is to "freeze" the value of link by providing a function scope
             //if there is no link, use the channel's URL instead
@@ -221,7 +298,10 @@ route("#AllNews", function (event, $thisContainer){
 
             $listItem.append($iconImage).append($title).append($content);
             $list.append($listItem);
+
+
         }
+
 
         var $enderDiv = $('<div id="enderDiv" class="center">----</div>');
         $list.append($enderDiv);
@@ -269,7 +349,8 @@ route("#AllNews", function (event, $thisContainer){
         );
 
         onClickGoBottom($('#timedropdownbutton'), 110);
-        resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"))
+        resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
+        touchUpNewsList($list);
     };
 
     var postRequest = function (timeConfig, tags){
