@@ -228,14 +228,7 @@ route("#AllNews", function (event, $thisContainer){
 
             //(function (occupiedLines,$listItem,$title,isDescription){
                 if((occupiedLines >= 2 && isDescription) || (occupiedLines >= 3) ){
-                    $title.addClass("truncate");
-
-
-                    //add another listener to toggle news link
-                    $title.on("click", function (){
-                        $title.toggleClass("truncate");
-
-                    });
+                    $title.addClass("avatarCollectionOverflow");
                 }
 
                 //we need 3 lines per news item to look tidy. if we don't have 3 lines ... make margins compensate.
@@ -250,9 +243,9 @@ route("#AllNews", function (event, $thisContainer){
     var populateNewsList = function ($list, JSONarray){
        for(var i=0; i< JSONarray.length; i++){
             var itemID = JSONarray[i].fitfeeditemid;
-            var $listItem = $('<li class="collection-item avatar overflow-y-auto" ></li>');
+            var $listItem = $('<li class="collection-item avatar" ></li>');
             var $iconImage;
-            var $title = $('<div  class="title avatarCollectionOverflow boldFont">' + JSONarray[i].fitfeeditemtitle + '</div>'); //id="NewsItem' + itemID + 'Title"
+            var $title = $('<div  class="title boldFont">' + JSONarray[i].fitfeeditemtitle + '</div>'); //id="NewsItem' + itemID + 'Title"
             var $content = $('<div></div>');
 
 
@@ -264,15 +257,15 @@ route("#AllNews", function (event, $thisContainer){
             }
 
 
-            $title.removeClass("avatarCollectionOverflow");
+            //$title.removeClass("avatarCollectionOverflow");
             //if desc exists, use it
             if (JSONarray[i].fitfeeditemdescription != null && JSONarray[i].fitfeeditemdescription != DBNull){
                 var feedItemDesc = JSONarray[i].fitfeeditemdescription.replace(/(\r\n|\n|\r)/gm," ");   //get the description, but replace all linebreaks with a space to preserve our formatting
-                $content.append('<div class="itemDescription truncate">' + feedItemDesc + '</div>');
-                $content.children(".truncate").on("click", function (){
+                $content.append('<div class="itemDescription avatarCollectionOverflow">' + feedItemDesc + '</div>');
+                /*$content.children(".truncate").on("click", function (){
                     $(this).toggleClass("truncate");
                     //$(this).parents("li.collection-item.avatar").addClass("y-overflow")
-                });
+                });*/
             }
 
             var timeSinceNow = timeAgo(new Date(JSONarray[i].fittimestamp));
