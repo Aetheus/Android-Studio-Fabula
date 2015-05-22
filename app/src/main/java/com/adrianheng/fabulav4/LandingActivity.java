@@ -46,6 +46,10 @@ public class LandingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
+        //if the notification message is still up, kill it
+        NotificationLauncher NL = new NotificationLauncher(555,this.getApplicationContext());
+        NL.cancelNotification();
+
         //get the intent that started tbis activity, and extract the sent USERNAME and PASSWORD from it
         Intent ourStarter = getIntent();
         this.username = ourStarter.getStringExtra("USERNAME");

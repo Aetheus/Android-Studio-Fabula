@@ -19,7 +19,7 @@ public class NotificationLauncher {
     String title;
     String message;
 
-
+    //to launch a notification, use this constructor
     public NotificationLauncher(Intent intent, Context context, String title, String message, int notifyID){
         this.intent = intent;
         this.context = context;
@@ -29,6 +29,22 @@ public class NotificationLauncher {
         this.message = message;
     }
 
+    //otherwise, if you only want to cancel a notification, use this one
+    public NotificationLauncher(int notifyID, Context context){
+        this.context = context;
+        this.notifyID = notifyID;
+    }
+
+
+    public void cancelNotification(){
+        //notification manager is what will launch our notifications
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        // having a notifyID lets us update this later on if we need to
+        mNotificationManager.cancel(notifyID);
+    }
 
 
     public void launchNotification(){

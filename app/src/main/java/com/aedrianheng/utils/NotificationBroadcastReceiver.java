@@ -68,7 +68,8 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
                         new Intent(context, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
 
                 String title = "Fabula: " + rowcount + " new news items";
-                String message = new Date().toString();
+                String message = "click to go to Fabula app";
+                //String message = new Date().toString();
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
