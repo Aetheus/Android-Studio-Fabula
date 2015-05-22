@@ -12,6 +12,8 @@ public class LandingWebViewClient extends WebViewClient{
     String password;
     String globalSettingsJSON;
 
+    int numOfPageLoads = 0;
+
     public LandingWebViewClient(String username, String password, String globalSettingsJSON){
         super();
         this.username = username;
@@ -22,11 +24,20 @@ public class LandingWebViewClient extends WebViewClient{
 
     @Override
     public void onPageFinished(WebView view, String url){
-        view.loadUrl("javascript: var FabulaSysUsername = '" + username + "'");
-        view.loadUrl("javascript: var FabulaSysPassword = '" + password + "'");
+        //run this only ONCE
+        if(numOfPageLoads == 0){
+            view.loadUrl("javascript: var FabulaSysUsername = '" + username + "'");
+            view.loadUrl("javascript: var FabulaSysPassword = '" + password + "'");
 
-        if (globalSettingsJSON != null){
-            view.loadUrl("javascript: globalSettings = JSON.parse('" + globalSettingsJSON + "')");
+            if (globalSettingsJSON != null){
+                view.loadUrl("javascript: globalSettings = JSON.parse('" + globalSettingsJSON + "')");
+            }
+
+            //TRIGGER THE NEWS ROUTE
+            //$('a[href=#AllNews]').trigger('click');
+            view.loadUrl("javascript: $('a[href=#AllNews]').trigger('click')");
         }
+
+        numOfPageLoads++;
     }
 }

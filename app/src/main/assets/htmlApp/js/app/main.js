@@ -25,4 +25,6 @@ $(document).ready(function(){
 
 
     //toaster("Resolution is :" + screen.width + " x " + screen.height);
+
+
 });

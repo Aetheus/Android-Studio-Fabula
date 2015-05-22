@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.adrianheng.fabulav4.LandingActivity;
+import com.adrianheng.fabulav4.MainActivity;
 import com.adrianheng.fabulav4.R;
 
 import org.json.JSONException;
@@ -60,9 +61,11 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
 
             Log.i(listenerType(),"rowcount: " + rowcount);
 
+
+            //rowcount > 0
             if(rowcount > 0){
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 1,
-                        new Intent(context, LandingActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                        new Intent(context, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
 
                 String title = "Fabula: " + rowcount + " new news items";
                 String message = new Date().toString();
@@ -83,7 +86,8 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
             }
 
             if(isErrorFree){
-                updateCheckTime(context);
+                //updateCheckTime(context);
+                Log.i(listenerType(), "No errors occurred while parsing the JSON. However, we've moved updating the lastCheckTime to our html5's AllNews route, so we're not updating it here");
             }else{
                 Log.i(listenerType(), "An error occured while parsing the JSON, so we won't update this time. It's safe, and likely just bcuz no internet");
             }

@@ -223,7 +223,7 @@ route("#AllNews", function (event, $thisContainer){
             $list.append($listItem);
         }
 
-        var $enderDiv = $('<div id=enderDiv>----</div>');
+        var $enderDiv = $('<div id="enderDiv" class="center">----</div>');
         $list.append($enderDiv);
     }
 
@@ -274,6 +274,14 @@ route("#AllNews", function (event, $thisContainer){
 
     var postRequest = function (timeConfig, tags){
         console.log("Request posted with a timeConfig: " + JSON.stringify(timeConfig) + " and tag: " + tags);
+        var requestParams = {
+            userid:FabulaSysUsername,
+            password:FabulaSysPassword,
+            timerange:timeConfig,
+            tags:tags
+        };
+        console.log("Request posted with the following params: " + JSON.stringify(requestParams));
+
         $.ajax({
             method: "POST",
             url: "https://fabula-node.herokuapp.com/usersfeeditems",
@@ -310,6 +318,7 @@ route("#AllNews", function (event, $thisContainer){
             },
             success: function(data, status){
                 onSuccess(data, status);
+                FabulaSysApp.updateCheckTime(); //update the last checked time
             }
         });
 

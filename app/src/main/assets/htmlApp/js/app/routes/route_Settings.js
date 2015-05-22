@@ -123,6 +123,8 @@ var Route_Settings_Tags = function (event, $thisContainer){
         if (!isInList){
             globalSettings.currentTags = null;
         }
+
+        globalSettingsSave();
     });
 
     $addTagsButton.on("click", function (){

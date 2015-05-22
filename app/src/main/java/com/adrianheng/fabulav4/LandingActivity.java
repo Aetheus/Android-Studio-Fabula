@@ -61,8 +61,13 @@ public class LandingActivity extends Activity {
         landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
         landingWebview.addJavascriptInterface(this,"FabulaSysApp");
 
+        //allows file access from urls
+        landingWebview.getSettings().setAllowFileAccess(true);
+        landingWebview.getSettings().setAllowFileAccessFromFileURLs(true);
+        landingWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         landingWebview.loadUrl("file:///android_asset/htmlApp/index.html");
+
 
         updateCheckTime();
 
@@ -86,6 +91,7 @@ public class LandingActivity extends Activity {
     }
 
     //updates the lastCheckTime of our sharedPreferences
+    @JavascriptInterface
     public void updateCheckTime(){
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
@@ -98,6 +104,7 @@ public class LandingActivity extends Activity {
 
         //update the lastcheckedtime to now
         sharedPreferences.edit().putString("lastCheckTime", nowTimeString).commit();
+        Log.i("LandingActivity", "lastCheckTime has been updated to: " + nowTimeString);
     }
 
     //start background scheduled task
