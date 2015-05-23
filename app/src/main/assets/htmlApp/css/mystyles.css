@@ -187,6 +187,19 @@ html, body {
     height:45px;
 }
 
+#sidebarGreeting{
+    border-bottom: 1px solid gray;
+    margin-top: -11px;
+    padding-top:15px;
+    max-height:150px;
+    overflow: auto;
+}
+
+#sidebarGreetingText{
+    text-align:justify;
+    color: white;
+}
+
 .externalContentWrapper{
     height:100%;
     width:100%;

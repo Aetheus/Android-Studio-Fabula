@@ -13,7 +13,7 @@ route("#StartScraper", function (event, $thisContainer){
         +   '<form class="col s12">'
         +       '<div class="row" style="margin-bottom: 0px;"> <h4 class="center"> Subscribe </h4> </div>'
         +       '<div class="row no-vertical-margins">'
-        +           '<div class="input-field col s10 offset-s1"> enter the exact URL of the site you wish to subscribe to in order to start the web scraper</div>'
+        +           '<div class="input-field col s10 offset-s1 center" style="text-align: justify;"> enter the exact URL of the site you wish to subscribe to in order to start the web scraper</div>'
         +       '</div>'
         +       '<div class="row no-vertical-margins">'
         +           '<div class="input-field col s10 offset-s1">'

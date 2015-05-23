@@ -81,7 +81,14 @@ route("#NewsChannels", function (event, $thisContainer){
     }
 
     var onSuccess = function (rows){
-        $thisContainer.html("<div class='row'>  <div class='col s10 offset-s1 center'> <h4> Channels </h4> </div> </div>");
+        $thisContainer.html("<div class='row' style='margin-bottom: 0px;'> <div class='col s10 offset-s1 center'> <h4> Channels </h4> </div> </div>");
+        $thisContainer.append(
+            '<div class="row">'
+        +   '   <div class="col s10 offset-s1 center" style="text-align: justify;">'
+        +   '       Here you can edit settings for your currently subscribed channels or delete them. Click on the save changes button to commit your changes'
+        +   '   </div>'
+        +   '</div>'
+        )
         for(var i=0; i< rows.length; i++){
             var channelID   = rows[i].fedfeedchannelid   !== null ? rows[i].fedfeedchannelid   : "";
             var channelName = rows[i].fedfeedchannelname !== null ? rows[i].fedfeedchannelname : "";
@@ -102,8 +109,8 @@ route("#NewsChannels", function (event, $thisContainer){
             content +=      '               </div>'
             content +=      '           </div>'
             content +=      '           <div class="card-action">'
-            content +=      '               <a id="channel'+channelID+'DeleteButton" class="waves-effect waves-teal btn-flat red  lighten-3 center white-text col s4 offset-s1" href="#">Delete</a>'
-            content +=      '               <a id="channel'+channelID+'SaveButton"   class="waves-effect waves-teal btn-flat blue lighten-3 center white-text " href="#">Save Changes</a>'
+            content +=      '               <a id="channel'+channelID+'DeleteButton" class="waves-effect waves-teal btn-flat red  lighten-2 center white-text col s4 offset-s1" href="#">Delete</a>'
+            content +=      '               <a id="channel'+channelID+'SaveButton"   class="waves-effect waves-teal btn-flat blue lighten-2 center white-text " href="#">Save Changes</a>'
             content +=      '           </div>'
             content +=      '       </div>'
             content +=      '   </div>'

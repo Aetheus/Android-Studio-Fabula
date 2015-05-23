@@ -55,6 +55,8 @@ public class LandingWebViewClient extends WebViewClient{
                 view.loadUrl("javascript: globalSettings = JSON.parse('" + globalSettingsJSON + "')");
             }
 
+            view.loadUrl("javascript: $('#sidebarGreetingText').text('" + username + "\\'s dashboard');");
+
             Log.i(tag, "isFromNotification flag is " + isFromNotification);
             if(isFromNotification){
                 //get the currenttime as an ISO time string
@@ -75,7 +77,9 @@ public class LandingWebViewClient extends WebViewClient{
 
                 view.loadUrl("javascript: isPendingFromNotification = true");
                 view.loadUrl("javascript: notificationFilter = " + notificationFilter);
+
             }
+
 
 
             //TRIGGER THE NEWS ROUTE
