@@ -320,8 +320,6 @@ route("#AllNews", function (event, $thisContainer){
             })(link);
 
             //add backgorund colour if applicable
-            console.log("backgorund colour: " + JSONarray[i].fedfeedchannelcolour);
-
             var backgroundColour = JSONarray[i].fedfeedchannelcolour;
             if(backgroundColour){
                 $listItem.addClass(backgroundColour);
