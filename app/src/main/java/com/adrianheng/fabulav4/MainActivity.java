@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
+    public final String tag = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +36,9 @@ public class MainActivity extends Activity {
         Intent starterIntent = this.getIntent();
         boolean isFromNotification = false;
         if (starterIntent.hasExtra("isFromNotification")){
-            isFromNotification = starterIntent.getBooleanExtra("IsFromNotification", false);
+            isFromNotification = starterIntent.getBooleanExtra("isFromNotification", false);
         }
-
+        Log.i(tag,"isFromNotification flag is: " + isFromNotification);
 
 
         SharedPreferences sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);

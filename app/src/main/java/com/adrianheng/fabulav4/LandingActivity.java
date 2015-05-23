@@ -41,6 +41,8 @@ public class LandingActivity extends Activity {
     protected int requestCode = 163837879;
     protected int defaultBackgroundInterval = 1;    //measured in minutes
 
+    private final String tag = "LandingActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,8 @@ public class LandingActivity extends Activity {
         this.password = ourStarter.getStringExtra("PASSWORD");
         boolean isFromNotification = ourStarter.getBooleanExtra("isFromNotification", false);
         String lastCheckTime = sharedPreferences.getString("lastCheckTime", null);
-
+        Log.i(tag,"isFromNotification flag is : " + isFromNotification);
+        Log.i(tag,"lastCheckTime is : " + isFromNotification);
 
         WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
         landingWebview.getSettings().setJavaScriptEnabled(true);
@@ -89,7 +92,7 @@ public class LandingActivity extends Activity {
 
         //if background is set to true, launch it
         if(isBackgroundTaskOn){
-            Log.i("LandingActivity", "background was set to 'On' on first launch. launching it now");
+            Log.i(tag, "background was set to 'On' on first launch. launching it now");
             startBackgroundTask(backgroundTaskInterval);
         }
         //NotificationTest();
@@ -111,7 +114,7 @@ public class LandingActivity extends Activity {
 
         //update the lastcheckedtime to now
         sharedPreferences.edit().putString("lastCheckTime", nowTimeString).commit();
-        Log.i("LandingActivity", "lastCheckTime has been updated to: " + nowTimeString);
+        Log.i(tag, "lastCheckTime has been updated to: " + nowTimeString);
     }
 
     //start background scheduled task
@@ -191,7 +194,7 @@ public class LandingActivity extends Activity {
         sharedPreferences.edit().putInt("backgroundInterval", intervalTime).commit();
         sharedPreferences.edit().putBoolean("isBackgroundTaskOn", isBackgroundTaskOn).commit();
 
-        Log.i("LandingActivity", "interval: " + intervalTime + " | isBackgroundTaskOn: " + isBackgroundTaskOn);
+        Log.i(tag, "interval: " + intervalTime + " | isBackgroundTaskOn: " + isBackgroundTaskOn);
         if (!isBackgroundTaskOn){
             stopBackgroundTask();
         }else{

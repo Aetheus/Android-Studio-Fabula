@@ -23,17 +23,29 @@ route("#AllNews", function (event, $thisContainer){
 
         interval = Math.floor(seconds / 86400);
         if (interval > 1) {
+            if(interval == 1) {
+                return interval + "day";
+            }
             return interval + " days";
         }
 
 
         interval = Math.floor(seconds / 3600);
-        if (interval > 1) {
+        if (interval >= 1) {
+            if (interval == 1) {
+                var minuteTime = Math.floor(seconds / 60);
+                minuteTime -= 60;
+                var minutesString = (minuteTime > 0) ? minuteTime + ( minuteTime>1 ? " minutes" : " minute") : "";
+                return (interval + " hour and " + minutesString);
+            }
             return interval + " hours";
         }
 
         interval = Math.floor(seconds / 60);
         if (interval > 1) {
+            if(interval == 1){
+                return interval + " minute";
+            }
             return interval + " minutes";
         }
 
@@ -215,7 +227,7 @@ route("#AllNews", function (event, $thisContainer){
 
 
     //to be called by onSuccess ONLY
-    var touchUpNewsList = function ($list){
+    var touchUpNewsList = function ($list, isRequestFromNotification){
 
         //trim titles that are too long
         $list.find("li.collection-item").each(function (){
@@ -229,6 +241,9 @@ route("#AllNews", function (event, $thisContainer){
             //(function (occupiedLines,$listItem,$title,isDescription){
                 if((occupiedLines >= 2 && isDescription) || (occupiedLines >= 3) ){
                     $title.addClass("avatarCollectionOverflow");
+
+                    //var doubleLineHeight = parseInt( $title.css("line-height").slice(0,-2)  );
+                    //$title.css("height", doubleLineHeight + "px");
                 }
 
                 //we need 3 lines per news item to look tidy. if we don't have 3 lines ... make margins compensate.
@@ -238,6 +253,12 @@ route("#AllNews", function (event, $thisContainer){
             //})(occupiedLines,$listItem,$title,isDescription);
 
         });
+
+        //if from a notification, remove the active tags, since this is from a notification and thus doesn't use the user's previously selected options
+        if(isRequestFromNotification){
+            $("#timeDropdownRow").find(".redFont").removeClass("redFont");
+            $("#tagsRow").find(".activeTag").removeClass("activeTag");
+        }
     }
 
     var populateNewsList = function ($list, JSONarray){
@@ -300,7 +321,7 @@ route("#AllNews", function (event, $thisContainer){
         $list.append($enderDiv);
     }
 
-    var onSuccess = function (data, status){
+    var onSuccess = function (data, status,isRequestFromNotification){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
         var JSONarray = data;
 
@@ -343,10 +364,10 @@ route("#AllNews", function (event, $thisContainer){
 
         onClickGoBottom($('#timedropdownbutton'), 110);
         resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
-        touchUpNewsList($list);
+        touchUpNewsList($list,isRequestFromNotification);
     };
 
-    var postRequest = function (timeConfig, tags){
+    var postRequest = function (timeConfig, tags, isRequestFromNotification){
         console.log("Request posted with a timeConfig: " + JSON.stringify(timeConfig) + " and tag: " + tags);
         var requestParams = {
             userid:FabulaSysUsername,
@@ -392,7 +413,7 @@ route("#AllNews", function (event, $thisContainer){
                 /*errHandler(new Error(errorThrown));*/
             },
             success: function(data, status){
-                onSuccess(data, status);
+                onSuccess(data, status, isRequestFromNotification);
                 FabulaSysApp.updateCheckTime(); //update the last checked time
             }
         });
@@ -404,10 +425,22 @@ route("#AllNews", function (event, $thisContainer){
     var currentTag = globalSettings.currentTags;
 
     //isPendingNotification and notificationFilter come from our app's LandingWebViewClient in the LandingActivity
+    if(typeof isPendingFromNotification != "undefined"){
+        console.log("isPendingFromNotification is " + isPendingFromNotification);
+        console.log("notificationFilter is " + JSON.stringify(notificationFilter));
+    }else{
+        console.log("isPendingFromNotification was not provided");
+    }
+
+    var isRequestFromNotification = false;  //for postRequest
     if(typeof isPendingFromNotification != "undefined" && isPendingFromNotification){
         currentTimeConfig = notificationFilter;
         console.log("sending news request that originated from a notification");
+        isPendingFromNotification = false;  //disable it since its done its job, so this set of actions won't be executed again
+        isRequestFromNotification  = true;   //pass this flag to postRequest to indicate that this is a request from the notification
     }
 
-    postRequest(currentTimeConfig,currentTag);
+    postRequest(currentTimeConfig,currentTag,isRequestFromNotification);
+
+
 });

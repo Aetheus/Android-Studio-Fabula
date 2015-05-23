@@ -1,5 +1,6 @@
 package com.aedrianheng.utils.htmlApp;
 
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -12,6 +13,8 @@ import java.util.TimeZone;
  * Created by Adrian on 12/4/2015.
  */
 public class LandingWebViewClient extends WebViewClient{
+
+    private final String tag = "LandingWebViewClient";
 
     String username;
     String password;
@@ -52,6 +55,7 @@ public class LandingWebViewClient extends WebViewClient{
                 view.loadUrl("javascript: globalSettings = JSON.parse('" + globalSettingsJSON + "')");
             }
 
+            Log.i(tag, "isFromNotification flag is " + isFromNotification);
             if(isFromNotification){
                 //get the currenttime as an ISO time string
                 Date timeNow = new Date();
@@ -61,8 +65,10 @@ public class LandingWebViewClient extends WebViewClient{
                 String nowTimeString = dateFormat.format(timeNow);
 
                 String notificationFilter;
+
                 if(lastCheckTime != null){
                     notificationFilter = "{start: '" + lastCheckTime + "', end: '"+ nowTimeString + "'}";
+                    Log.i(tag, "notificationFilter is " + notificationFilter);
                 }else{
                     notificationFilter = null;
                 }
