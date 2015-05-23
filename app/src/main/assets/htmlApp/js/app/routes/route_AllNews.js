@@ -273,7 +273,7 @@ route("#AllNews", function (event, $thisContainer){
     var populateNewsList = function ($list, JSONarray){
        for(var i=0; i< JSONarray.length; i++){
             var itemID = JSONarray[i].fitfeeditemid;
-            var $listItem = $('<li class="collection-item avatar" ></li>');
+            var $listItem = $('<li class="collection-item avatar" style="border-bottom: 1px solid #808080;" ></li>');
             var $iconImage;
             var $title = $('<div  class="title boldFont">' + JSONarray[i].fitfeeditemtitle + '</div>'); //id="NewsItem' + itemID + 'Title"
             var $content = $('<div></div>');
@@ -318,6 +318,15 @@ route("#AllNews", function (event, $thisContainer){
                     //$content.append($linkButton);
                 }
             })(link);
+
+            //add backgorund colour if applicable
+            console.log("backgorund colour: " + JSONarray[i].fedfeedchannelcolour);
+
+            var backgroundColour = JSONarray[i].fedfeedchannelcolour;
+            if(backgroundColour){
+                $listItem.addClass(backgroundColour);
+            }
+
 
             $listItem.append($iconImage).append($title).append($content);
             $list.append($listItem);

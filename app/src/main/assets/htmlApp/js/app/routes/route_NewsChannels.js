@@ -3,13 +3,20 @@ route("#NewsChannels", function (event, $thisContainer){
 
 
 
-    var save = function (channelID, channelName, channelTags){
+    var save = function (channelID, channelName, channelTags, channelColour){
+        var temp = {
+                        channelname:channelName,
+                        channeltags:channelTags,
+                        channelcolour:channelColour
+                   };
+        console.log("this is what we'red updating to: " + JSON.stringify(temp));
         $.ajax({
             method: "GET",
             url: "https://fabula-node.herokuapp.com/userschannels/edit/" + channelID,
             data: {
                 channelname:channelName,
-                channeltags:channelTags
+                channeltags:channelTags,
+                channelcolour:channelColour
             },
             complete : function(XHR,textStatus){
                 toaster("Request Status: " + textStatus, 500);
@@ -93,11 +100,13 @@ route("#NewsChannels", function (event, $thisContainer){
             var channelID   = rows[i].fedfeedchannelid   !== null ? rows[i].fedfeedchannelid   : "";
             var channelName = rows[i].fedfeedchannelname !== null ? rows[i].fedfeedchannelname : "";
             var channelTags = rows[i].fedfeedchanneltags !== null ? rows[i].fedfeedchanneltags : "";
+            var channelColour = rows[i].fedfeedchannelcolour !== null ? rows[i].fedfeedchannelcolour : "";
 
+            //color-choice-circle
             var content = "";
             content +=      '<div id="channel' + channelID +'" class="row">'
             content +=      '   <div class="col s12 m6">'
-            content +=      '       <div class="card-panel black-text">'
+            content +=      '       <div class="card-panel black-text ' + channelColour + '">'
             content +=      '           <div class="card-content no-vertical-margins">'
             content +=      '               <div class="input-field col s12 small-vertical-margins">'
             content +=      '                   <input style="color:black;" value="' + channelName +'" id="channel'+channelID+'name" type="text" class="validate">'
@@ -106,6 +115,17 @@ route("#NewsChannels", function (event, $thisContainer){
             content +=      '               <div class="input-field col s12 small-vertical-margins">'
             content +=      '                   <input style="color:black;" value="' + channelTags +'" id="channel'+channelID+'tag" type="text" class="validate">'
             content +=      '                   <label class="active" for="channel'+channelID+'tag">Tag</label>'
+            content +=      '               </div>'
+            content +=      '               <div class="col s12 small-vertical-margins">'
+            content +=      '                   <input style="display:none;" value="' + channelColour +'" id="channel'+channelID+'colour" type="text" ></input>'
+            content +=      '                   <div class="color-choice-circle white lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle blue-grey lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle red lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle green lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle blue lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle yellow lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle purple lighten-4"></div>'
+            content +=      '                   <div class="color-choice-circle orange lighten-4"></div>'
             content +=      '               </div>'
             content +=      '           </div>'
             content +=      '           <div class="card-action">'
@@ -124,13 +144,46 @@ route("#NewsChannels", function (event, $thisContainer){
                     var localChannelID = channelID;
                     var channelName = $('#channel'+localChannelID+'name').val();
                     var channelTags = $('#channel'+localChannelID+'tag').val();
+                    var channelColour = $('#channel'+localChannelID+'colour').val();
 
-                    save(channelID, channelName, channelTags);
+                    if (channelName.trim() != ""){
+                        save(channelID, channelName, channelTags,channelColour);
+                    }else{
+                        errHandler(new Error("channel MUST have a name!"));
+                    }
                 });
 
                 $('#channel'+channelID+'DeleteButton').on("click", function(){
                     del(channelID);
                 });
+
+                //.className.split(/\s+/);
+                $('#channel'+channelID).find(".color-choice-circle").each(function (){
+
+                    $(this).on("click", function() {
+                        var thisItem = this;
+                        var classList = $(this)[0].className.split(/\s+/);
+                        var colourClassStringList = [];
+                        for (var i= 0; i< classList.length; i++){
+                            if (classList[i] != "color-choice-circle"){
+                                colourClassStringList[colourClassStringList.length] = classList[i];
+                            }
+                        }
+
+                        var $cardPanelParent = $(thisItem).parents(".card-panel");
+                        $cardPanelParent.removeClass();
+                        $cardPanelParent.addClass("card-panel").addClass("black-text");
+                        for (var i=0; i< colourClassStringList.length; i++){
+                                $cardPanelParent.addClass(colourClassStringList[i]);
+
+                        }
+                        console.log("we're going to save this to channel" +channelID+"colour: " + colourClassStringList.join(" "));
+                        //$('#channel'+channelID+'colour').val(colourClassStringList.join(" "));
+                        document.getElementById('channel'+channelID+'colour').setAttribute('value', colourClassStringList.join(" "));
+                    });
+
+                });
+
             })(channelID);
 
 
