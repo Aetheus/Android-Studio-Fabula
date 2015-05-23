@@ -1,12 +1,13 @@
 var route = new Router().route;
 
 route("#Settings", function (event, $thisContainer){
+    var titleHTML = "<h4 class='col s8 offset-s2 center'>Settings</h4>";
     var $Settings_TimeFilter_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter'>Time Filters</a>");
     var $Settings_Tags_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Tags'>Tags Settings</a>");
     var $Settings_Notifications_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Notifications'>Notifications</a>");
 
     var $row = $('<div class="row small-vertical-margins"></div>');
-    $row.append('<br />').append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button);
+    $row.append(titleHTML).append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button);
 
     $thisContainer.html($row);
 

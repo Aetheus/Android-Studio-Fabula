@@ -226,6 +226,18 @@ route("#AllNews", function (event, $thisContainer){
     }
 
 
+    var trackScroll = function($elem){
+        $elem.on('scroll', function() {
+            console.log("triggered");
+            var scrolled = $(this).scrollTop();
+
+            if(scrolled == 0){
+                console.log("we scrolled to the top");
+                $("#refreshDiv").slideDown("slow");
+            }
+        });
+    }
+
     //to be called by onSuccess ONLY
     var touchUpNewsList = function ($list, isRequestFromNotification){
 
@@ -319,6 +331,9 @@ route("#AllNews", function (event, $thisContainer){
 
         var $enderDiv = $('<div id="enderDiv" class="center">----</div>');
         $list.append($enderDiv);
+
+        var $refreshDiv = $('<div id="refreshDiv" class="center">pull down to refresh</div>');
+        $list.prepend($refreshDiv);
     }
 
     var onSuccess = function (data, status,isRequestFromNotification){
@@ -365,6 +380,8 @@ route("#AllNews", function (event, $thisContainer){
         onClickGoBottom($('#timedropdownbutton'), 110);
         resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
         touchUpNewsList($list,isRequestFromNotification);
+
+        trackScroll($("#listRow"));
     };
 
     var postRequest = function (timeConfig, tags, isRequestFromNotification){

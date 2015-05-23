@@ -158,6 +158,12 @@ html, body {
     height:100%;
 }
 
+#refreshDiv{
+    height: 45px;
+    display: none;
+    border-bottom: 1px solid #E0E0E0;
+}
+
 #tagsRow{
     /*white-space: nowrap;*/
     overflow-x: auto;
