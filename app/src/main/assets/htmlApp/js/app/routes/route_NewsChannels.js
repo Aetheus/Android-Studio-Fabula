@@ -129,8 +129,18 @@ route("#NewsChannels", function (event, $thisContainer){
             content +=      '               </div>'
             content +=      '           </div>'
             content +=      '           <div class="card-action">'
-            content +=      '               <a id="channel'+channelID+'DeleteButton" class="waves-effect waves-teal btn-flat red  lighten-2 center white-text col s4 offset-s1" href="#">Delete</a>'
+            content +=      '               <a id="channel'+channelID+'DeleteButton" href="#channel'+channelID+'DeleteConfirmation" class="modal-trigger waves-effect waves-teal btn-flat red  lighten-2 center white-text col s4 offset-s1">Delete</a>'
             content +=      '               <a id="channel'+channelID+'SaveButton"   class="waves-effect waves-teal btn-flat blue lighten-2 center white-text " href="#">Save Changes</a>'
+            content +=      '               <div id="channel'+channelID+'DeleteConfirmation" class="modal">'
+            content +=      '                   <div class="modal-content">'
+            content +=      '                       <h4>Delete confirmation</h4>'
+            content +=      '                       <p>You are about to delete this subscribed channel. Deleting it will PERMANENTLY remove both the channel and all its associated news items. This action cannot be undone. Are you sure? </p>'
+            content +=      '                   </div>'
+            content +=      '                   <div class="modal-footer">'
+            content +=      '                       <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>'
+            content +=      '                       <a id="channel'+channelID+'TrueDeleteButton"  href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat redFont">Delete</a>'
+            content +=      '                   </div>'
+            content +=      '               </div>'
             content +=      '           </div>'
             content +=      '       </div>'
             content +=      '   </div>'
@@ -138,6 +148,8 @@ route("#NewsChannels", function (event, $thisContainer){
 
             $thisContainer.append(content);
 
+            //enable modals
+            $('.modal-trigger').leanModal();
 
             (function (channelID){
                 $('#channel'+channelID+'SaveButton').on("click", function(){
@@ -153,7 +165,7 @@ route("#NewsChannels", function (event, $thisContainer){
                     }
                 });
 
-                $('#channel'+channelID+'DeleteButton').on("click", function(){
+                $('#channel'+channelID+'TrueDeleteButton').on("click", function(){
                     del(channelID);
                 });
 
