@@ -1,5 +1,17 @@
 
-var reusableAssets = { loaderAnim: "" };
+reusableAssets = { loaderAnim: "", simplePreloader:"" };
+
+reusableAssets.simplePreloader += '<div class="preloader-wrapper small active">';
+reusableAssets.simplePreloader += '  <div class="spinner-layer spinner-blue-only">';
+reusableAssets.simplePreloader += '    <div class="circle-clipper left">';
+reusableAssets.simplePreloader += '      <div class="circle"></div>';
+reusableAssets.simplePreloader += '    </div><div class="gap-patch">';
+reusableAssets.simplePreloader += '      <div class="circle"></div>';
+reusableAssets.simplePreloader += '    </div><div class="circle-clipper right">';
+reusableAssets.simplePreloader += '      <div class="circle"></div>';
+reusableAssets.simplePreloader += '    </div>';
+reusableAssets.simplePreloader += '  </div>';
+reusableAssets.simplePreloader += '</div>';
 
 reusableAssets.loaderAnim +=    '   <div class="row valign-wrapper loaderAnim"> <div class="col s12 center valign"> '
 reusableAssets.loaderAnim +=    '       <br />'

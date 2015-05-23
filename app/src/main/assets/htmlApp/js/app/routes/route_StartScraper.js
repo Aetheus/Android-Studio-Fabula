@@ -9,20 +9,26 @@ route("#StartScraper", function (event, $thisContainer){
     }
 
     var $form = $(
-            '<form class="col s12">'
-        +       '<div class="row">'
-        +           '<div class="input-field col s8 offset-s2">'
+         '<div class="row">'
+        +   '<form class="col s12">'
+        +       '<div class="row" style="margin-bottom: 0px;"> <h4 class="center"> Subscribe </h4> </div>'
+        +       '<div class="row no-vertical-margins">'
+        +           '<div class="input-field col s10 offset-s1"> enter the exact URL of the site you wish to subscribe to in order to start the web scraper</div>'
+        +       '</div>'
+        +       '<div class="row no-vertical-margins">'
+        +           '<div class="input-field col s10 offset-s1">'
         +               '<i class="mdi-action-open-in-browser prefix"></i>'
         +               '<input value="http://" placeholder="" id="url_to_scrape" type="text" class="validate" autocomplete="off" spellcheck="false" autocorrect="off"> '
         +               '<label class="active" for="url_to_scrape"> URL Address </label>'
         +           '</div>'
         +       '</div>'
         +       '<div class="row">'
-        +           '<div class="input-field">'
+        +           '<div class="input-field col s10 offset-s1">'
         +               '<a id="toAndroidInterface" class="waves-effect waves-light btn col s4 offset-s4">Go To</a>'
         +           '</div>'
         +       '</div>'
         +   '</form>'
+        +'</div>'
     );
 
 

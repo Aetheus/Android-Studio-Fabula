@@ -154,11 +154,12 @@ var Route_Settings_Tags = function (event, $thisContainer){
 }
 
 var Route_Settings_TimeFilter = function (event, $thisContainer){
+    var titleHTML = '<div class="col s8 offset-s2 "><h4 class="center">Time Filter Settings</h4></div>';
     var $Settings_TimeFilter_View_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter_View'>View Time Filters</a>");
     var $Settings_TimeFilter_AddCustom_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter_AddCustom'>Add Custom Time Filters</a>");
 
     var $row = $('<div class="row small-vertical-margins"></div>');
-    $row.append('<br />').append($Settings_TimeFilter_View_Button).append('<br />').append($Settings_TimeFilter_AddCustom_Button);
+    $row.append(titleHTML).append('<br />').append($Settings_TimeFilter_View_Button).append('<br />').append($Settings_TimeFilter_AddCustom_Button);
 
     $thisContainer.html($row);
 

@@ -122,12 +122,7 @@ route("#AllNews", function (event, $thisContainer){
         }
     }
 
-    var bindTagInput = function ($input){
-        $input.on("focusout", function(){
-            globalSettings.currentTags = $(this).val();
-            postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
-        });
-    }
+
 
     //adds a Listener to the clickedElem that makes the page scroll to the very bottom on clicking it
     var onClickGoBottom = function ($clickedElem, timeBeforeGo){
@@ -192,6 +187,17 @@ route("#AllNews", function (event, $thisContainer){
         })
     }
 
+    var trackElemSwipe = function ($elem, direction, callback){
+        var domelem = $elem[0];
+
+        var hammertime = new Hammer(domelem, {});
+
+        hammertime.get('swipe').set({ direction: direction, threshold:20, velocity:0.35 });
+        hammertime.on('swipe', function(ev) {
+            callback(this);
+        });
+    }
+
     //builds and returns a tagRow jquery elem
     var buildTagRow = function (){
         //replace this placeholder code with actual tags from settings later
@@ -223,19 +229,6 @@ route("#AllNews", function (event, $thisContainer){
 
 
         return $tagRow;
-    }
-
-
-    var trackScroll = function($elem){
-        $elem.on('scroll', function() {
-            console.log("triggered");
-            var scrolled = $(this).scrollTop();
-
-            if(scrolled == 0){
-                console.log("we scrolled to the top");
-                $("#refreshDiv").slideDown("slow");
-            }
-        });
     }
 
     //to be called by onSuccess ONLY
@@ -271,6 +264,10 @@ route("#AllNews", function (event, $thisContainer){
             $("#timeDropdownRow").find(".redFont").removeClass("redFont");
             $("#tagsRow").find(".activeTag").removeClass("activeTag");
         }
+
+        //make the refresh div the same width as its sibling. makes our animations a bit smoother
+        $("#refreshDiv").css( "width", $("#refreshDiv").next().css("width") );
+
     }
 
     var populateNewsList = function ($list, JSONarray){
@@ -332,7 +329,8 @@ route("#AllNews", function (event, $thisContainer){
         var $enderDiv = $('<div id="enderDiv" class="center">----</div>');
         $list.append($enderDiv);
 
-        var $refreshDiv = $('<div id="refreshDiv" class="center">pull down to refresh</div>');
+
+        var $refreshDiv = $('<div id="refreshDiv" class="center"></div>').html(reusableAssets.simplePreloader).append("");
         $list.prepend($refreshDiv);
     }
 
@@ -381,7 +379,16 @@ route("#AllNews", function (event, $thisContainer){
         resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
         touchUpNewsList($list,isRequestFromNotification);
 
-        trackScroll($("#listRow"));
+        //trackElemSwipe($("#listRow"));
+        trackElemSwipe($("#newsList"), Hammer.DIRECTION_DOWN, function (){
+            if ($("#listRow").scrollTop() == 0){
+                $("#refreshDiv").slideDown(150, function (){
+                    postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
+                });
+            }else{
+                    console.log("swiped up, but not at the top of the list yet");
+            }
+        });
     };
 
     var postRequest = function (timeConfig, tags, isRequestFromNotification){
