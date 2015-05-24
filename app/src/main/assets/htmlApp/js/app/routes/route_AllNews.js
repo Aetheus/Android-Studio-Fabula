@@ -273,14 +273,14 @@ route("#AllNews", function (event, $thisContainer){
     var populateNewsList = function ($list, JSONarray){
        for(var i=0; i< JSONarray.length; i++){
             var itemID = JSONarray[i].fitfeeditemid;
-            var $listItem = $('<li class="collection-item avatar" style="border-bottom: 1px solid #808080;" ></li>');
+            var $listItem = $('<li class="collection-item avatar" ></li>');
             var $iconImage;
             var $title = $('<div  class="title boldFont">' + JSONarray[i].fitfeeditemtitle + '</div>'); //id="NewsItem' + itemID + 'Title"
             var $content = $('<div></div>');
 
 
-            //if image exists, use it as thumbnail. else, use a default icon
-            if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull){
+            //if image exists and globalSettings permits its use, use it as thumbnail. else, use a default icon
+            if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull && globalSettings.isNewsFeedImagesOn){
                 $iconImage = $('<img src="' + JSONarray[i].fitfeeditemimagelink + '" class="circle avatarCollectionImage" />');
             }else{
                 $iconImage = $('<i class="mdi-action-assessment large circle green avatarCollectionIcon"></i>');
@@ -321,8 +321,10 @@ route("#AllNews", function (event, $thisContainer){
 
             //add backgorund colour if applicable
             var backgroundColour = JSONarray[i].fedfeedchannelcolour;
-            if(backgroundColour){
+            if(backgroundColour && globalSettings.isNewsFeedColourOn){
                 $listItem.addClass(backgroundColour);
+                //add a darker border to the list item if backgroundcolour is being used
+                //$listItem.css("border-bottom", "1px solid #808080");
             }
 
 

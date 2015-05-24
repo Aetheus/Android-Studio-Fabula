@@ -65,4 +65,8 @@ globalSettings = {
     currentFilter:"last 2 hours",
     currentTags:null,
 
+
+    isNewsFeedColourOn:true,
+    isNewsFeedImagesOn:true,
+
 }

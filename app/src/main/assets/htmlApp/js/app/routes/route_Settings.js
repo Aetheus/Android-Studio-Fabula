@@ -5,9 +5,10 @@ route("#Settings", function (event, $thisContainer){
     var $Settings_TimeFilter_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_TimeFilter'>Time Filters</a>");
     var $Settings_Tags_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Tags'>Tags Settings</a>");
     var $Settings_Notifications_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Notifications'>Notifications</a>");
+    var $Settings_NewsFeed_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_NewsFeed'>News Feed</a>");
 
     var $row = $('<div class="row small-vertical-margins"></div>');
-    $row.append(titleHTML).append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button);
+    $row.append(titleHTML).append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button).append($Settings_NewsFeed_Button);
 
     $thisContainer.html($row);
 
@@ -15,7 +16,46 @@ route("#Settings", function (event, $thisContainer){
     route("#Settings_TimeFilter", Route_Settings_TimeFilter);
     route("#Settings_Tags", Route_Settings_Tags);
     route("#Settings_Notifications", Route_Settings_Notifications);
+    route("#Settings_NewsFeed", Route_Settings_NewsFeed);
 });
+
+var Route_Settings_NewsFeed = function (event, $thisContainer){
+    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> News Feed Settings </h4> <p class="center"> Here you can edit settings that will change how the news feed is displayed </p></div>';
+
+
+    //globalSettings.isNewsFeedColourOn;
+    //globalSettings.isNewsFeedImagesOn;
+
+    var htmlFields      = "";
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((globalSettings.isNewsFeedColourOn) ? ' checked="checked" ' : "") + 'id="isNewsFeedColourOn"  />'
+    htmlFields          +=  '   <label for="isNewsFeedColourOn">toggle background colours on/off</label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((globalSettings.isNewsFeedImagesOn) ? ' checked="checked" ' : "") + 'id="isNewsFeedImagesOn"  />'
+    htmlFields          +=  '   <label for="isNewsFeedImagesOn">toggle thumbnail images on/off</label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <a id="SettingsNewsFeedSave" class="col s6 offset-s6 waves-effect waves-light btn light-blue darken-1">'
+    htmlFields          +=  '       <i class="mdi-content-save left"></i> Save'
+    htmlFields          +=  '   </a>'
+    htmlFields          +=  '</div>'
+
+    var $row =
+        $('<div class="row small-vertical-margins"></div>').append(htmlTitle).append("<br />").append(htmlFields);
+    $thisContainer.html($row);
+
+    $("#SettingsNewsFeedSave").on("click", function (){
+        globalSettings.isNewsFeedColourOn = $("#isNewsFeedColourOn").is(":checked");
+        globalSettings.isNewsFeedImagesOn = $("#isNewsFeedImagesOn").is(":checked");
+        globalSettingsSave();
+    });
+
+}
 
 var Route_Settings_Notifications = function (event, $thisContainer){
     var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Notification Settings </h4> <p class="center"> Here you can enable or disable the notifications. Additionally, you can set the frequency of how often they are checked for. </p></div>';
