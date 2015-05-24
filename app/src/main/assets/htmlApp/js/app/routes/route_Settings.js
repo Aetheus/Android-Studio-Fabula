@@ -6,9 +6,10 @@ route("#Settings", function (event, $thisContainer){
     var $Settings_Tags_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Tags'>Tags Settings</a>");
     var $Settings_Notifications_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_Notifications'>Notifications</a>");
     var $Settings_NewsFeed_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_NewsFeed'>News Feed</a>");
+    var $Settings_CloudSave_Button = $("<a class='col s8 offset-s2 btn small-vertical-margines' href='#Settings_CloudSave'>Cloud Save</a>");
 
     var $row = $('<div class="row small-vertical-margins"></div>');
-    $row.append(titleHTML).append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button).append($Settings_NewsFeed_Button);
+    $row.append(titleHTML).append($Settings_TimeFilter_Button).append($Settings_Tags_Button).append($Settings_Notifications_Button).append($Settings_NewsFeed_Button).append($Settings_CloudSave_Button);
 
     $thisContainer.html($row);
 
@@ -17,7 +18,142 @@ route("#Settings", function (event, $thisContainer){
     route("#Settings_Tags", Route_Settings_Tags);
     route("#Settings_Notifications", Route_Settings_Notifications);
     route("#Settings_NewsFeed", Route_Settings_NewsFeed);
+    route("#Settings_CloudSave", Route_Settings_CloudSave);
 });
+
+var CloudSaveDownload = function (){
+        $.ajax({
+            method: "GET",
+            url: "https://fabula-node.herokuapp.com/usersappsettings/" + FabulaSysUsername,
+            data: {
+            },
+            complete : function(XHR,textStatus){
+                //toaster("Request Status: " + textStatus, 500);
+            },
+            timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
+            error : function (XHR,textStatus, errorThrown){
+                if(textStatus == "timeout" || XHR.statusText == "timeout") {
+                    errHandler(new Error("Timed out while waiting for response"));
+                }else{
+                    if (XHR.responseText == undefined || XHR.responseText == 'undefined'){
+                        errHandler(new Error("Unable to get a response from server"));
+                    }else{
+                        //console.log("XHR object is " + JSON.stringify(XHR));
+                        //var json = JSON.parse(XHR.responseText);
+                        //errHandler(new Error(json.Message));
+                        console.log("XHR object is " + JSON.stringify(XHR));
+                        var responseText = XHR.responseText;
+                        var errorMessage = responseText.match("<h1>(.*)</h1>")[1];
+                        //match returns an array: the result we want is the second one
+
+                        console.log(errorMessage);
+                        errHandler(new Error(errorMessage));
+                    }
+                }
+                /*errHandler(new Error(errorThrown));*/
+            },
+            success: function(data, status){
+                console.log("Retrieved cloud app settings are: " + JSON.stringify(data));
+                console.log(data);
+
+                if (data.isEmptyFlag){
+                    toaster("No previously saved settings found");
+                }else{
+                    toaster("Cloud settings stored to device!");
+                }
+
+                globalSettings = data;
+            }
+        });
+}
+
+var CloudSaveUpload = function (){
+        $.ajax({
+            method: "GET",
+            url: "https://fabula-node.herokuapp.com/usersappsettings/set/" + FabulaSysUsername,
+            data: {
+                globalSettings: JSON.stringify(globalSettings)
+            },
+            complete : function(XHR,textStatus){
+                //toaster("Request Status: " + textStatus, 500);
+            },
+            timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
+            error : function (XHR,textStatus, errorThrown){
+                if(textStatus == "timeout" || XHR.statusText == "timeout") {
+                    errHandler(new Error("Timed out while waiting for response"));
+                }else{
+                    if (XHR.responseText == undefined || XHR.responseText == 'undefined'){
+                        errHandler(new Error("Unable to get a response from server"));
+                    }else{
+                        //console.log("XHR object is " + JSON.stringify(XHR));
+                        //var json = JSON.parse(XHR.responseText);
+                        //errHandler(new Error(json.Message));
+                        console.log("XHR object is " + JSON.stringify(XHR));
+                        var responseText = XHR.responseText;
+                        var errorMessage = responseText.match("<h1>(.*)</h1>")[1];
+                        //match returns an array: the result we want is the second one
+
+                        console.log(errorMessage);
+                        errHandler(new Error(errorMessage));
+                    }
+                }
+                /*errHandler(new Error(errorThrown));*/
+            },
+            success: function(data, status){
+                console.log(data);
+                if (data == "success"){
+                    toaster("Settings saved to the cloud");
+                }else{
+                    toaster("Settings failed to save!");
+                }
+            }
+        });
+}
+
+var Route_Settings_CloudSave = function (event, $thisContainer){
+    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Cloud Save Settings </h4> <p class="center"> here you can enable/disable auto cloud saving, as well as download settings previously saved to the cloud or upload your current one </p></div>';
+
+
+    //globalSettings.isNewsFeedColourOn;
+    //globalSettings.isNewsFeedImagesOn;
+
+    var htmlFields      = "";
+    htmlFields          +=  '<br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((globalSettings.isCloudSyncOn) ? ' checked="checked" ' : "") + 'id="isCloudSyncOn"  />'
+    htmlFields          +=  '   <label for="isCloudSyncOn">toggle cloud sync on/off</label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <a id="SettingsCloudSaveDownload" class="col s5  waves-effect waves-light btn light-blue darken-1">'
+    htmlFields          +=  '       Download'
+    htmlFields          +=  '   </a>'
+    htmlFields          +=  '   <a id="SettingsCloudSaveUpload" class="col s5 offset-s2 waves-effect waves-light btn light-blue darken-1">'
+    htmlFields          +=  '       Upload'
+    htmlFields          +=  '   </a>'
+    htmlFields          +=  '</div>'
+
+    var $row =
+        $('<div class="row small-vertical-margins"></div>').append(htmlTitle).append("<br />").append(htmlFields);
+    $thisContainer.html($row);
+
+    $("#SettingsCloudSaveDownload").on("click", function (){
+        CloudSaveDownload();
+    });
+    $("#SettingsCloudSaveUpload").on("click", function (){
+        CloudSaveUpload();
+    });
+
+    $('#isCloudSyncOn').change(function() {
+        var checkboxVal = $(this).is(":checked");
+        globalSettings.isCloudSyncOn = checkboxVal;
+        globalSettingsSave();
+    });
+
+
+
+}
 
 var Route_Settings_NewsFeed = function (event, $thisContainer){
     var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> News Feed Settings </h4> <p class="center"> Here you can edit settings that will change how the news feed is displayed </p></div>';

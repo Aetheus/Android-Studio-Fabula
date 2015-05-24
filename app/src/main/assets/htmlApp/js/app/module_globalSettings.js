@@ -69,4 +69,6 @@ globalSettings = {
     isNewsFeedColourOn:true,
     isNewsFeedImagesOn:true,
 
+    isCloudSyncOn:false,
+
 }
