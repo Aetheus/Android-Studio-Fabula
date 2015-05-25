@@ -514,7 +514,8 @@ route("#AllNews", function (event, $thisContainer){
                             errorMessage = responseText.match("<h1>(.*)</h1>")[1];
                             //match returns an array: the result we want is the second one
                         }catch(err) {
-                            errorMessage = "An error occured and no appropriate error message was found for it";
+                            //errorMessage = "An error occured and no appropriate error message was found for it";
+                            errorMessage = "A server error has occured. Kindly try again in a few minutes time";
                         }
 
 
