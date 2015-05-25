@@ -39,7 +39,7 @@ public class LandingActivity extends Activity {
 
     //used by our backgroundtask
     protected int requestCode = 163837879;
-    protected int defaultBackgroundInterval = 1;    //measured in minutes
+    protected int defaultBackgroundInterval = 120;    //measured in minutes
 
     private final String tag = "LandingActivity";
 
