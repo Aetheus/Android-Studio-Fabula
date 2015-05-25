@@ -479,6 +479,10 @@ route("#AllNews", function (event, $thisContainer){
                 toaster("reached the oldest news for this filter and tag settings!");
             }
         }
+
+        if(JSONarray.length == 0){
+            $("#newsList").append(reusableAssets.pullToRefresh);
+        }
     };
 
     var postRequest = function (timeConfig, tags, isRequestFromNotification, paginationOffset, isPaginationRequest){

@@ -1,5 +1,5 @@
 
-reusableAssets = { loaderAnim: "", simplePreloader:"" };
+reusableAssets = { loaderAnim: "", simplePreloader:"", largeRefresh:"", pullToRefresh:"" };
 
 reusableAssets.simplePreloader += '<div class="preloader-wrapper small active">';
 reusableAssets.simplePreloader += '  <div class="spinner-layer spinner-blue-only">';
@@ -63,3 +63,18 @@ reusableAssets.loaderAnim +=    '           </div>'
 reusableAssets.loaderAnim +=    '       </div>'
 reusableAssets.loaderAnim +=    '       <div class="center-align"> <p>Loading</p> <p>. . .</p> </div>'
 reusableAssets.loaderAnim +=    '   </div> </div>'
+
+reusableAssets.largeRefresh +=  '   <div class="row">'
+reusableAssets.largeRefresh +=  '       <div class="col s12 center">'
+reusableAssets.largeRefresh +=  '           <div class="col s6 offset-s3 center">'
+reusableAssets.largeRefresh +=  '               <i class="large mdi-content-add"></i>'
+reusableAssets.largeRefresh +=  '           </div>'
+reusableAssets.largeRefresh +=  '       </div>'
+reusableAssets.largeRefresh +=  '   </div>'
+
+
+reusableAssets.pullToRefresh += '   <div class="row" style="margin-bottom: 0px; margin-top: 0px; height: 50px; padding-top: 10px;">'
+reusableAssets.pullToRefresh += '       <div style="font-size: 20px;" class="col s8 offset-s2 center">'
+reusableAssets.pullToRefresh += '           <div> ⇩ pull to refresh</div>'
+reusableAssets.pullToRefresh += '       </div>'
+reusableAssets.pullToRefresh += '   </div>'
