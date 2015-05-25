@@ -333,9 +333,19 @@ route("#AllNews", function (event, $thisContainer){
 
 
             $listItem.append($iconImage).append($title).append($content);
-            $list.append($listItem);
+            //one final check - if this item has no description and no title and no image - remove it. It's likely a bugged news item or a hidden div that sites like BBC seem to use
+            //else, include it into the list as usual
+            var finalCheckFailed
+                    =   (JSONarray[i].fitfeeditemimagelink == null || JSONarray[i].fitfeeditemimagelink == DBNull)
+                    &&  (JSONarray[i].fitfeeditemdescription == null || JSONarray[i].fitfeeditemdescription == DBNull)
+                    &&  (JSONarray[i].fitfeeditemtitle == null || JSONarray[i].fitfeeditemtitle == DBNull)
 
-
+            if (finalCheckFailed){
+                $listItem.remove();
+                console.log("bugged news item removed");
+            }else{
+                $list.append($listItem);
+            }
         }
 
 
