@@ -63,6 +63,7 @@ var CloudSaveDownload = function (){
                 }
 
                 globalSettings = data;
+                globalSettingsSave();
             }
         });
 }
@@ -176,6 +177,10 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
     htmlFields          +=  '</div>'
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input id="paginationLimit" value="' + globalSettings.paginationLimit + '" type="tel" class="validate">'
+    htmlFields          +=  '   <label class="active" for="paginationLimit"> news items per request (pagination) </label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
     htmlFields          +=  '   <a id="SettingsNewsFeedSave" class="col s6 offset-s6 waves-effect waves-light btn light-blue darken-1">'
     htmlFields          +=  '       <i class="mdi-content-save left"></i> Save'
     htmlFields          +=  '   </a>'
@@ -188,7 +193,16 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
     $("#SettingsNewsFeedSave").on("click", function (){
         globalSettings.isNewsFeedColourOn = $("#isNewsFeedColourOn").is(":checked");
         globalSettings.isNewsFeedImagesOn = $("#isNewsFeedImagesOn").is(":checked");
-        globalSettingsSave();
+
+        var paginationLimit = $("#paginationLimit").val();
+        if ($.isNumeric(paginationLimit)  && paginationLimit % 1 === 0 && parseInt(paginationLimit) > 1){
+            globalSettings.paginationLimit = parseInt(paginationLimit);
+            globalSettingsSave();
+        }else{
+            errHandler(new Error("Please enter a valid, positive whole number!"));
+        }
+
+
     });
 
 }
@@ -212,7 +226,10 @@ var Route_Settings_Notifications = function (event, $thisContainer){
     htmlFields          +=  '<br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
-
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input id="NotificationsBackgroundInterval" value="' + backgroundInterval + '" type="tel" class="validate">'
+    htmlFields          +=  '   <label class="active" for="NotificationsBackgroundInterval">Notification Checking Intervals (in minutes) </label>'
+    htmlFields          +=  '</div>'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
     htmlFields          +=  '   <input id="NotificationsBackgroundInterval" value="' + backgroundInterval + '" type="tel" class="validate">'
     htmlFields          +=  '   <label class="active" for="NotificationsBackgroundInterval">Notification Checking Intervals (in minutes) </label>'

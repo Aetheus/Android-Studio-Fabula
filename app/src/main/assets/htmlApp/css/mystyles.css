@@ -187,6 +187,12 @@ html, body {
 }
 
 
+#enderDiv a{
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+}
+
 #tagsRow{
     /*white-space: nowrap;*/
     overflow-x: auto;

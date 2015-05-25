@@ -19,7 +19,7 @@ route("#NewsChannels", function (event, $thisContainer){
                 channelcolour:channelColour
             },
             complete : function(XHR,textStatus){
-                toaster("Request Status: " + textStatus, 500);
+                //toaster("Request Status: " + textStatus, 500);
             },
             timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
@@ -56,7 +56,7 @@ route("#NewsChannels", function (event, $thisContainer){
             data: {
             },
             complete : function(XHR,textStatus){
-                toaster("Request Status: " + textStatus, 500);
+                //toaster("Request Status: " + textStatus, 500);
             },
             timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
@@ -195,7 +195,7 @@ route("#NewsChannels", function (event, $thisContainer){
                     });
 
                 });
-
+                window.scrollTo(0, 0);
             })(channelID);
 
 
@@ -203,13 +203,14 @@ route("#NewsChannels", function (event, $thisContainer){
 
     }
 
+    $("#NewsChannels").html(reusableAssets.loaderAnim);
     $.ajax({
         method: "GET",
         url: "https://fabula-node.herokuapp.com/userschannels/" + FabulaSysUsername,
         data: {
         },
         complete : function(XHR,textStatus){
-            toaster("Request Status: " + textStatus, 500);
+            //toaster("Request Status: " + textStatus, 500);
         },
         timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
         error : function (XHR,textStatus, errorThrown){

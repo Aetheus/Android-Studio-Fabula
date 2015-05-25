@@ -25,6 +25,12 @@ var Router = (function (){
                 $thisContainer.show();
 
                 callback(event, $thisContainer);
+
+
+                //aid support for back button by adding whatever clicked elem it is to a list in the app
+                if (typeof FabulaSysApp !== 'undefined'){
+                    FabulaSysApp.updateActionsList(hrefID);
+                }
            });
 
            //Router.routesList[Router.routesList.length] = hrefID;

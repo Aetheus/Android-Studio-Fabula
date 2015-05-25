@@ -338,18 +338,32 @@ route("#AllNews", function (event, $thisContainer){
         }
 
 
-        var $enderDiv = $('<div id="enderDiv" class="center waves-effect"> &#x21bb; tap here to load older news </div>');
+        var $enderDiv = $('<div id="enderDiv" class="center waves-effect"> <a href="#!"> &#x21bb; double tap here to load older news </a> </div>');
         $list.append($enderDiv);
 
         $enderDiv.data("paginationOffset", paginationOffset ? paginationOffset : 0);
-        $enderDiv.on("click", function(){
-            var $thisEnderDiv = $(this);
+
+
+        $enderDiv.find("a").on("click", function(event){
+            event.preventDefault();
+            var $thisEnderDiv = $(this).parent();
+
+            //if($thisEnderDiv.find(".preloader-wrapper").length < 1){
             var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
             var currentTag = globalSettings.currentTags;
 
             $thisEnderDiv.data("paginationOffset", $thisEnderDiv.data("paginationOffset") + globalSettings.paginationLimit);
+
+            $(this).addClass("myHidden");
+            $thisEnderDiv.append(reusableAssets.simplePreloader);
+            $thisEnderDiv.find(".preloader-wrapper").css("margin-top", "10px");
             postRequest(currentTimeConfig,currentTag,false, $thisEnderDiv.data("paginationOffset"), true);
+            //}else{
+            //console.log("Already loading next page. ignoring this request.")
+            //}
+
         });
+
 
         var $refreshDiv = $('<div id="refreshDiv" class="center"></div>').html(reusableAssets.simplePreloader).append("");
         $list.prepend($refreshDiv);
@@ -429,6 +443,7 @@ route("#AllNews", function (event, $thisContainer){
             var $tempList = $('<ul id="tempList" class="myHidden collection no-vertical-margins"></ul>');
             $thisContainer.append($tempList);
 
+
             populateNewsList($tempList, JSONarray);
             $tempList.find("li").each(function (){
                 var thisListItem = $(this);
@@ -437,6 +452,10 @@ route("#AllNews", function (event, $thisContainer){
             })
 
             $("#enderDiv").data("offset", paginationOffset);
+            $("#enderDiv").find(".preloader-wrapper").remove();
+            $("#enderDiv").find("a").removeClass("myHidden");
+            //$("#enderDiv").html("<a href='#!'> &#x21bb; tap here to load older news </a>");
+
             $tempList.remove();
 
             touchUpNewsList($actualNewsList,isRequestFromNotification);
@@ -445,6 +464,9 @@ route("#AllNews", function (event, $thisContainer){
         //if there's not even enough news to fit the paginationLimit, there aren't any older news. So, no need to display the enderDiv
         if(JSONarray.length < globalSettings.paginationLimit){
             $("#enderDiv").addClass("myHidden");
+            if(JSONarray.length > 0 && confirmedPaginationRequest){
+                toaster("reached the oldest news for this filter and tag settings!");
+            }
         }
     };
 
@@ -471,7 +493,7 @@ route("#AllNews", function (event, $thisContainer){
             url: "https://fabula-node.herokuapp.com/usersfeeditems",
             data: requestParams,
             complete : function(XHR,textStatus){
-                toaster("Request Status: " + textStatus, 500);
+                //toaster("Request Status: " + textStatus, 500);
             },
             timeout: 15000,/*15 second timeout; if we don't get a response in this time, something's up*/
             error : function (XHR,textStatus, errorThrown){
@@ -486,8 +508,15 @@ route("#AllNews", function (event, $thisContainer){
                         //errHandler(new Error(json.Message));
                         console.log("XHR object is " + JSON.stringify(XHR));
                         var responseText = XHR.responseText;
-                        var errorMessage = responseText.match("<h1>(.*)</h1>")[1];
-                        //match returns an array: the result we want is the second one
+
+                        var errorMessage;
+                        try{
+                            errorMessage = responseText.match("<h1>(.*)</h1>")[1];
+                            //match returns an array: the result we want is the second one
+                        }catch(err) {
+                            errorMessage = "An error occured and no appropriate error message was found for it";
+                        }
+
 
                         console.log(errorMessage);
                         errHandler(new Error(errorMessage));
@@ -525,6 +554,7 @@ route("#AllNews", function (event, $thisContainer){
         isRequestFromNotification  = true;   //pass this flag to postRequest to indicate that this is a request from the notification
     }
 
+    loaderScreen(true);
     postRequest(currentTimeConfig,currentTag,isRequestFromNotification, 0, false);
 
 

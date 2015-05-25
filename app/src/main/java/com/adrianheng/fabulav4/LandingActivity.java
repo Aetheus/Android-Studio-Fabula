@@ -27,7 +27,11 @@ import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimeZone;
 
 
@@ -40,6 +44,9 @@ public class LandingActivity extends Activity {
     //used by our backgroundtask
     protected int requestCode = 163837879;
     protected int defaultBackgroundInterval = 120;    //measured in minutes
+
+    //allows us to use backbutton on our app by storing the values of which buttons were trigged html-side.
+    protected ArrayList<String> htmlActionsList = new ArrayList<String>();
 
     private final String tag = "LandingActivity";
 
@@ -99,6 +106,37 @@ public class LandingActivity extends Activity {
         //TextView mainMessage = (TextView) findViewById(R.id.landingMessage);
         //mainMessage.setText(username + " : " + password);
     }
+
+
+    @JavascriptInterface
+    public void updateActionsList(String elementID){
+        htmlActionsList.add(elementID);
+        Log.i(tag, "actions list updated. It now contains: " + Arrays.toString(htmlActionsList.toArray()) );
+    }
+
+    //our custom back button. when clicked, it virtually clicks the last clicked Route button in the webview, effectively going "back" in the html
+    @Override
+    public void onBackPressed() {
+        Log.i(tag, "Back button pressed");
+        Log.i(tag, "ActionList size is: " + htmlActionsList.size());
+        Log.i(tag, "ActionList currently looks like this: " + htmlActionsList.toString());
+        if (htmlActionsList.size() > 1){
+            htmlActionsList.remove(htmlActionsList.size() - 1);
+            htmlActionsList.trimToSize();
+            String previousAction = (String) htmlActionsList.get((htmlActionsList.size() - 1));
+            Log.i(tag,"previous action was :" + previousAction);
+
+            WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
+            String javascriptInjection = "javascript: $('a[href=" + previousAction + "]').trigger('click')";
+            Log.i(tag,"JS to inject is: " + javascriptInjection);
+            landingWebview.loadUrl(javascriptInjection);
+            htmlActionsList.remove(htmlActionsList.size() - 1);
+            Log.i(tag, "ActionList now looks like this: " + htmlActionsList.toString());
+        }else{
+            this.finish();
+        }
+    }
+
 
     //updates the lastCheckTime of our sharedPreferences
     @JavascriptInterface
