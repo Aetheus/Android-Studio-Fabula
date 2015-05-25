@@ -45,6 +45,7 @@ route("#NewsChannels", function (event, $thisContainer){
             },
             success: function(data, status){
                 console.log(data);
+                toaster("Changes successfully saved!");
             }
         });
     }
@@ -83,6 +84,7 @@ route("#NewsChannels", function (event, $thisContainer){
             success: function(data, status){
                 console.log(data);
                 $('#channel'+channelID).remove();
+                toaster("Changes successfully saved!");
             }
         });
     }
@@ -152,7 +154,8 @@ route("#NewsChannels", function (event, $thisContainer){
             $('.modal-trigger').leanModal();
 
             (function (channelID){
-                $('#channel'+channelID+'SaveButton').on("click", function(){
+                $('#channel'+channelID+'SaveButton').on("click", function(event){
+                    event.preventDefault();
                     var localChannelID = channelID;
                     var channelName = $('#channel'+localChannelID+'name').val();
                     var channelTags = $('#channel'+localChannelID+'tag').val();

@@ -28,7 +28,7 @@ if(typeof FabulaSysApp == 'undefined'){
 		  	try to find a best-fit solution
 		 */
 		
-		alert(FabulaSysUsername + FabulaSysPassword + "\n (tap OK to continue)");
+		/*alert(FabulaSysUsername + FabulaSysPassword + "\n (tap OK to continue)");*/
 
 		/* Styles*/
 		/* to hide/unhide the menu, add/remove "visibility:hidden; display:none;" to #FabulaSysMenu's style */
@@ -157,9 +157,21 @@ if(typeof FabulaSysApp == 'undefined'){
 		/*jqObj will be the jquery object we're passing.
 		  desc of object will be either "title", "link" or "description" */
 		function setFabulaSysMenu(jqObj, descOfObj){
+            /*console.log("clicked item type was: " + jqObj.get(0).tagName);*/
             if(descOfObj === "title"){
                 FabulaSysTitle = jqObj;
             }else if(descOfObj === "link"){
+                if (typeof jqObj.attr("src") === "undefined"){
+                    jqObj.parents().each(function (){
+
+                        var $thisParent = $(this);
+                        if ( $thisParent.is("a") && typeof ($thisParent.attr("src") !== "undefined") ){
+                            jqObj = $thisParent;
+                            return false;
+                        }
+                    });
+
+                }
                 FabulaSysLink = jqObj;
             }else if (descOfObj === "desc"){
                 FabulaSysDescription = jqObj;
@@ -385,16 +397,18 @@ if(typeof FabulaSysApp == 'undefined'){
 				},
 		    	beforeSend : function ( jqXHR, settings){
 		    		/*jqXHR.withCredentials = true;*/
-		    		alert(settings);
+		    		/*alert(settings);*/
 		    	},
 		    	complete : function(){
-        			alert(this.url);
+        			/*alert(this.url);*/
     			},
   				success: function(data, status){
-		        	alert("Data: " + data + "\nStatus: " + status);
+		        	/*alert("Data: " + data + "\nStatus: " + status);*/
+		        	alert("subscription successful")
+
 		    	}
 		    });
-		    alert("we got out");
+		    /*alert("we got out");*/
 		});
 
 

@@ -74,6 +74,7 @@ route("#AllNews", function (event, $thisContainer){
 
     //opens the link by calling our JS interface in the app and having it launch a new activity
     var openLink = function (link){
+        console.log("opening link: " + link);
         FabulaSysApp.openLink(link);
         /*
         var $iframe = $('<iframe src="' + link +'"></iframe>');
