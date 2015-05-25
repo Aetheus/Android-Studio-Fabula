@@ -200,7 +200,7 @@ route("#NewsChannels", function (event, $thisContainer){
 
 
         }
-        window.scrollTo(0,0);
+
     }
 
     $.ajax({

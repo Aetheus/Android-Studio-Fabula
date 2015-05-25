@@ -6,6 +6,10 @@ html, body {
     height: 100%;
 }
 
+.myHidden {
+    display: none !important;
+}
+
 .smallFont{
     font-size:small;
 }
@@ -171,6 +175,17 @@ html, body {
     border-bottom: 1px solid #E0E0E0;
     padding-top: 5px;
 }
+
+#enderDiv {
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    font-size: large;
+    width: 100%;
+    vertical-align: middle;
+    display: inline-block;
+}
+
 
 #tagsRow{
     /*white-space: nowrap;*/

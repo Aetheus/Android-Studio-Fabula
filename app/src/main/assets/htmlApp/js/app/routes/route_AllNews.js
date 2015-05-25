@@ -63,7 +63,16 @@ route("#AllNews", function (event, $thisContainer){
         return lines;
     }
 
-    //opens the link by creating an iframe and appending it to $thisContainer
+    //produces a loading screen and replaces either #listRow or #AllNews with it depending on the isReplaceAll flag
+    var loaderScreen = function (isReplaceAll){
+        if (isReplaceAll){
+            $("#AllNews").html(reusableAssets.loaderAnim);
+        }else{
+            $("#listRow").html(reusableAssets.loaderAnim);
+        }
+    }
+
+    //opens the link by calling our JS interface in the app and having it launch a new activity
     var openLink = function (link){
         FabulaSysApp.openLink(link);
         /*
@@ -86,20 +95,13 @@ route("#AllNews", function (event, $thisContainer){
         $thisContainer.append($divWrapper);*/
     }
 
-    /*where linkButton is a jQuery element, and link is a string for a link*/
-    var bindLinkButton = function(link, $linkButton){
-        $linkButton.click(function(){
-            var $thisButton = $(this);
 
-            //window.location = link;
-            window.open(link);
-        });
-    }
 
     var bindTimeChoice = function ($timeChoice) {
         $timeChoice.click(function (){
             globalSettings.currentFilter = $(this).text();
             var timeConfig = TimeHelper.decide(globalSettings.currentFilter);
+            loaderScreen(false);
             postRequest(timeConfig, globalSettings.currentTags);
         });
     }
@@ -183,6 +185,7 @@ route("#AllNews", function (event, $thisContainer){
             var extractedTag = $(this).text();
             extractedTag = (extractedTag != "all") ? extractedTag : null;
             globalSettings.currentTags = extractedTag;
+            loaderScreen(false);
             postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
         })
     }
@@ -270,7 +273,7 @@ route("#AllNews", function (event, $thisContainer){
 
     }
 
-    var populateNewsList = function ($list, JSONarray){
+    var populateNewsList = function ($list, JSONarray, paginationOffset){
        for(var i=0; i< JSONarray.length; i++){
             var itemID = JSONarray[i].fitfeeditemid;
             var $listItem = $('<li class="collection-item avatar" ></li>');
@@ -335,77 +338,129 @@ route("#AllNews", function (event, $thisContainer){
         }
 
 
-        var $enderDiv = $('<div id="enderDiv" class="center">----</div>');
+        var $enderDiv = $('<div id="enderDiv" class="center waves-effect"> &#x21bb; tap here to load older news </div>');
         $list.append($enderDiv);
 
+        $enderDiv.data("paginationOffset", paginationOffset ? paginationOffset : 0);
+        $enderDiv.on("click", function(){
+            var $thisEnderDiv = $(this);
+            var currentTimeConfig = TimeHelper.decide(globalSettings.currentFilter);
+            var currentTag = globalSettings.currentTags;
+
+            $thisEnderDiv.data("paginationOffset", $thisEnderDiv.data("paginationOffset") + globalSettings.paginationLimit);
+            postRequest(currentTimeConfig,currentTag,false, $thisEnderDiv.data("paginationOffset"), true);
+        });
 
         var $refreshDiv = $('<div id="refreshDiv" class="center"></div>').html(reusableAssets.simplePreloader).append("");
         $list.prepend($refreshDiv);
     }
 
-    var onSuccess = function (data, status,isRequestFromNotification){
+    var onSuccess = function (data, status,isRequestFromNotification, paginationOffset, isPaginationRequest){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
+
+        var confirmedPaginationRequest = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
         var JSONarray = data;
 
-
-        var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
-        var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-        var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
-
-        //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
-        var $tagRow = buildTagRow();
-
-        var $list = $('<ul id="newsList" class="collection no-vertical-margins"></ul>');
-        populateNewsList($list, JSONarray);
-        var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append($list);
-
-        $thisContainer.html($listRow);
-        $thisContainer.prepend($tagRow);
-        $thisContainer.append($timeDropdownRow);
-
-        populateTimeList($('#timedropdown'));
-
-
-        //scroll to active tag
-        if($tagRow.find(".activeTag").length > 0){
-            //console.log("position value: " + $tagRow.find(".activeTag").position().left);
-            /*$tagRow.animate({
-                scrollLeft: $tagRow.find(".activeTag").position().left + 'px'
-            }, 200);*/
-            $tagRow.scrollLeft($tagRow.find(".activeTag").position().left);
+        if(JSONarray.length == 0){
+            toaster("No news found");
         }
 
-        //$('ul.tabs').tabs();    //initialize tabs
-        $('.dropdown-button').dropdown(
-            {    //initialize dropdown
-                inDuration: 0,
-                outDuration: 100,
-                gutter: 0,
-            }
-        );
+        if (!confirmedPaginationRequest){
+        //for loading the entire page
 
-        onClickGoBottom($('#timedropdownbutton'), 110);
-        resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
-        touchUpNewsList($list,isRequestFromNotification);
+            var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
+            var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
+            var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
 
-        //trackElemSwipe($("#listRow"));
-        trackElemSwipe($("#newsList"), Hammer.DIRECTION_DOWN, function (){
-            if ($("#listRow").scrollTop() == 0){
-                $("#refreshDiv").slideDown(150, function (){
-                    postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
-                });
-            }else{
-                    console.log("swiped up, but not at the top of the list yet");
+            //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
+            var $tagRow = buildTagRow();
+
+            var $list = $('<ul id="newsList" class="collection no-vertical-margins"></ul>');
+            populateNewsList($list, JSONarray, paginationOffset);
+            var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append($list);
+
+            $thisContainer.html($listRow);
+            $thisContainer.prepend($tagRow);
+            $thisContainer.append($timeDropdownRow);
+
+            populateTimeList($('#timedropdown'));
+
+
+            //scroll to active tag
+            if($tagRow.find(".activeTag").length > 0){
+                //console.log("position value: " + $tagRow.find(".activeTag").position().left);
+                /*$tagRow.animate({
+                    scrollLeft: $tagRow.find(".activeTag").position().left + 'px'
+                }, 200);*/
+                $tagRow.scrollLeft($tagRow.find(".activeTag").position().left);
             }
-        });
+
+            //$('ul.tabs').tabs();    //initialize tabs
+            $('.dropdown-button').dropdown(
+                {    //initialize dropdown
+                    inDuration: 0,
+                    outDuration: 100,
+                    gutter: 0,
+                }
+            );
+
+            onClickGoBottom($('#timedropdownbutton'), 110);
+            resizeRouteContent($("#listRow"), $("#tagsRow"), $("#timeDropdownRow"));
+
+
+            //trackElemSwipe($("#listRow"));
+            trackElemSwipe($("#newsList"), Hammer.DIRECTION_DOWN, function (){
+                if ($("#listRow").scrollTop() == 0){
+                    $("#refreshDiv").slideDown(150, function (){
+                        postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags);
+                    });
+                }else{
+                        console.log("swiped up, but not at the top of the list yet");
+                }
+            });
+
+
+            touchUpNewsList($list,isRequestFromNotification);
+            //$("#enderDiv").data("offset", paginationOffset);
+
+        }else{
+        //for pagination requests only
+            var $actualNewsList = $("#newsList");
+            var $tempList = $('<ul id="tempList" class="myHidden collection no-vertical-margins"></ul>');
+            $thisContainer.append($tempList);
+
+            populateNewsList($tempList, JSONarray);
+            $tempList.find("li").each(function (){
+                var thisListItem = $(this);
+                //$actualNewsList.before("#enderDiv").append(thisListItem);
+                $("#enderDiv").before(thisListItem);
+            })
+
+            $("#enderDiv").data("offset", paginationOffset);
+            $tempList.remove();
+
+            touchUpNewsList($actualNewsList,isRequestFromNotification);
+        }
+
+        //if there's not even enough news to fit the paginationLimit, there aren't any older news. So, no need to display the enderDiv
+        if(JSONarray.length < globalSettings.paginationLimit){
+            $("#enderDiv").addClass("myHidden");
+        }
     };
 
-    var postRequest = function (timeConfig, tags, isRequestFromNotification){
+    var postRequest = function (timeConfig, tags, isRequestFromNotification, paginationOffset, isPaginationRequest){
         console.log("Request posted with a timeConfig: " + JSON.stringify(timeConfig) + " and tag: " + tags);
+
+        var paginationOffsetConfirmed = (typeof paginationOffset === 'undefined') ? 0 : paginationOffset;
+        var limit = globalSettings.paginationLimit;
+        var requestRowLimit = { offset:paginationOffsetConfirmed, limit:limit};
+
+        //RowLimit.limit; RowLimit.offset;
         var requestParams = {
             userid:FabulaSysUsername,
             password:FabulaSysPassword,
-            timerange:timeConfig,
+            timerange: timeConfig,
+            rowlimit : requestRowLimit,
             tags:tags
         };
 
@@ -414,12 +469,7 @@ route("#AllNews", function (event, $thisContainer){
         $.ajax({
             method: "POST",
             url: "https://fabula-node.herokuapp.com/usersfeeditems",
-            data: {
-                userid:FabulaSysUsername,
-                password:FabulaSysPassword,
-                timerange:timeConfig,
-                tags:tags
-            },
+            data: requestParams,
             complete : function(XHR,textStatus){
                 toaster("Request Status: " + textStatus, 500);
             },
@@ -446,7 +496,9 @@ route("#AllNews", function (event, $thisContainer){
                 /*errHandler(new Error(errorThrown));*/
             },
             success: function(data, status){
-                onSuccess(data, status, isRequestFromNotification);
+                var isRequestFromNotificationConfirmed = (typeof isRequestFromNotification === 'undefined') ? false : isRequestFromNotification;
+                var isPaginationRequestConfirmed = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
+                onSuccess(data, status, isRequestFromNotificationConfirmed, paginationOffset, isPaginationRequestConfirmed);
                 FabulaSysApp.updateCheckTime(); //update the last checked time
             }
         });
@@ -473,7 +525,7 @@ route("#AllNews", function (event, $thisContainer){
         isRequestFromNotification  = true;   //pass this flag to postRequest to indicate that this is a request from the notification
     }
 
-    postRequest(currentTimeConfig,currentTag,isRequestFromNotification);
+    postRequest(currentTimeConfig,currentTag,isRequestFromNotification, 0, false);
 
 
 });

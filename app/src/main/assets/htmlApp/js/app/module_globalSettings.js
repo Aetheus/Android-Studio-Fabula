@@ -65,10 +65,13 @@ globalSettings = {
     currentFilter:"last 2 hours",
     currentTags:null,
 
+    paginationLimit:15,
 
     isNewsFeedColourOn:true,
     isNewsFeedImagesOn:true,
 
     isCloudSyncOn:false,
+
+
 
 }
