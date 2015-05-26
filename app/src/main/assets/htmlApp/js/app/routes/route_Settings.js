@@ -112,7 +112,7 @@ var CloudSaveUpload = function (){
 }
 
 var Route_Settings_CloudSave = function (event, $thisContainer){
-    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Cloud Save Settings </h4> <p class="center"> here you can enable/disable auto cloud saving, as well as download settings previously saved to the cloud or upload your current one </p></div>';
+    var htmlTitle = '<div class="col s10 offset-s1" style="text-align: justify;"><h4 class="center"> Cloud Save Settings </h4> <p class="center" style="text-align: justify;"> here you can enable/disable auto cloud saving, as well as download settings previously saved to the cloud or upload your current one </p></div>';
 
 
     //globalSettings.isNewsFeedColourOn;
@@ -157,7 +157,7 @@ var Route_Settings_CloudSave = function (event, $thisContainer){
 }
 
 var Route_Settings_NewsFeed = function (event, $thisContainer){
-    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> News Feed Settings </h4> <p class="center"> Here you can edit settings that will change how the news feed is displayed </p></div>';
+    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> News Feed Settings </h4> <p class="center" style="text-align: justify;"> Here you can edit settings that will change how the news feed is displayed </p></div>';
 
 
     //globalSettings.isNewsFeedColourOn;
@@ -208,7 +208,7 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
 }
 
 var Route_Settings_Notifications = function (event, $thisContainer){
-    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Notification Settings </h4> <p class="center"> Here you can enable or disable the notifications. Additionally, you can set the frequency of how often they are checked for. </p></div>';
+    var htmlTitle = '<div class="col s10 offset-s1"><h4 class="center"> Notification Settings </h4> <p class="center style="text-align: justify;""> Here you can enable or disable the notifications. Additionally, you can set the frequency of how often they are checked for. </p></div>';
 
     var jsonNotificationSettings = JSON.parse(FabulaSysApp.getBackgroundTaskSettingsAsJSONString());
     console.log(jsonNotificationSettings);
@@ -262,6 +262,9 @@ var Route_Settings_Notifications = function (event, $thisContainer){
 
 var Route_Settings_Tags = function (event, $thisContainer){
     var $toplevelrow = $('<div class="row"></div>');
+
+
+
     var $form = $('<form class="col s12"></form>');
     var $addTagsButton = $('<a id="SettingsTagsSave" class="col s4 offset-s1 waves-effect waves-light btn light-teal darken-1"><i class="mdi-av-my-library-add left"></i>Add Tag</a>');
     var $saveButton = $('<a id="SettingsTagsSave" class="col s4 offset-s2 waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save left"></i> Save</a>');
@@ -290,7 +293,7 @@ var Route_Settings_Tags = function (event, $thisContainer){
         })
     }
 
-    $toplevelrow.append('<div class="row no-vertical-margins"><h4 class="col s6 offset-s3 center-align">Tags List</h4></div>').append('<div class="row no-vertical-margins"><p class="col s10 offset-s1 center-align">Edit any of the tags below or click the Add Tags button to add more. Click on the Save button to save changes. </p></div>').append($form).append($('<div class="row"></div>').append($addTagsButton).append($saveButton));
+    $toplevelrow.append('<div class="row no-vertical-margins"><h4 class="col s6 offset-s3 center-align">Tags List</h4></div>').append('<div class="row no-vertical-margins"><p class="col s10 offset-s1 center-align" style="text-align: justify;">Edit any of the tags below or click the Add Tags button to add more. Click on the Save button to save changes. </p></div>').append($form).append($('<div class="row"></div>').append($addTagsButton).append($saveButton));
 
     $saveButton.on("click", function (){
         var newArr = [];
@@ -340,6 +343,7 @@ var Route_Settings_Tags = function (event, $thisContainer){
     })
 
     $thisContainer.html($toplevelrow);
+    $(window).scrollTop(0);
 }
 
 var Route_Settings_TimeFilter = function (event, $thisContainer){
