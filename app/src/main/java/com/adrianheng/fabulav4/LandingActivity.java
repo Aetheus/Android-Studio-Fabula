@@ -110,30 +110,54 @@ public class LandingActivity extends Activity {
 
     @JavascriptInterface
     public void updateActionsList(String elementID){
-        htmlActionsList.add(elementID);
-        Log.i(tag, "actions list updated. It now contains: " + Arrays.toString(htmlActionsList.toArray()) );
+            htmlActionsList.trimToSize();
+
+            Log.i(tag, "ActionsListUpdate: elementID to insert into ActionsList is " + elementID  );
+            if(htmlActionsList.size() >=1){
+                Log.i(tag, "ActionsListUpdate: Current last element of ActionsList is " + htmlActionsList.get(htmlActionsList.size() - 1 ) );
+            }
+
+            htmlActionsList.add(elementID);
+
+            Log.i(tag, "ActionsListUpdate: updated. It now contains: " + Arrays.toString(htmlActionsList.toArray()) );
+
+
     }
 
     //our custom back button. when clicked, it virtually clicks the last clicked Route button in the webview, effectively going "back" in the html
     @Override
     public void onBackPressed() {
-        Log.i(tag, "Back button pressed");
-        Log.i(tag, "ActionList size is: " + htmlActionsList.size());
-        Log.i(tag, "ActionList currently looks like this: " + htmlActionsList.toString());
+        Log.i(tag, "ActionsListBack: Back button pressed");
+        Log.i(tag, "ActionsListBack: size is: " + htmlActionsList.size());
+        Log.i(tag, "ActionsListBack: currently looks like this: " + htmlActionsList.toString());
+
         if (htmlActionsList.size() > 1){
             htmlActionsList.remove(htmlActionsList.size() - 1);
             htmlActionsList.trimToSize();
             String previousAction = (String) htmlActionsList.get((htmlActionsList.size() - 1));
-            Log.i(tag,"previous action was :" + previousAction);
+            Log.i(tag,"ActionsListBack: previous action was :" + previousAction);
 
             WebView landingWebview = (WebView) findViewById(R.id.landingWebview);
             String javascriptInjection = "javascript: $('a[href=" + previousAction + "]').trigger('click')";
-            Log.i(tag,"JS to inject is: " + javascriptInjection);
+            Log.i(tag,"ActionsListBack: JS to inject is: " + javascriptInjection);
             landingWebview.loadUrl(javascriptInjection);
-            htmlActionsList.remove(htmlActionsList.size() - 1);
-            Log.i(tag, "ActionList now looks like this: " + htmlActionsList.toString());
+
+            //injecting our javascript will automatically trigger the updateActionsList function. hence, we need to remove the last added element again
+            if(htmlActionsList.size() >= 1) {
+                htmlActionsList.remove(htmlActionsList.size() - 1);
+            }
+            htmlActionsList.trimToSize();
+
+            Log.i(tag, "ActionsListBack: now looks like this: " + htmlActionsList.toString());
         }else{
             this.finish();
+        }
+
+        if ((htmlActionsList.size() >= 2)    &&      htmlActionsList.get(htmlActionsList.size() - 1).equals(htmlActionsList.size() - 2) ){
+            Log.i(tag, "ActionsListBack: last 2 actions were duplicates of one another. Removing the duplicate");
+            htmlActionsList.remove(htmlActionsList.size() - 1);
+            htmlActionsList.trimToSize();
+            Log.i(tag, "ActionsListBack: now contains: " + Arrays.toString(htmlActionsList.toArray()) );
         }
     }
 

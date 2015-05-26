@@ -80,8 +80,6 @@ public class LandingWebViewClient extends WebViewClient{
 
             }
 
-
-
             //TRIGGER THE NEWS ROUTE
             //$('a[href=#AllNews]').trigger('click');
             view.loadUrl("javascript: $('a[href=#AllNews]').trigger('click')");

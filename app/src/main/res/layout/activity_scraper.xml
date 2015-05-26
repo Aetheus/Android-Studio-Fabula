@@ -45,7 +45,7 @@
 
         <EditText
             android:id="@+id/ScraperTopBarTags"
-            android:hint="#tags"
+            android:hint="tag"
             android:layout_width="80dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"

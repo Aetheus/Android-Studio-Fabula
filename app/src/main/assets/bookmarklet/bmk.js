@@ -1,4 +1,5 @@
 
+
 /*I needed to import jQuery. To speed up the process and avoid having to read two files, I've directly included it in this script.*/
 if(typeof jQuery === 'undefined'){
     alert("jQuery not found. Loading jQuery . . .\n (tap OK to continue) ");
@@ -18,7 +19,8 @@ if(typeof FabulaSysApp == 'undefined'){
     var FabulaSysPassword = "you forgot to pass the password!";
 }
 
-
+/* everything is wrapped in a try-catch*/
+try {
 
 (
 /*window.addEventListener("load", */
@@ -425,3 +427,8 @@ if(typeof FabulaSysApp == 'undefined'){
 	}
 /*, true);*/
 )(jQuery);
+
+}catch(Exception e){
+    alert("Fabula: An error occurred loading the Fabula plugin for this site!");
+}
+}
