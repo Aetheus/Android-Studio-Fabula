@@ -9,12 +9,12 @@ route("#SignOut", function (event, $thisContainer){
 
     var $content = $(
             '<form class="col s12">'
-        +   '   <div class="row small-vertical-margins center">'
+        +   '   <div class="row no-vertical-margins center">'
         +   '       <h4> Sign Out </h4>'
         +   '   </div>'
         +   '   <div class="row small-vertical-margins">'
-        +   '       <div class="col s8 offset-s2">'
-        +   '           <div class="center"> Click the below button to sign out of the current user account (' + ((typeof FabulaSysUsername) != "undefined" ? FabulaSysUsername : "ERROR NULL") + ') and close the app </div>'
+        +   '       <div class="col s10 offset-s1">'
+        +   '           <div class="center" style="text-align: justify;"> Are you sure? This will delete all stored user data and settings in this device. Cloud uploaded settings will still be safe. </div>'
         +   '       </div>'
         +   '   </div>'
         +   '   <div class="row small-vertical-margins center">'
