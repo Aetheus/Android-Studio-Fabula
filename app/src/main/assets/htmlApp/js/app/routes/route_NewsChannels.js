@@ -91,6 +91,11 @@ route("#NewsChannels", function (event, $thisContainer){
 
     var onSuccess = function (rows){
         $thisContainer.html("<div class='row' style='margin-bottom: 0px;'> <div class='col s10 offset-s1 center'> <h4> Channels </h4> </div> </div>");
+
+        var $newsChannelRefreshDiv = $('<div id="NewsChannelRefreshDiv" class="center"></div>').html(reusableAssets.simplePreloader).append("");
+        $thisContainer.append($newsChannelRefreshDiv );
+        $newsChannelRefreshDiv.hide();
+
         $thisContainer.append(
             '<div class="row">'
         +   '   <div class="col s10 offset-s1 center" style="text-align: justify;">'
@@ -98,6 +103,22 @@ route("#NewsChannels", function (event, $thisContainer){
         +   '   </div>'
         +   '</div>'
         )
+
+
+        var hammertime = new Hammer($thisContainer[0], {});
+        hammertime.get('swipe').set({ direction: Hammer.DIRECTION_DOWN, threshold:20, velocity:0.35 });
+        hammertime.on('swipe', function(ev) {
+            //console.log($thisContainer.scrollTop());
+            if (frames.top.scrollY == 0){
+                $newsChannelRefreshDiv.slideDown(250, function (){
+                    $('a[href=#NewsChannels]').trigger('click');
+                });
+            }else{
+                    //console.log("swiped up, but not at the top of the list yet");
+            }
+        });
+
+
         for(var i=0; i< rows.length; i++){
             var channelID   = rows[i].fedfeedchannelid   !== null ? rows[i].fedfeedchannelid   : "";
             var channelName = rows[i].fedfeedchannelname !== null ? rows[i].fedfeedchannelname : "";
@@ -129,10 +150,14 @@ route("#NewsChannels", function (event, $thisContainer){
             content +=      '                   <div class="color-choice-circle purple lighten-4"></div>'
             content +=      '                   <div class="color-choice-circle orange lighten-4"></div>'
             content +=      '               </div>'
+            //content +=      '               <div class="input-field col s12 small-vertical-margins">'
+            //content +=      '                   <a id="channel'+channelID+'redefineButton" class="col s5 waves-effect waves-light btn teal darken-1">redefine channel</a>'
+            //content +=      '               </div>'
             content +=      '           </div>'
-            content +=      '           <div class="card-action">'
-            content +=      '               <a id="channel'+channelID+'DeleteButton" href="#channel'+channelID+'DeleteConfirmation" class="modal-trigger waves-effect waves-teal btn-flat red  lighten-2 center white-text col s4 offset-s1">Delete</a>'
-            content +=      '               <a id="channel'+channelID+'SaveButton"   class="waves-effect waves-teal btn-flat blue lighten-2 center white-text " href="#">Save Changes</a>'
+            content +=      '           <div class="card-action row" style="margin-bottom: -10px;" >'
+            content +=      '               <a id="channel'+channelID+'DeleteButton" href="#channel'+channelID+'DeleteConfirmation" class="modal-trigger waves-effect waves-teal btn-flat red  lighten-2 center white-text col s4">Delete</a>'
+            content +=      '               <a id="channel'+channelID+'RedefineButton"   class="waves-effect waves-teal btn-flat teal lighten-2 center white-text col s4" href="#">Redefine</a>'
+            content +=      '               <a id="channel'+channelID+'SaveButton"   class="waves-effect waves-teal btn-flat blue lighten-2 center white-text col s4" href="#">Save</a>'
             content +=      '               <div id="channel'+channelID+'DeleteConfirmation" class="modal">'
             content +=      '                   <div class="modal-content">'
             content +=      '                       <h4>Delete confirmation</h4>'
@@ -153,6 +178,9 @@ route("#NewsChannels", function (event, $thisContainer){
             //enable modals
             $('.modal-trigger').leanModal();
 
+            //store channel url into button's data
+            $('#channel'+channelID+'RedefineButton').data("channelLink", rows[i].fedfeedchannelurl);
+
             (function (channelID){
                 $('#channel'+channelID+'SaveButton').on("click", function(event){
                     event.preventDefault();
@@ -170,6 +198,14 @@ route("#NewsChannels", function (event, $thisContainer){
 
                 $('#channel'+channelID+'TrueDeleteButton').on("click", function(){
                     del(channelID);
+                });
+
+
+                $('#channel'+channelID+'RedefineButton').on("click", function(){
+                    if(typeof FabulaSysApp !== 'undefined'){
+                        var link = $(this).data("channelLink");
+                        FabulaSysApp.redefineSubscription(link);
+                    }
                 });
 
                 //.className.split(/\s+/);

@@ -153,12 +153,12 @@ public class LandingActivity extends Activity {
             this.finish();
         }
 
-        if ((htmlActionsList.size() >= 2)    &&      htmlActionsList.get(htmlActionsList.size() - 1).equals(htmlActionsList.size() - 2) ){
+        /*if ((htmlActionsList.size() >= 2)    &&   htmlActionsList.get(htmlActionsList.size() - 1).equals(htmlActionsList.get(htmlActionsList.size() - 1)) ){
             Log.i(tag, "ActionsListBack: last 2 actions were duplicates of one another. Removing the duplicate");
             htmlActionsList.remove(htmlActionsList.size() - 1);
             htmlActionsList.trimToSize();
             Log.i(tag, "ActionsListBack: now contains: " + Arrays.toString(htmlActionsList.toArray()) );
-        }
+        }*/
     }
 
 
@@ -326,6 +326,12 @@ public class LandingActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("globalSettings",JSONObject);
         editor.commit();
+    }
+
+
+    @JavascriptInterface
+    public void redefineSubscription(String link){
+        goToScraper(link);
     }
 
     private class LaunchScraper implements Runnable {

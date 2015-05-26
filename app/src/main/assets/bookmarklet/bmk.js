@@ -428,7 +428,7 @@ try {
 /*, true);*/
 )(jQuery);
 
-}catch(Exception e){
+}catch (err){
     alert("Fabula: An error occurred loading the Fabula plugin for this site!");
-}
+    console.log(err.message);
 }

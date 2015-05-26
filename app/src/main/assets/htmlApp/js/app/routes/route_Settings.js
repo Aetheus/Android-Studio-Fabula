@@ -127,7 +127,7 @@ var Route_Settings_CloudSave = function (event, $thisContainer){
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
-    htmlFields          +=  '   <a id="SettingsCloudSaveDownload" class="col s5  waves-effect waves-light btn light-blue darken-1">'
+    htmlFields          +=  '   <a id="SettingsCloudSaveDownload" class="col s5  waves-effect waves-light btn red darken-1">'
     htmlFields          +=  '       Download'
     htmlFields          +=  '   </a>'
     htmlFields          +=  '   <a id="SettingsCloudSaveUpload" class="col s5 offset-s2 waves-effect waves-light btn light-blue darken-1">'

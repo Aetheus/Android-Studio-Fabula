@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aedrianheng.utils.MyIOUtil;
 import com.aedrianheng.utils.ScraperBottomBarEnablerListener;
@@ -56,9 +57,11 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scraper);
 
+        //get necessary extras
         username = getIntent().getStringExtra("USERNAME");
         password = getIntent().getStringExtra("PASSWORD");
         String initialURL = getIntent().getStringExtra("URL");
+
 
         /***********************************************************/
         //load bookmarklet
@@ -183,7 +186,16 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
     }
 
     public void onSubmitButtonClick(View view){
-        webview.loadUrl("javascript:jQuery('#FabulaSubmitButton').click();");
+        TextView channelNameTV = (TextView) findViewById(R.id.ScraperTopBarNewChannelName);
+        //TextView tagsTV = (TextView) findViewById(R.id.ScraperTopBarTags);
+
+        if( "".equals(channelNameTV.getText().toString()) ){
+            Toast toast = Toast.makeText(this, "channel must be given a name!", Toast.LENGTH_SHORT);
+            toast.show();
+        }else{
+            webview.loadUrl("javascript:jQuery('#FabulaSubmitButton').click();");
+        }
+
     }
 
     public void onDeleteButtonClick(View view){
