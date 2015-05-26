@@ -60,9 +60,10 @@
         android:layout_alignEnd="@+id/loginPassword"
         android:layout_alignLeft="@+id/loginPassword"
         android:layout_alignStart="@+id/loginPassword"
-        android:background="#33CCFF"
+        android:background="@drawable/login_selector"
         android:textColor="#FFFFFF"
-        android:backgroundTint="#e57373" />
+     />
+    <!--android:background="#e57373"-->
 
     <Button
         style="?android:attr/buttonStyleSmall"

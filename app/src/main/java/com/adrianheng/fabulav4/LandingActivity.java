@@ -309,9 +309,12 @@ public class LandingActivity extends Activity {
     public void signOut(){
         SharedPreferences sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("username");
-        editor.remove("password");
-        editor.remove("globalSettings");
+
+        //editor.remove("username");
+        //editor.remove("password");
+        //editor.remove("globalSettings");
+
+        editor.clear();
         editor.commit();
         this.finish();
     }
