@@ -29,7 +29,7 @@ globalSettings = {
                     specifigHours:null
                 }
             },
-        "yesterday":
+        /*"yesterday":
             {
                 name: "yesterday",
                 startFilter: {
@@ -56,10 +56,10 @@ globalSettings = {
                     hours:0,minutes:0,seconds:0,
                     specifigHours: [23,59,59,999]
                 }
-            },
+            },*/
         "all":null,
     },
-    tagsList: ["all", "games", "local", "uni", "science", "technology", "politics", "sports"],
+    tagsList: ["all", "politics", "sports", "science", "technology"],
 
     /*set the "current filter" option to this by default; users can switch by tapping on different options.*/
     currentFilter:"last 2 hours",

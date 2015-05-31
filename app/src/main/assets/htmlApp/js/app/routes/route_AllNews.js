@@ -480,7 +480,7 @@ route("#AllNews", function (event, $thisContainer){
             }
         }
 
-        if(JSONarray.length == 0){
+        if((JSONarray.length == 0) && (typeof isPaginationRequest !== 'undefined') && !(isPaginationRequest)){
             $("#newsList").append(reusableAssets.pullToRefresh);
         }
     };

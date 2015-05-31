@@ -443,10 +443,8 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
         initialHTML +=  '</div>'
         initialHTML +=  '<ul class="collapsible" data-collapsible="accordion" id="timeFilterCollapsible"></ul>'
         initialHTML +=  '<div class="row">';
-        initialHTML +=  '   <div class="col s5 offset-s1">'
-        initialHTML +=  '       <a id="TimeFilterPreviewButton" class="waves-effect waves-light btn">Console Log</a>'
-        initialHTML +=  '   </div>'
-        initialHTML +=  '   <div class="col s5 ">'
+
+        initialHTML +=  '   <div class="col s5 offset-s7">'
         initialHTML +=  '       <a id="TimeFilterSaveButton" class="waves-effect waves-light btn light-blue darken-1"><i class="mdi-content-save small right"></i>Save</a>'
         initialHTML +=  '   </div>'
         initialHTML +=  '</div>'
@@ -463,7 +461,7 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
           // settings go here
     });
 
-    $("#TimeFilterPreviewButton").on("click", function(){
+    /*$("#TimeFilterPreviewButton").on("click", function(){
         var startInternalFilter = convertFormToFilter("Start");
         var endInternalFilter = convertFormToFilter("End");
 
@@ -476,7 +474,7 @@ var Route_Settings_TimeFilter_AddCustom = function (event, $thisContainer, isEdi
         var timeConfig = timeHelper.useRelativeFilter(fullFilter);
         console.log("The current time filter of this page is defined as: " + JSON.stringify(timeConfig));
         console.log("ALL the SAVED time filters are: " + JSON.stringify(globalSettings.timeFilters));
-    });
+    });*/
 
     $("#TimeFilterSaveButton").on("click", function(){
         var startInternalFilter = convertFormToFilter("Start");

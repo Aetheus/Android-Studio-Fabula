@@ -189,11 +189,14 @@ route("#NewsChannels", function (event, $thisContainer){
                     var channelTags = $('#channel'+localChannelID+'tag').val();
                     var channelColour = $('#channel'+localChannelID+'colour').val();
 
-                    if (channelName.trim() != ""){
+
+                    if (channelName.trim() != "" && channelTags.trim() != ""){
                         save(channelID, channelName, channelTags,channelColour);
                     }else{
-                        errHandler(new Error("channel MUST have a name!"));
+                        errHandler(new Error("channel MUST have a name and a tag!"));
                     }
+
+
                 });
 
                 $('#channel'+channelID+'TrueDeleteButton').on("click", function(){
