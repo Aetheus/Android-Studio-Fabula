@@ -194,7 +194,11 @@ public class ScraperActivity extends Activity implements AdapterView.OnItemSelec
             toast.show();
         }else{
             webview.loadUrl("javascript:jQuery('#FabulaSubmitButton').click();");
+
+            Toast toast = Toast.makeText(this, "subscribing ...", Toast.LENGTH_LONG);
+            toast.show();
         }
+
 
     }
 

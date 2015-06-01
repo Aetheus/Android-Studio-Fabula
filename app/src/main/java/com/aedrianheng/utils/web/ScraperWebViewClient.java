@@ -1,5 +1,6 @@
 package com.aedrianheng.utils.web;
 
+import android.app.Activity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -18,6 +19,8 @@ public class ScraperWebViewClient extends WebViewClient{
 
     private String username;
     private String password;
+
+
 
     public ScraperWebViewClient(String bookmarklet, String username, String password, CustomListener clitem){
         super();

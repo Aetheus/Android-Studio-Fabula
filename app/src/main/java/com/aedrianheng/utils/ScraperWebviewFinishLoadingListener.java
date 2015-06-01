@@ -1,5 +1,9 @@
 package com.aedrianheng.utils;
 
+import android.util.Log;
+import android.widget.LinearLayout;
+
+import com.adrianheng.fabulav4.R;
 import com.adrianheng.fabulav4.ScraperActivity;
 
 /**
@@ -21,5 +25,12 @@ public class ScraperWebviewFinishLoadingListener implements CustomListener {
     @Override
     public void callbackMethod(Object... o) {
         sactivity.toggleIsWebviewLoading(false);
+
+        try{
+            LinearLayout loaderLayout = (LinearLayout) sactivity.findViewById(R.id.loaderLayout);
+            loaderLayout.setVisibility(LinearLayout.GONE);
+        }catch(Exception e){
+            Log.e(listenerType(),"Error occured while trying to hide loader layout");
+        }
     }
 }
