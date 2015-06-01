@@ -334,6 +334,9 @@ public class LandingActivity extends Activity {
         goToScraper(link);
     }
 
+
+
+
     private class LaunchScraper implements Runnable {
         Intent intent;
         Context context;

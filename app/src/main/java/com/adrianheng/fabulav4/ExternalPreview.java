@@ -1,19 +1,30 @@
 package com.adrianheng.fabulav4;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.content.ClipboardManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Toast;
 
+import com.aedrianheng.utils.htmlApp.ExternalPageWebViewClient;
 import com.aedrianheng.utils.htmlApp.LandingWebViewClient;
 import com.aedrianheng.utils.web.ScraperWebChromeClient;
 
 
+
+
 public class ExternalPreview extends Activity {
+
+    private static final String tag = "ExternalPreview";
+
+    private String externalURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +33,16 @@ public class ExternalPreview extends Activity {
 
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        externalURL = url;
+
         WebView landingWebview = (WebView) findViewById(R.id.ExternalPreviewWebView);
         landingWebview.getSettings().setJavaScriptEnabled(true);
+        landingWebview.setWebViewClient(new ExternalPageWebViewClient());
         landingWebview.setWebChromeClient(new ScraperWebChromeClient(this));
 
         landingWebview.loadUrl(url);
+        Toast toast = Toast.makeText(this, "loading site ...", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 
@@ -50,6 +66,19 @@ public class ExternalPreview extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void clipboardCopy(View view){
+        try {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Copied text", externalURL);
+            clipboard.setPrimaryClip(clip);
+
+            Toast toast = Toast.makeText(this, "copied to clipboard", Toast.LENGTH_SHORT);
+            toast.show();
+        }catch(Exception e){
+            Log.e(tag,"Error occured: " + e);
+        }
     }
 
     public void onBackButtonClick(View view) {
