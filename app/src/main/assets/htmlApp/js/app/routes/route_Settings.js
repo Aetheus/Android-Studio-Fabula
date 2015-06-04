@@ -166,6 +166,10 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
     var htmlFields      = "";
     htmlFields          +=  '<br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
+    htmlFields          +=  '   <input id="paginationLimit" value="' + globalSettings.paginationLimit + '" type="tel" class="validate">'
+    htmlFields          +=  '   <label class="active" for="paginationLimit"> news items per request (pagination) </label>'
+    htmlFields          +=  '</div>'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
     htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((globalSettings.isNewsFeedColourOn) ? ' checked="checked" ' : "") + 'id="isNewsFeedColourOn"  />'
     htmlFields          +=  '   <label for="isNewsFeedColourOn">toggle background colours on/off</label>'
     htmlFields          +=  '</div>'
@@ -177,9 +181,10 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
     htmlFields          +=  '</div>'
     htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
-    htmlFields          +=  '   <input id="paginationLimit" value="' + globalSettings.paginationLimit + '" type="tel" class="validate">'
-    htmlFields          +=  '   <label class="active" for="paginationLimit"> news items per request (pagination) </label>'
+    htmlFields          +=  '   <input type="checkbox" class="filled-in" ' + ((globalSettings.isNewsFeedGoogleImageCompressionOn) ? ' checked="checked" ' : " ") + (!(globalSettings.isNewsFeedImagesOn) ? ' disabled="disabled" ' : "") + 'id="isNewsFeedGoogleImageCompressionOn"  />'
+    htmlFields          +=  '   <label for="isNewsFeedGoogleImageCompressionOn">toggle thumbnail compression on/off (saves data, but may affect load time) </label>'
     htmlFields          +=  '</div>'
+    htmlFields          +=  '<div class="input-field col s10 offset-s1"></div><br />'
     htmlFields          +=  '<div class="input-field col s10 offset-s1 small-side-margins">'
     htmlFields          +=  '   <a id="SettingsNewsFeedSave" class="col s6 offset-s6 waves-effect waves-light btn light-blue darken-1">'
     htmlFields          +=  '       <i class="mdi-content-save left"></i> Save'
@@ -190,9 +195,19 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
         $('<div class="row small-vertical-margins"></div>').append(htmlTitle).append("<br />").append(htmlFields);
     $thisContainer.html($row);
 
+    //if the newsfeedimages option is checked, enable the newsfeedgoogleimagecompression option. else, disable it
+    $("#isNewsFeedImagesOn").click(function (){
+        if ( $(this).is(":checked") ){
+            $("#isNewsFeedGoogleImageCompressionOn").removeAttr("disabled");
+        }else{
+            $("#isNewsFeedGoogleImageCompressionOn").attr("disabled","disabled");
+        }
+    });
+
     $("#SettingsNewsFeedSave").on("click", function (){
-        globalSettings.isNewsFeedColourOn = $("#isNewsFeedColourOn").is(":checked");
-        globalSettings.isNewsFeedImagesOn = $("#isNewsFeedImagesOn").is(":checked");
+        globalSettings.isNewsFeedColourOn                   = $("#isNewsFeedColourOn").is(":checked");
+        globalSettings.isNewsFeedImagesOn                   = $("#isNewsFeedImagesOn").is(":checked");
+        globalSettings.isNewsFeedGoogleImageCompressionOn   = $("#isNewsFeedGoogleImageCompressionOn").is(":checked");
 
         var paginationLimit = $("#paginationLimit").val();
         if ($.isNumeric(paginationLimit)  && paginationLimit % 1 === 0 && parseInt(paginationLimit) > 1){

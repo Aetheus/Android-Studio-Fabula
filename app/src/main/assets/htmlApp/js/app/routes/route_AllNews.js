@@ -285,10 +285,23 @@ route("#AllNews", function (event, $thisContainer){
 
             //if image exists and globalSettings permits its use, use it as thumbnail. else, use a default icon
             if(JSONarray[i].fitfeeditemimagelink != null && JSONarray[i].fitfeeditemimagelink != DBNull && globalSettings.isNewsFeedImagesOn){
-                $iconImage = $('<img src="' + JSONarray[i].fitfeeditemimagelink + '" class="circle avatarCollectionImage" />');
+                //if image compression option turned on, make use of Google image compression API.
+                if (globalSettings.isNewsFeedGoogleImageCompressionOn){
+                    var compressedURL = "https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?url=" + encodeURIComponent(JSONarray[i].fitfeeditemimagelink) + "&container=focus&resize_w=60&refresh=1800";
+                    $iconImage = $('<img src="' + compressedURL + '" class="circle avatarCollectionImage" />');
+                }else{
+                    $iconImage = $('<img src="' + JSONarray[i].fitfeeditemimagelink + '" class="circle avatarCollectionImage" />');
+                }
+
+                //if any errors occur, fallback to our icon
+                $iconImage.on("error", function (){
+                    $(this).replaceWith('<i class="mdi-action-assessment large circle green avatarCollectionIcon"></i>');
+                });
             }else{
                 $iconImage = $('<i class="mdi-action-assessment large circle green avatarCollectionIcon"></i>');
             }
+
+
 
 
             //$title.removeClass("avatarCollectionOverflow");
