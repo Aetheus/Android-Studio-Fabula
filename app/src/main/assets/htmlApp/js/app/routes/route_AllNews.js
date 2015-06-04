@@ -562,7 +562,7 @@ route("#AllNews", function (event, $thisContainer){
         });
 
 
-        globalSettingsSave(true);
+        globalSettingsSave(true,true);
     }
 
 

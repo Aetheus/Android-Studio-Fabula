@@ -213,6 +213,7 @@ var Route_Settings_NewsFeed = function (event, $thisContainer){
         if ($.isNumeric(paginationLimit)  && paginationLimit % 1 === 0 && parseInt(paginationLimit) > 1){
             globalSettings.paginationLimit = parseInt(paginationLimit);
             globalSettingsSave();
+
         }else{
             errHandler(new Error("Please enter a valid, positive whole number!"));
         }

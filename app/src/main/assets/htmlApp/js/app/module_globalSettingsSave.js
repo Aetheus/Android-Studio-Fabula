@@ -1,10 +1,10 @@
 
 //save the global settings to the app's shared preferences
-//isSilentMode : when true, saves without producing a toaster message
-globalSettingsSave = function (isSilentModeFlag){
+//isSilentMode      : when true, saves without producing a toaster message
+//isNonCloudRequest : when dealing with very frequent requests (ala switching tabs on the news feed), we won't want to waste bandwith by  uploading each time. With this set to True, we won't upload even if cloud sync is on.
+globalSettingsSave = function (isSilentMode, isNonCloudRequest){
     var JSONstring = JSON.stringify(globalSettings);
     var isRunningOnPhone = (typeof FabulaSysApp != "undefined");
-    var isSilentMode = (typeof isSilentMode !== "undefined") ? isSilentMode : "false";
 
     if (isRunningOnPhone){
         FabulaSysApp.saveJSONSettings(JSONstring);
@@ -21,7 +21,7 @@ globalSettingsSave = function (isSilentModeFlag){
             toaster("Settings saved to phone");
         }
 
-        if (globalSettings.isCloudSyncOn){
+        if (globalSettings.isCloudSyncOn && !isNonCloudRequest){
             $.ajax({
                 method: "GET",
                 url: "https://fabula-node.herokuapp.com/usersappsettings/set/" + FabulaSysUsername,
