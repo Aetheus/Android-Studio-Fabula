@@ -396,6 +396,15 @@ route("#AllNews", function (event, $thisContainer){
     var onSuccess = function (data, status,isRequestFromNotification, paginationOffset, isPaginationRequest){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
 
+        //if running on the phone, update our last check time
+        if (typeof FabulaSysApp !== "undefined"){
+            console.log("Updating app's last checked time");
+            FabulaSysApp.updateCheckTime();
+            console.log("App's last checked time successfully updated");
+        }else{
+            console.log("Not running in the phone, so not updating the last checked time");
+        }
+
         var confirmedPaginationRequest = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
         var JSONarray = data;
 
@@ -557,7 +566,6 @@ route("#AllNews", function (event, $thisContainer){
                 var isRequestFromNotificationConfirmed = (typeof isRequestFromNotification === 'undefined') ? false : isRequestFromNotification;
                 var isPaginationRequestConfirmed = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
                 onSuccess(data, status, isRequestFromNotificationConfirmed, paginationOffset, isPaginationRequestConfirmed);
-                FabulaSysApp.updateCheckTime(); //update the last checked time
             }
         });
 

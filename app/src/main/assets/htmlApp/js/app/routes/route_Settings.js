@@ -267,7 +267,7 @@ var Route_Settings_Notifications = function (event, $thisContainer){
         var isNumber = !isNaN(parseFloat(interval)) && isFinite(interval);
 
         if(isNumber){
-            //boolean isBackgroundTaskOn, int intervalTime
+            //setbackgroundtasksettings will automatically call either stopbackgroundtask or startbackground task; so no need to call it from here
             FabulaSysApp.setBackgroundTaskSettings(isOn,interval);
             toaster("Save successful");
         }else{

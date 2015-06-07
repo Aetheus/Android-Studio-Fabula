@@ -70,7 +70,7 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 1,
                         mainActivityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                String title = "Fabula: " + rowcount + " new news items";
+                String title = "Fabula: " + rowcount + " news updates";
                 String message = "click to go to Fabula app";
                 //String message = new Date().toString();
 
@@ -150,6 +150,7 @@ public class NotificationBroadcastReceiver  extends BroadcastReceiver {
                 String nowTimeString = dateFormat.format(timeNow);
             String endTime = nowTimeString;
 
+            Log.i("BroadReceive", "Checking for news updates between ("+ startTime +") and ("+ endTime +") ");
 
             ServiceCommListener SCL = new ServiceCommListener(context,intent);
             JSONObject timeRange = new JSONObject();

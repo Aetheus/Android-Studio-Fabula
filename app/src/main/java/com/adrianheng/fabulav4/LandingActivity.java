@@ -197,15 +197,13 @@ public class LandingActivity extends Activity {
 
     @JavascriptInterface
     public void stopBackgroundTask(){
-        //our alarm's requestCode. we'll need this if we want to shut it down.
         Intent intent = new Intent(this.getApplicationContext(), NotificationBroadcastReceiver.class);
         intent.putExtra("username",username);
         intent.putExtra("password",password);
 
-
+        //requestCode: our alarm's requestCode. we'll need this if we want to shut it down.
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestCode, intent, Intent.FILL_IN_DATA);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
         alarmManager.cancel(pendingIntent);
     }
 
@@ -258,8 +256,10 @@ public class LandingActivity extends Activity {
 
         Log.i(tag, "interval: " + intervalTime + " | isBackgroundTaskOn: " + isBackgroundTaskOn);
         if (!isBackgroundTaskOn){
+            Log.i(tag, "stopping background task");
             stopBackgroundTask();
         }else{
+            Log.i(tag, "starting background task");
             startBackgroundTask(intervalTime);
         }
     }
@@ -316,6 +316,8 @@ public class LandingActivity extends Activity {
 
         editor.clear();
         editor.commit();
+
+        this.stopBackgroundTask();
         this.finish();
     }
 
