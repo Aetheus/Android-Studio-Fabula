@@ -569,8 +569,6 @@ route("#AllNews", function (event, $thisContainer){
             }
         });
 
-
-        globalSettingsSave(true,true);
     }
 
 
