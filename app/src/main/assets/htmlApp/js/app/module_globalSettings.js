@@ -64,6 +64,7 @@ globalSettings = {
     /*set the "current filter" option to this by default; users can switch by tapping on different options.*/
     currentFilter:"last 2 hours",
     currentTags:null,
+    currentSearch:null,
 
     paginationLimit:15,
 

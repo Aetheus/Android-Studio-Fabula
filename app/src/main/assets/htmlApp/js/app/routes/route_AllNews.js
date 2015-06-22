@@ -22,9 +22,9 @@ route("#AllNews", function (event, $thisContainer){
         }
 
         interval = Math.floor(seconds / 86400);
-        if (interval > 1) {
+        if (interval >= 1) {
             if(interval == 1) {
-                return interval + "day";
+                return interval + " day";
             }
             return interval + " days";
         }
@@ -274,7 +274,7 @@ route("#AllNews", function (event, $thisContainer){
 
     }
 
-    var populateNewsList = function ($list, JSONarray, paginationOffset){
+    var populateNewsList = function ($list, JSONarray, paginationOffset, searchQuery){
        for(var i=0; i< JSONarray.length; i++){
             var itemID = JSONarray[i].fitfeeditemid;
             var $listItem = $('<li class="collection-item avatar" ></li>');
@@ -361,13 +361,12 @@ route("#AllNews", function (event, $thisContainer){
             }
         }
 
-
         var $enderDiv = $('<div id="enderDiv" class="center waves-effect"> <a href="#!"> &#x21bb; double tap here to load older news </a> </div>');
         $list.append($enderDiv);
 
         $enderDiv.data("paginationOffset", paginationOffset ? paginationOffset : 0);
 
-
+        var confirmedSearchQuery = (typeof searchQuery !== 'undefined') ? searchQuery : null;
         $enderDiv.find("a").on("click", function(event){
             event.preventDefault();
             var $thisEnderDiv = $(this).parent();
@@ -381,7 +380,8 @@ route("#AllNews", function (event, $thisContainer){
             $(this).addClass("myHidden");
             $thisEnderDiv.append(reusableAssets.simplePreloader);
             $thisEnderDiv.find(".preloader-wrapper").css("margin-top", "10px");
-            postRequest(currentTimeConfig,currentTag,false, $thisEnderDiv.data("paginationOffset"), true);
+
+            postRequest(currentTimeConfig,currentTag,false, $thisEnderDiv.data("paginationOffset"), true, confirmedSearchQuery);
             //}else{
             //console.log("Already loading next page. ignoring this request.")
             //}
@@ -393,7 +393,17 @@ route("#AllNews", function (event, $thisContainer){
         $list.prepend($refreshDiv);
     }
 
-    var onSuccess = function (data, status,isRequestFromNotification, paginationOffset, isPaginationRequest){
+
+    var bindSearchModalButton = function ($searchButton,$input){
+        $searchButton.on("click", function(){
+            //make the request
+            loaderScreen(false);
+            //timeConfig, tags, isRequestFromNotification, paginationOffset, isPaginationRequest, searchQuery
+            postRequest(TimeHelper.decide(globalSettings.currentFilter),globalSettings.currentTags,false, 0, false, $input.val());
+        })
+    }
+
+    var onSuccess = function (data, status,isRequestFromNotification, paginationOffset, isPaginationRequest, searchQuery){
         //{"fitfeeditemid":20280,"fitfeedchannelid":1,"fitfeeditemtitle":"APU CAREERS CENTRE: JOB OPPORTUNITIES","fitfeeditemlink":"http://webspace.apiit.edu.my/user/view.php?id=24345&course=1","fitfeeditemdescription":"by WEBSPACE   - Friday, 10 April 2015, 2:48 PM","fittimestamp":"2015-04-10T08:39:05.457Z","fitfeeditemimagelink":"%%%NULL%%%","fitisread":false}
 
         //if running on the phone, update our last check time
@@ -405,6 +415,7 @@ route("#AllNews", function (event, $thisContainer){
             console.log("Not running in the phone, so not updating the last checked time");
         }
 
+        var confirmedSearchQuery = (typeof searchQuery !== 'undefined') ? searchQuery : null;
         var confirmedPaginationRequest = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
         var JSONarray = data;
 
@@ -415,15 +426,30 @@ route("#AllNews", function (event, $thisContainer){
         if (!confirmedPaginationRequest){
         //for loading the entire page
 
-            var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s12' href='#' data-activates='timedropdown'>time filter</a>");
+            var $timeDropdownButton = $("<a id='timedropdownbutton' class='dropdown-button btn col s10' href='#' data-activates='timedropdown'>time filter</a>");
+            var $searchButton = $('<a class="modal-trigger waves-effect waves-light btn col s2  red lighten-2" style="height: 45px;" href="#searchModal"><i class="large mdi-action-search" style="font-size: 2rem;"></i></a>' +
+                                    '<div id="searchModal" class="modal">' +
+                                     	'<div class="modal-content">'+
+                                     		'<h4>Search News</h4>' +
+                                     		'<div class="input-field">'+
+                                     			'<input id="searchModalInput" type="text"></input>'+
+                                     			'<label for="searchModalInput">enter search query here</label>' +
+                                     		'</div>'+
+                                         '</div>'+
+                                         '<div class="modal-footer">'+
+                                     		'<a id="searchModalButton" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Search</a>'+
+                                     		'<a class="modal-action modal-close waves-effect waves-green btn-flat ">Cancel</a>'+
+                                         '</div>'+
+                                     '</div>');
+
             var $timeDropdownList = $("<ul id='timedropdown' class='dropdown-content'></ul>");
-            var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList);
+            var $timeDropdownRow = $('<div id="timeDropdownRow" class="row no-vertical-margins" id="filterContainer"></div>').append($timeDropdownButton).append($timeDropdownList).append($searchButton);
 
             //var $tagRow = $('<div id="tagsRow" class="row no-vertical-margins"><div class="col s12"><ul class="tabs"><li class="tab col s3"><a href="#test1">Test 1</a></li><li class="tab col s3"><a class="active" href="#test2">Test 2</a></li><li class="tab col s3"><a href="#test3">Test 3</a></li><li class="tab col s3"><a href="#test4">Test 4</a></li></ul></div><div id="test1" class="col s12">Test 1</div><div id="test2" class="col s12">Test 2</div><div id="test3" class="col s12">Test 3</div><div id="test4" class="col s12">Test 4</div></div>');
             var $tagRow = buildTagRow();
 
             var $list = $('<ul id="newsList" class="collection no-vertical-margins"></ul>');
-            populateNewsList($list, JSONarray, paginationOffset);
+            populateNewsList($list, JSONarray, paginationOffset, confirmedSearchQuery);
             var $listRow = $('<div id="listRow" class="row no-vertical-margins"></div>').append($list);
 
             $thisContainer.html($listRow);
@@ -466,6 +492,11 @@ route("#AllNews", function (event, $thisContainer){
                 }
             });
 
+            //enable modals
+            $('.modal-trigger').leanModal();
+
+            //bind search modal button
+            bindSearchModalButton($("#searchModalButton"),$("#searchModalInput"));
 
             touchUpNewsList($list,isRequestFromNotification);
             //$("#enderDiv").data("offset", paginationOffset);
@@ -477,7 +508,7 @@ route("#AllNews", function (event, $thisContainer){
             $thisContainer.append($tempList);
 
 
-            populateNewsList($tempList, JSONarray);
+            populateNewsList($tempList, JSONarray, null, confirmedSearchQuery);
             $tempList.find("li").each(function (){
                 var thisListItem = $(this);
                 //$actualNewsList.before("#enderDiv").append(thisListItem);
@@ -505,21 +536,27 @@ route("#AllNews", function (event, $thisContainer){
         if((JSONarray.length == 0) && (typeof isPaginationRequest !== 'undefined') && !(isPaginationRequest)){
             $("#newsList").append(reusableAssets.pullToRefresh);
         }
+
+        if (typeof searchQuery !== 'undefined'){
+            toaster("search results for: " + searchQuery, 6000);
+        }
     };
 
-    var postRequest = function (timeConfig, tags, isRequestFromNotification, paginationOffset, isPaginationRequest){
+    var postRequest = function (timeConfig, tags, isRequestFromNotification, paginationOffset, isPaginationRequest, searchQuery){
         console.log("Request posted with a timeConfig: " + JSON.stringify(timeConfig) + " and tag: " + tags);
 
         var paginationOffsetConfirmed = (typeof paginationOffset === 'undefined') ? 0 : paginationOffset;
         var limit = globalSettings.paginationLimit;
         var requestRowLimit = { offset:paginationOffsetConfirmed, limit:limit};
 
+        var searchQueryConfirmed = (typeof searchQuery !== 'undefined') ? searchQuery : null;
         //RowLimit.limit; RowLimit.offset;
         var requestParams = {
             userid:FabulaSysUsername,
             password:FabulaSysPassword,
             timerange: timeConfig,
             rowlimit : requestRowLimit,
+            searchquery: searchQueryConfirmed,
             tags:tags
         };
 
@@ -565,7 +602,7 @@ route("#AllNews", function (event, $thisContainer){
             success: function(data, status){
                 var isRequestFromNotificationConfirmed = (typeof isRequestFromNotification === 'undefined') ? false : isRequestFromNotification;
                 var isPaginationRequestConfirmed = (typeof isPaginationRequest === 'undefined') ? false : isPaginationRequest;
-                onSuccess(data, status, isRequestFromNotificationConfirmed, paginationOffset, isPaginationRequestConfirmed);
+                onSuccess(data, status, isRequestFromNotificationConfirmed, paginationOffset, isPaginationRequestConfirmed, searchQuery);
             }
         });
 
