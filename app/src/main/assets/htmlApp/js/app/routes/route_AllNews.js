@@ -537,8 +537,8 @@ route("#AllNews", function (event, $thisContainer){
             $("#newsList").append(reusableAssets.pullToRefresh);
         }
 
-        if (typeof searchQuery !== 'undefined'){
-            toaster("search results for: " + searchQuery, 6000);
+        if ((typeof searchQuery !== 'undefined') && searchQuery){
+            toaster("search results for: " + searchQuery, 5000);
         }
     };
 
